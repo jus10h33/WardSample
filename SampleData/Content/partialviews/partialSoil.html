@@ -1,0 +1,103 @@
+﻿<section id="right" class="col-sm-12 col-md-12 col-lg-5" ng-show="rightSide">
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <span class="panel-heading">Sample Recommendations</span>
+            <div id="sampleRecs" class="panel-body-padding clearfix">                
+                    <div id="sampleRecsTop" class="col-lg-12">
+                        <form id="frmSampleInfo">
+                            <div class="col-lg-2">
+                                <div class="form-group m-b-5">
+                                    <label>Top Soil</label>
+                                    <input type="checkbox" id="chkTopSoil" name="chkTopSoil" ng-readonly="readonly" ng-checked="{{chkTopSoil}}" ng-click="SetDepth()" ng-model="chkTopSoil" tabindex="16" />
+                                </div>
+                                <div id="linkToSoil" ng-show="linkToSoil">
+                                    <div class="form-group">
+                                        <label>Link Soil</label>
+                                        <input type="checkbox" id="chkLinkToSoil" ng-readonly="readonly" ng-checked="{{entry.LinkedSampleBatch}}" ng-model="chkLinkToSoil" tabindex="17" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="depthCol" class="col-lg-6">
+                                <label class="control-label"></label><span class="color-white m-l-30">Begin</span><span class="color-white m-l-30">End</span>
+                                <div class="form-group">
+                                    <label class="control-label">Depth</label>
+                                    <input type="text" id="txtBeginDepth" class="form-control" ng-readonly="readonly" ng-model="entry.BeginningDepth" tabindex="18" />
+                                    <input type="text" id="txtEndDepth" class="form-control" ng-readonly="readonly" ng-model="entry.EndingDepth" tabindex="19" />
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-lg-7">Past Crop</label>
+                                    <select id="cboPastCrop" class="form-control" ng-readonly="readonly" ng-model="entry.PastCropNumber" tabindex="20">
+                                        <option ng-repeat="PC in entry.PastCrops" value="{{PC.PastCropNumber}}">{{PC.PastCropName}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div id="sampleChain" class="col-lg-3" ng-show="entry.SoilSamples.length > 1">
+                                <div class="form-group">
+                                    <label class="control-label">Sample Chain</label><br />
+                                    <table id="tblSampleChain" class="table table-condensed table-bordered table-responsive col-lg-11">
+                                        <thead>
+                                            <tr><th>Lab</th><th>Depth</th></tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr ng-repeat="SS in entry.SoilSamples"><td class="edit text-right">{{SS.LabNumber}}</td><td class="edit">{{SS.BeginningDepth}}:{{SS.EndingDepth}}</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </form>
+                    </div>             
+                    <div id="#sampleRecsMiddle">
+                        <form id="frmSampleLinks">
+                            <div id="linkToSample" ng-hide="chkTopSoil" class="well well-sm well-sm col-sm-5 col-md-5 col-lg-6 p-l-10">
+                                <span>Link to Sample</span>
+                                <div class="form-group">
+                                    <label class="control-label">Batch</label>
+                                    <input type="text" id="txtLinkSoilBatch" class="form-control m-l-30" ng-readonly="readonly" ng-model="entry.LinkedSampleBatch" tabindex="21" />
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">Lab</label>
+                                    <input type="text" id="txtLinkSoilLab" class="form-control m-l-30" ng-readonly="readonly" ng-model="entry.LinkedSampleLab" tabindex="22" />
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">Available</label>
+                                    <label id="lblLinkSoilAvailable" ng-readonly="readonly" ng-model="entry.Available" tabindex="23" />
+                                </div>
+                            </div>
+                    <!--<div id="soilSampleLink" class="well well-sm col-sm-5 col-md-5 col-lg-5 m-l-15 p-l-10" ng-show="true">
+                            <span>Soil Sample Link</span>
+                            <div class="form-group">
+                                <label class="control-label">Test #</label>
+                                <select id="cboTestNumber" class="form-control" ng-readonly="readonly"></select>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">Batch</label>
+                                <input type="text" id="txtSoilSampleLinkBatch" class="form-control m-l-30" ng-readonly="readonly" />
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">Lab</label>
+                                <input type="text" id="txtSoilSampleLinkLab" class="form-control m-l-30" ng-readonly="readonly" />
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">Invoice</label>
+                                <input type="text" id="txtSoilSampleLinkInvoice" class="form-control m-l-30" ng-readonly="readonly" />
+                            </div>
+                        </div>-->
+                    </form>
+                </div>               
+                <div id="sampleRecsBottom" class="pull-left clear-left" ng-show="recommendations.length > 0">
+                    <h3>Soil Recommendations</h3>
+                    <form id="frmSampleRecs" name="frmSampleRecs" class="col-lg-12" novalidate>
+                        <span>Rec Type</span><span style="margin-left: 160px;">Crop Type</span><span style="margin-left: 115px;">Yield Goal</span>
+                        <div ng-repeat="Rec in entry.Recommendations">
+                                <input id="acoRecTypes{{$index}}" name="acoRecTypes" class="form-control text-uppercase" auto-complete-Rec="RecTypes" ng-readonly="readonly" ng-disabled="disabled" ng-model="entry.Recommendations[$index].RecTypeName" ng-blur="ValidateRecType($index, 'Rec')" tabindex="{{23 + ($index + 1)}}" />
+                                <input id="acoCropTypes{{$index}}" name="acoCropTypes" class="form-control text-uppercase" auto-complete-Crop="CropTypes" ng-readonly="readonly" ng-disabled="disabled" ng-model="entry.Recommendations[$index].CropTypeName" tabindex="{{23 + ($index + 1) + 1}}" />
+                                <input type="text" id="txtYieldGoal" name="txtYieldGoal" class="form-control text-right" ng-readonly="readonly" ng-model="entry.Recommendations[$index].YieldGoal" ng-pattern="regNumeric" />
+                                <button class="btn btn-sm btn-danger" ng-click="RemoveRec($index)" ng-show="action == 'update' || action == 'add'"><span class="glyphicon glyphicon-remove"></span></button>
+                        </div>
+                        <button class="btn btn-sm btn-success" ng-click="AddRec()" ng-show="action == 'update' || action == 'add'" tabindex="50"><span class="glyphicon glyphicon-plus"></span></button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

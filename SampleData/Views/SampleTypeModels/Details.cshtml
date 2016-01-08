@@ -1,0 +1,26 @@
+﻿@model SampleData.Models.SampleTypeModels
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>SampleTypeModels</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.SampleTypeName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.SampleTypeName)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.SampleTypeNumber }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

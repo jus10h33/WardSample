@@ -1,0 +1,129 @@
+﻿@model IEnumerable<SampleData.Models.SampleModels>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.CustomerNumber)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.InvoiceNumber)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DateReceived)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ResultsFor)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SampleID1)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SampleID2)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SampleID3)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SampleID4)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Reviewed)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Emailed)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Uploaded)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Faxed)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Hold)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.StandardCost)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Status)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.LastModified)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ReviewerID)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.CustomerNumber)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.InvoiceNumber)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.DateReceived)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ResultsFor)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.SampleID1)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.SampleID2)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.SampleID3)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.SampleID4)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Reviewed)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Emailed)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Uploaded)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Faxed)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Hold)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.StandardCost)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Status)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.LastModified)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ReviewerID)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+            @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+            @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+        </td>
+    </tr>
+}
+
+</table>

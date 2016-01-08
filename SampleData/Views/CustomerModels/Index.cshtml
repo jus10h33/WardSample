@@ -1,0 +1,255 @@
+﻿@model IEnumerable<SampleData.Models.CustomerModels>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.LastName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FirstName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Company)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Address1)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Address2)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.City)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.State)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Zip)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Country)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.BillToCompany)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Discount)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ActiveCustomer)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Mailresults)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.MailedCopies)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FaxResults)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.EmailResults)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PostResultsToWeb)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Newsletter)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.WardGuide)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ChristmasCard)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.NamaCust)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SendPDF)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PrintPDFHeaderFooter)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.EPAInfo)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PrintInvNow)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PrintInvLater)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SendInvoice)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SendTextData)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SplitGrowers)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SplitFields)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ExtraInformation)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CustomerStatus)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.LastModified)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.MachineID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.UserID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SampleEntryInformation)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CreatedOn)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ForceStandardSoilReport)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.LastName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.FirstName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Company)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Address1)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Address2)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.City)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.State)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Zip)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Country)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.BillToCompany)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Discount)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ActiveCustomer)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Mailresults)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.MailedCopies)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.FaxResults)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.EmailResults)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PostResultsToWeb)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Newsletter)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.WardGuide)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ChristmasCard)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.NamaCust)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.SendPDF)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PrintPDFHeaderFooter)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.EPAInfo)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PrintInvNow)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PrintInvLater)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.SendInvoice)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.SendTextData)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.SplitGrowers)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.SplitFields)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ExtraInformation)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CustomerStatus)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.LastModified)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.MachineID)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.UserID)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.SampleEntryInformation)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CreatedOn)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ForceStandardSoilReport)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.CustomerNumber }) |
+            @Html.ActionLink("Details", "Details", new { id=item.CustomerNumber }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.CustomerNumber })
+        </td>
+    </tr>
+}
+
+</table>

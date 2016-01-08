@@ -1,0 +1,67 @@
+﻿<!DOCTYPE html>
+<html ng-app="samplesEntry">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <title>@ViewBag.Title</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/angular")
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/sample")
+
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+</head>
+<body ng-controller="defaultCtrl">
+    <div class="navbar navbar-default" role="navigation">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <span class="navbar-brand">WardLab</span>
+        </div>
+    </div>
+    <div id="wrapper">
+        <div class="sidebar-nav">
+            <ul>
+                <li><a href="#" data-target=".customers" class="nav-header" data-toggle="" tabindex="-1">Customers</a></li>
+                <li><a href="#" data-target=".samples" class="nav-header collapsed" data-toggle="" tabindex="-1">Samples <i class=""></i></a></li>
+                <li>
+                    <ul class="samples nav nav-list collapse">
+                        <li><a href="">Entry</a></li>
+                        <li><a href="">Data</a></li>
+                        <li><a href="">Inquiry</a></li>
+                        <li><a href="">Reviewing</a></li>
+                        <li><a href="">Bulk Reviewing</a></li>
+                        <li><a href="">Rerun Management</a></li>
+                        <li><a href="">Batch Edit</a></li>
+                    </ul>
+                </li>
+                <li><a href="#" data-target=".SampleStatus" class="nav-header collapsed" data-toggle="collapse" tabindex="-1">Sample Status <i class=""></i></a></li>
+                <li>
+                    <ul class="SampleStatus nav nav-list collapse">
+                        <li><a href="">Batch Status</a></li>
+                        <li><a href="">Flag Samples By Customer</a></li>
+                    </ul>
+                </li>
+                <li><a href="#" data-target=".reports" class="nav-header collapsed" data-toggle="collapse" tabindex="-1">Reports</a></li>
+                <li><a href="#" data-target=".invoices" class="nav-header collapsed" data-toggle="collapse" tabindex="-1">Invoices</a></li>
+                <li><a href="#" data-target=".taskLists" class="nav-header collapsed" data-toggle="collapse" tabindex="-1">Task Lists</a></li>
+                <li><a href="#" data-target=".tests" class="nav-header collapsed" data-toggle="collapse" tabindex="-1">Tests</a></li>
+                <li><a href="#" data-target=".checkSamples" class="nav-header collapsed" data-toggle="collapse" tabindex="-1">Check Samples</a></li>
+                <li><a href="#" data-target=".tools" class="nav-header collapsed" data-toggle="collapse" tabindex="-1">Tools</a></li>
+                <li><a href="#" data-target=".analyzeBatch" class="nav-header collapsed" data-toggle="collapse" tabindex="-1">Analyze Batch</a></li>
+            </ul>
+        </div>
+        <div class="content clearfix">
+            @RenderBody()
+        </div>
+    </div>
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>
