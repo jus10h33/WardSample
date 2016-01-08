@@ -10,35 +10,35 @@
                             <div class="col-sm-12 col-md-12 col-lg-6 p-r-15">
                                 <div class="form-group">
                                     <label class="control-label">Sample Type:</label>
-                                    <select id="cboSampleType" name="cboSampleType" class="form-control" ng-required="required" ng-model="entry.SampleTypeNumber" ng-change="Change()" ng-disabled="disabledUpdate" @*ng-blur="Validate(entryForm.txtSampleID1, 'txtSampleID1', 'Required field')"*@ tabindex="0" @*ng-options="st.SampleTypeName for st in entry.SampleTypes track by st.SampleTypeNumber"*@>
-                                        <option ng-repeat="st in entry.SampleTypes" value="{{st.SampleTypeNumber}}">{{st.SampleTypeName}}</option>
+                                    <select id="cboSampleType" name="cboSampleType" class="form-control" ng-required="required" ng-model="Sample.SampleTypeNumber" ng-change="Change()" ng-disabled="disabledUpdate" @*ng-blur="Validate(entryForm.txtSampleID1, 'txtSampleID1', 'Required field')"*@ tabindex="0">
+                                        <option ng-repeat="st in SampleTypes" value="{{st.SampleTypeNumber}}">{{st.SampleTypeName}}</option>
                                     </select> 
                                 </div>
                                 <div class="form-group">
                                     <label id="lblCustomerNumber" class="control-label">Customer #:</label>
-                                    <input type="text" id="txtCustomerNumber" name="txtCustomerNumber" class="form-control" ng-required="required" ng-pattern="regNumeric" ng-model="entry.CustomerNumber" ng-disabled="disabled" ng-blur="FindCustomer()" ng-readonly="readonly" tabindex="1" />
+                                    <input type="text" id="txtCustomerNumber" name="txtCustomerNumber" class="form-control" ng-required="required" ng-pattern="regNumeric" ng-model="Sample.CustomerNumber" ng-disabled="disabled" ng-blur="FindCustomer()" ng-readonly="readonly" tabindex="1" />
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label">Grower:</label>
-                                    <input type="text" id="acoGrower" name="acoGrower" class="form-control text-uppercase" ng-required="required" ng-model="entry.Grower" ng-blur="Validate(entryForm.acoGrower, 'acoGrower', 'Required field')" ng-disabled="disabled" ng-readonly="readonly" tabindex="2" />
+                                    <input type="text" id="acoGrower" name="acoGrower" class="form-control text-uppercase" ng-required="required" ng-model="Sample.Grower" ng-blur="Validate(entryForm.acoGrower, 'acoGrower', 'Required field')" ng-disabled="disabled" ng-readonly="readonly" tabindex="2" />
                                 </div>                                
                                 <div class="form-group">
                                     <label class="control-label">Batch Number:</label>
-                                    <input type="text" id="txtBatchNumber" name="txtBatchNumber" class="form-control" ng-required="required" ng-pattern="regBatch" ng-minlength="8" ng-maxlength="8" ng-model="entry.BatchNumber" ng-readonly="readonly" ng-blur="SetDateReported()" tabindex="3" />
+                                    <input type="text" id="txtBatchNumber" name="txtBatchNumber" class="form-control" ng-required="required" ng-pattern="regBatch" ng-minlength="8" ng-maxlength="8" ng-model="Sample.BatchNumber" ng-readonly="readonly" ng-blur="SetDateReported()" tabindex="3" />
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label">Lab Number:</label>
-                                    <input type="text" id="txtLabNumber" name="txtLabNumber" class="form-control" ng-required="required" ng-pattern="regNumeric" ng-model="entry.LabNumber" ng-blur="Validate(entryForm.txtLabNumber, 'txtLabNumber', 'Must be numeric')" ng-readonly="readonly" tabindex="4" />
+                                    <input type="text" id="txtLabNumber" name="txtLabNumber" class="form-control" ng-required="required" ng-pattern="regNumeric" ng-model="Sample.LabNumber" ng-blur="Validate(entryForm.txtLabNumber, 'txtLabNumber', 'Must be numeric')" ng-readonly="readonly" tabindex="4" />
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label">Report Type #:</label>
-                                    <input type="text" id="txtReportTypeNumber" name="txtReportTypeNumber" class="form-control" ng-required="required" ng-pattern="regNumeric" ng-model="entry.ReportTypeNumber" ng-blur="GetReportName()" ng-disabled="disabled" ng-readonly="readonly" tabindex="5" />
-                                    <label id="lblReportName">{{report.ReportName}}</label>
+                                    <input type="text" id="txtReportTypeNumber" name="txtReportTypeNumber" class="form-control" ng-required="required" ng-pattern="regNumeric" ng-model="Sample.ReportTypeNumber" ng-blur="GetReportName()" ng-disabled="disabled" ng-readonly="readonly" tabindex="5" />
+                                    <label id="lblReportName">{{Sample.ReportName}}</label>
                                 </div>                                                                                                                        
                                 <div class="form-group">
                                     <label class="control-label">Date Received:</label>
                                     <div class="input-group date dateReceived" data-provide="datepicker" data-date-format="yyyy-mm-dd" data-date-today-highlight="true" data-date-autoclose="true">
-                                        <input type="text" id="dpkDateReceived" name="dpkDateReceived" class="form-control" ng-required="required" ng-pattern="regDate" ng-model="entry.DateReceived"
+                                        <input type="text" id="dpkDateReceived" name="dpkDateReceived" class="form-control" ng-required="required" ng-pattern="regDate" ng-model="Sample.DateReceived"
                                                ng-blur="ValidateSampleDates()" ng-disabled="disabled" ng-readonly="readonly" tabindex="6" />
                                         <div class="input-group-addon">
                                             <span class="glyphicon glyphicon-th"></span>
@@ -48,7 +48,7 @@
                                 <div class="form-group">
                                     <label class="control-label">Date Reported:</label>
                                     <div class="input-group date" data-provide="datepicker" data-date-format="yyyy-mm-dd" data-date-today-highlight="true" data-date-autoclose="true">
-                                        <input type="text" id="dpkDateReported" name="dpkDateReported" class="form-control" ng-required="required" ng-pattern="regDate" ng-model="entry.DateReported" ng-blur="ValidateSampleDates()" ng-disabled="disabledUpdate || disabled" ng-readonly="readonly" tabindex="7" />
+                                        <input type="text" id="dpkDateReported" name="dpkDateReported" class="form-control" ng-required="required" ng-pattern="regDate" ng-model="Sample.DateReported" ng-blur="ValidateSampleDates()" ng-disabled="disabledUpdate || disabled" ng-readonly="readonly" tabindex="7" />
                                         <div class="input-group-addon">
                                             <span class="glyphicon glyphicon-th"></span>
                                         </div>
@@ -56,7 +56,7 @@
                                 </div> 
                                 <div class="form-group">
                                     <label class="control-label">Cost Type:</label>
-                                    <select id="cboCostType" name="cboCostType" class="form-control" ng-required="required" ng-model="entry.CostType" ng-blur="Validate(entryForm.cboCostType, 'cboCostType', 'Required field')" ng-disabled="disabled" ng-readonly="readonly" tabindex="8">
+                                    <select id="cboCostTypeNumber" name="cboCostTypeNumber" class="form-control" ng-required="required" ng-model="Sample.CostTypeNumber" ng-blur="Validate(entryForm.cboCostTypeNumber, 'cboCostType', 'Required field')" ng-disabled="disabled" ng-readonly="readonly" tabindex="8">
                                         <option value="0">No Cost</option>
                                         <option value="1">Standard</option>
                                         <option value="2">Volume/Grid</option>
@@ -66,41 +66,41 @@
                             <div class="col-sm-12 col-md-12 col-lg-6 p-r-15">                                
                                 <!--Start of Dynamic labels-->
                                 <div class="form-group">
-                                    <label class="control-label">{{entry.SampleColumns[0].Label}}:</label>
-                                    <input type="text" id="{{entry.SampleColumns[0].ID}}" name="{{entry.SampleColumns[0].ID}}" class="form-control text-uppercase" ng-required="required" ng-model="entry.SampleID1" ng-blur="Validate(entryForm.txtSampleID1, 'txtSampleID1', 'Required field')" ng-disabled="disabled" ng-readonly="readonly" tabindex="9" />
+                                    <label class="control-label">{{SampleColumns[0].Label}}:</label>
+                                    <input type="text" id="{{SampleColumns[0].ID}}" name="{{SampleColumns[0].ID}}" class="form-control text-uppercase" ng-required="required" ng-model="Sample.SampleID1" ng-blur="Validate(entryForm.txtSampleID1, 'txtSampleID1', 'Required field')" ng-disabled="disabled" ng-readonly="readonly" tabindex="9" />
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label">{{entry.SampleColumns[1].Label}}:</label>
-                                    <input type="text" id="{{entry.SampleColumns[1].ID}}" name="{{entry.SampleColumns[1].ID}}" class="form-control text-uppercase" ng-required="required" ng-blur="Validate(entryForm.txtSampleID2, 'txtSampleID2', 'Required field')" ng-model="entry.SampleID2" ng-disabled="disabled" ng-readonly="readonly" tabindex="10" />
+                                    <label class="control-label">{{SampleColumns[1].Label}}:</label>
+                                    <input type="text" id="{{SampleColumns[1].ID}}" name="{{SampleColumns[1].ID}}" class="form-control text-uppercase" ng-required="required" ng-blur="Validate(entryForm.txtSampleID2, 'txtSampleID2', 'Required field')" ng-model="Sample.SampleID2" ng-disabled="disabled" ng-readonly="readonly" tabindex="10" />
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label">{{entry.SampleColumns[2].Label}}:</label>
-                                    <input type="text" id="{{entry.SampleColumns[2].ID}}" name="{{entry.SampleColumns[2].ID}}" class="form-control text-uppercase" ng-model="entry.SampleID3" ng-disabled="disabled" ng-readonly="readonly" tabindex="11" />
+                                    <label class="control-label">{{SampleColumns[2].Label}}:</label>
+                                    <input type="text" id="{{SampleColumns[2].ID}}" name="{{SampleColumns[2].ID}}" class="form-control text-uppercase" ng-model="Sample.SampleID3" ng-disabled="disabled" ng-readonly="readonly" tabindex="11" />
                                 </div>
-                                <div ng-hide="{{entry.SampleColumns[0].SampleTypeNumber == 12}}">
+                                <div ng-hide="{{SampleColumns[0].SampleTypeNumber == 12}}">
                                     <div class="form-group">
-                                        <label class="control-label">{{entry.SampleColumns[3].Label}}:</label>
-                                        <input type="text" id="{{entry.SampleColumns[3].ID}}" name="{{entry.SampleColumns[3].ID}}" class="form-control text-uppercase" ng-model="entry.SampleID4" ng-disabled="disabled" ng-readonly="readonly" tabindex="12" />
+                                        <label class="control-label">{{SampleColumns[3].Label}}:</label>
+                                        <input type="text" id="{{SampleColumns[3].ID}}" name="{{SampleColumns[3].ID}}" class="form-control text-uppercase" ng-model="Sample.SampleID4" ng-disabled="disabled" ng-readonly="readonly" tabindex="12" />
                                     </div>
-                                    <div class="form-group" ng-hide="{{entry.SampleColumns[0].SampleTypeNumber == 12}}">
-                                        <label class="control-label">{{entry.SampleColumns[4].Label}}:</label>
-                                        <input type="text" id="{{entry.SampleColumns[4].ID}}" name="{{entry.SampleColumns[4].ID}}" class="form-control text-uppercase" ng-model="entry.SampleID5" ng-disabled="disabled" ng-readonly="readonly" tabindex="13" />
+                                    <div class="form-group" ng-hide="{{SampleColumns[0].SampleTypeNumber == 12}}">
+                                        <label class="control-label">{{SampleColumns[4].Label}}:</label>
+                                        <input type="text" id="{{SampleColumns[4].ID}}" name="{{SampleColumns[4].ID}}" class="form-control text-uppercase" ng-model="Sample.SampleID5" ng-disabled="disabled" ng-readonly="readonly" tabindex="13" />
                                     </div>
                                 </div><!-- Date in and Date out appear when sample type Resin is selected -->
-                                <div ng-show="{{entry.SampleColumns[0].SampleTypeNumber == 12}}">
+                                <div ng-show="{{SampleColumns[0].SampleTypeNumber == 12}}">
                                     <div class="form-group">
-                                        <label class="control-label">{{entry.SampleColumns[3].Label}}:</label>
+                                        <label class="control-label">{{SampleColumns[3].Label}}:</label>
                                         <div class="input-group date" data-provide="datepicker" data-date-format="yyyy-mm-dd" data-date-today-highlight="true" data-date-autoclose="true">
-                                            <input type="text" id="{{entry.SampleColumns[3].ID}}" name="{{entry.SampleColumns[3].ID}}" class="form-control" @*ng-required="required" ng-pattern="regDate"*@ ng-model="entry.SampleID4" ng-blur="ValidateSampleDates()" ng-disabled="disabled" ng-readonly="readonly" tabindex="14" />
+                                            <input type="text" id="{{SampleColumns[3].ID}}" name="{{SampleColumns[3].ID}}" class="form-control" @*ng-required="required" ng-pattern="regDate"*@ ng-model="Sample.SampleID4" ng-blur="ValidateSampleDates()" ng-disabled="disabled" ng-readonly="readonly" tabindex="14" />
                                             <div class="input-group-addon">
                                                 <span class="glyphicon glyphicon-th"></span>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="control-label">{{entry.SampleColumns[4].Label}}:</label>
+                                        <label class="control-label">{{SampleColumns[4].Label}}:</label>
                                         <div class="input-group date" data-provide="datepicker" data-date-format="yyyy-mm-dd" data-date-today-highlight="true" data-date-autoclose="true">
-                                            <input type="text" id="{{entry.SampleColumns[4].ID}}" name="{{entry.SampleColumns[4].ID}}" class="form-control"@* ng-required="required" ng-pattern="regDate"*@ ng-model="entry.SampleID5" ng-blur="ValidateSampleDates()" ng-disabled="disabled" ng-readonly="readonly" tabindex="15" />
+                                            <input type="text" id="{{SampleColumns[4].ID}}" name="{{SampleColumns[4].ID}}" class="form-control"@* ng-required="required" ng-pattern="regDate"*@ ng-model="Sample.SampleID5" ng-blur="ValidateSampleDates()" ng-disabled="disabled" ng-readonly="readonly" tabindex="15" />
                                             <div class="input-group-addon">
                                                 <span class="glyphicon glyphicon-th"></span>
                                             </div>
@@ -109,16 +109,16 @@
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label">Invoice Number</label>
-                                    <label id="lblInvoiceNumber" name="lblInvoiceNumber" class="" ng-model="entry.invoicenumber">{{invoice.InvoiceNumber}}</label>
+                                    <label id="lblInvoiceNumber" name="lblInvoiceNumber" class="" ng-model="Sample.InvoiceNumber">{{Sample.InvoiceNumber}}</label>
                                 </div>
                                 <!-- End of Dynamic labels and inputs-->                                                                                     
                                 <div class="form-group">
                                     <label>Customer Information:</label>
                                     <div id="customerInfo" class="well col-sm-6 col-md-7 col-lg-7 p-15 m-r-5 pull-right">
-                                        <i><label id="lblCustomerName" class="" ng-show="entry.Name">{{entry.Name}}</label></i>
-                                        <i><label id="lblCustomerCompany" class="" ng-show="entry.Company">{{entry.Company}}</label></i>
-                                        <i><label id="lblCustomerAddress" class="" ng-show="entry.Address1">{{entry.Address1}}</label></i>
-                                        <i><label id="lblCustomerCityStZip" class="" ng-show="entry.CityStZip">{{entry.CityStZip}}</label></i>
+                                        <i><label id="lblCustomerName" class="" ng-show="Customer.Name">{{Customer.Name}}</label></i>
+                                        <i><label id="lblCustomerCompany" class="" ng-show="Customer.Company">{{Customer.Company}}</label></i>
+                                        <i><label id="lblCustomerAddress" class="" ng-show="Customer.Address1">{{Customer.Address1}}</label></i>
+                                        <i><label id="lblCustomerCityStZip" class="" ng-show="Customer.CityStZip">{{Customer.CityStZip}}</label></i>
                                     </div>
                                 </div>
                             </div>                            

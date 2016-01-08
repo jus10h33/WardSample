@@ -27,6 +27,8 @@ namespace SampleData.Models
         public int InvoiceNumber { get; set; }
         [Required]
         public DateTime DateReceived { get; set; }
+        [Required]
+        public DateTime DateReported { get; set; }
         public int ReportTypeNumber { get; set; }
         public double ReportCost { get; set; }
         [Required]
@@ -42,7 +44,7 @@ namespace SampleData.Models
         public int Uploaded { get; set; }
         public int Faxed { get; set; }
         public int Hold { get; set; }
-        public int StandardCost { get; set; }
+        public int CostTypeNumber { get; set; }
         public int Status { get; set; }
         public DateTime LastModified { get; set; }
         public int ReviewerID { get; set; }
