@@ -16,7 +16,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label id="lblCustomerNumber" class="control-label">Customer #:</label>
-                                    <input type="text" id="txtCustomerNumber" name="txtCustomerNumber" class="form-control" ng-required="required" ng-pattern="regNumeric" ng-model="Sample.CustomerNumber" ng-disabled="disabled" ng-blur="FindCustomer()" ng-readonly="readonly" tabindex="1" />
+                                    <input type="text" id="txtCustomerNumber" name="txtCustomerNumber" class="form-control" ng-required="required" ng-pattern="regNumeric" ng-model="Sample.CustomerNumber" ng-disabled="disabled" ng-readonly="readonly" ng-blur="FindCustomer()" tabindex="1" />
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label">Grower:</label>
@@ -24,15 +24,15 @@
                                 </div>                                
                                 <div class="form-group">
                                     <label class="control-label">Batch Number:</label>
-                                    <input type="text" id="txtBatchNumber" name="txtBatchNumber" class="form-control" ng-required="required" ng-pattern="regBatch" ng-minlength="8" ng-maxlength="8" ng-model="Sample.BatchNumber" ng-readonly="readonly" ng-blur="SetDateReported()" tabindex="3" />
+                                    <input type="text" id="txtBatchNumber" name="txtBatchNumber" class="form-control" ng-required="required" ng-disabled="disabled" ng-readonly="readonly" ng-pattern="regBatch" ng-minlength="8" ng-maxlength="8" ng-model="Sample.BatchNumber" ng-blur="SetDateReported()" tabindex="3" />
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label">Lab Number:</label>
-                                    <input type="text" id="txtLabNumber" name="txtLabNumber" class="form-control" ng-required="required" ng-pattern="regNumeric" ng-model="Sample.LabNumber" ng-blur="Validate(entryForm.txtLabNumber, 'txtLabNumber', 'Must be numeric')" ng-readonly="readonly" tabindex="4" />
+                                    <input type="text" id="txtLabNumber" name="txtLabNumber" class="form-control" ng-required="required" ng-disabled="disabled" ng-readonly="readonly" ng-pattern="regNumeric" ng-model="Sample.LabNumber" ng-blur="Validate(entryForm.txtLabNumber, 'txtLabNumber', 'Must be numeric')" tabindex="4" />
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label">Report Type #:</label>
-                                    <input type="text" id="txtReportTypeNumber" name="txtReportTypeNumber" class="form-control" ng-required="required" ng-pattern="regNumeric" ng-model="Sample.ReportTypeNumber" ng-blur="GetReportName()" ng-disabled="disabled" ng-readonly="readonly" tabindex="5" />
+                                    <input type="text" id="txtReportTypeNumber" name="txtReportTypeNumber" class="form-control" ng-required="required" ng-disabled="disabled" ng-readonly="readonly" ng-pattern="regNumeric" ng-model="Sample.ReportTypeNumber" ng-blur="GetReportName()" tabindex="5" />
                                     <label id="lblReportName">{{Sample.ReportName}}</label>
                                 </div>                                                                                                                        
                                 <div class="form-group">
@@ -67,11 +67,11 @@
                                 <!--Start of Dynamic labels-->
                                 <div class="form-group">
                                     <label class="control-label">{{SampleColumns[0].Label}}:</label>
-                                    <input type="text" id="{{SampleColumns[0].ID}}" name="{{SampleColumns[0].ID}}" class="form-control text-uppercase" ng-required="required" ng-model="Sample.SampleID1" ng-blur="Validate(entryForm.txtSampleID1, 'txtSampleID1', 'Required field')" ng-disabled="disabled" ng-readonly="readonly" tabindex="9" />
+                                    <input type="text" id="{{SampleColumns[0].ID}}" name="{{SampleColumns[0].ID}}" class="form-control text-uppercase" ng-required="required" ng-disabled="disabled" ng-readonly="readonly" ng-model="Sample.SampleID1" ng-blur="Validate(entryForm.txtSampleID1, 'txtSampleID1', 'Required field')" tabindex="9" />
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label">{{SampleColumns[1].Label}}:</label>
-                                    <input type="text" id="{{SampleColumns[1].ID}}" name="{{SampleColumns[1].ID}}" class="form-control text-uppercase" ng-required="required" ng-blur="Validate(entryForm.txtSampleID2, 'txtSampleID2', 'Required field')" ng-model="Sample.SampleID2" ng-disabled="disabled" ng-readonly="readonly" tabindex="10" />
+                                    <input type="text" id="{{SampleColumns[1].ID}}" name="{{SampleColumns[1].ID}}" class="form-control text-uppercase" ng-required="required" ng-disabled="disabled" ng-readonly="readonly" ng-blur="Validate(entryForm.txtSampleID2, 'txtSampleID2', 'Required field')" ng-model="Sample.SampleID2" tabindex="10" />
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label">{{SampleColumns[2].Label}}:</label>

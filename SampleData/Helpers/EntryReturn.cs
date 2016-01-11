@@ -11,8 +11,7 @@ namespace SampleData.Helpers
     {        
         public SampleViewModel Sample { get; set; }
         public CustomerViewModel Customer { get; set; }
-        public List<SampleTypeModels> SampleTypes { get; set; }
-        public List<string> Growers { get; set; }        
+        public List<SampleTypeModels> SampleTypes { get; set; }       
         public List<SampleColumns> SampleColumns { get; set;}
         public List<Recommendations> Recommendations { get; set; }
         public SoilSampleModels SoilSample { get; set; }

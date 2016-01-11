@@ -32,7 +32,6 @@ namespace SampleData.Controllers
             return View();
         }
 
-
         #region "Helper Functions"
         public JsonResult Load(int sampleTypeNumber)
         {
@@ -49,25 +48,35 @@ namespace SampleData.Controllers
                 {
                     sample = GetSample(stn);
                 }
-                entry.Sample = SetSampleValues(sample);
+                entry.Sample = CreateSampleView(sample);
                 entry.Customer = new CustomerViewModel();
                 CustomerModels customer = GetCustomer(entry.Sample.CustomerNumber);
+                if (customer != null)
+                {
+                    entry.Customer.Address1 = customer.Address1;
+                    entry.Customer.Company = customer.Company;
+                    entry.Customer.Name = customer.FirstName + " " + customer.LastName;
+                    entry.Customer.CityStZip = customer.City + ", " + customer.State + " " + customer.Zip.ToString();
+                    entry.Customer.SampleEntryInformation = customer.SampleEntryInformation;
+                }
                 
-                entry.Customer.Address1 = customer.Address1;
-                Debug.Print("FirstName2: " + entry.Customer.Address1);
-                entry.Customer.Company = customer.Company;
-                entry.Customer.Name = customer.FirstName + " " + customer.LastName;
-                entry.Customer.CityStZip = customer.City + ", " + customer.State + " " + customer.Zip.ToString();
-                entry.Customer.SampleEntryInformation = customer.SampleEntryInformation;
-                entry.Growers = GetGrowers(entry.Sample.CustomerNumber, entry.Sample.SampleTypeNumber);
-                //InvoiceModels invoice = GetInvoice(entry.Sample.CustomerNumber, entry.Sample.BatchNumber, entry.Sample.SampleTypeNumber);
-                //Debug.Print("invoicenumber: " + invoice.InvoiceNumber);
-                //entry.Sample.InvoiceNumber = invoice.InvoiceNumber;
-                //entry.Sample.DateReported = invoice.DateReported;
-                //ReportModels report = GetReport(entry.Sample.SampleTypeNumber, entry.Sample.ReportTypeNumber);
-                //entry.Sample.ReportTypeNumber = report.ReportTypeNumber;
-                //entry.Sample.ReportCost = GetReportCost(entry.Sample.SampleTypeNumber, entry.Sample.CostTypeNumber, entry.Sample.ReportTypeNumber);
-                //entry.Sample.ReportName = GetReportName(entry.Sample.SampleTypeNumber, entry.Sample.ReportTypeNumber);
+                entry.Customer.Growers = GetGrowers(entry.Sample.CustomerNumber, entry.Sample.SampleTypeNumber);
+
+                InvoiceModels invoice = GetInvoice(entry.Sample.CustomerNumber, entry.Sample.BatchNumber, entry.Sample.SampleTypeNumber);
+                if (invoice != null)
+                {
+                    entry.Sample.InvoiceNumber = invoice.InvoiceNumber;
+                    entry.Sample.DateReported = invoice.DateReported;
+                }
+                
+                ReportModels report = GetReport(entry.Sample.SampleTypeNumber, entry.Sample.ReportTypeNumber);
+                if (report != null)
+                {
+                    entry.Sample.ReportTypeNumber = report.ReportTypeNumber;
+                    entry.Sample.ReportCost = GetReportCost(entry.Sample.SampleTypeNumber, entry.Sample.CostTypeNumber, entry.Sample.ReportTypeNumber);
+                    entry.Sample.ReportName = GetReportName(entry.Sample.SampleTypeNumber, entry.Sample.ReportTypeNumber);
+                }
+                
 
                 // Build Sample Chain -Get first soil sample
                 entry.SoilSample = GetSoilSample(sample.BatchNumber, sample.LabNumber);
@@ -128,12 +137,18 @@ namespace SampleData.Controllers
         }
         private SampleModels GetSample(int stn, int bn = 0, int ln = 0)
         {
-            if (bn == 0 || ln == 0)
+            if (bn == 0 && ln == 0)
             {
                 return (from s in db.Samples
                         where s.SampleTypeNumber == stn
                         orderby s.BatchNumber descending, s.LabNumber descending
                         select s).FirstOrDefault();
+            }
+            else if ( ln != 0)
+            {
+                return (from s in db.Samples
+                        where s.SampleTypeNumber == stn && s.LabNumber >= ln
+                        select s).SingleOrDefault();
             }
             else
             {
@@ -142,10 +157,9 @@ namespace SampleData.Controllers
                         select s).SingleOrDefault();
             }
         }
-        private SampleViewModel SetSampleValues(SampleModels sample)
+        private SampleViewModel CreateSampleView(SampleModels sample)
         {
-            SampleViewModel sampleView = new SampleViewModel();
-            
+            SampleViewModel sampleView = new SampleViewModel();            
             sampleView.SampleTypeNumber = sample.SampleTypeNumber;
             sampleView.CustomerNumber = sample.CustomerNumber;
             sampleView.BatchNumber = sample.BatchNumber;
@@ -162,8 +176,28 @@ namespace SampleData.Controllers
             sampleView.SampleID5 = sample.SampleID5;
             sampleView.InvoiceNumber = sample.InvoiceNumber;
             sampleView.CostTypeNumber = sample.CostTypeNumber;
-            Debug.Print("customer number: " + sampleView.CustomerNumber);
             return sampleView;
+        }
+        private SampleModels CreateSample(SampleViewModel sampleView)
+        {
+            SampleModels sample = new SampleModels();
+            sample.SampleTypeNumber = sampleView.SampleTypeNumber;
+            sample.CustomerNumber = sampleView.CustomerNumber;
+            sample.BatchNumber = sampleView.BatchNumber;
+            sample.LabNumber = sampleView.LabNumber;
+            sample.Grower = sampleView.Grower;
+            sample.ReportTypeNumber = sampleView.ReportTypeNumber;
+            sample.ReportCost = sampleView.ReportCost;
+            sample.DateReceived = sampleView.DateReceived;
+            sample.DateReported = sampleView.DateReported;
+            sample.SampleID1 = sampleView.SampleID1;
+            sample.SampleID2 = sampleView.SampleID2;
+            sample.SampleID3 = sampleView.SampleID3;
+            sample.SampleID4 = sampleView.SampleID4;
+            sample.SampleID5 = sampleView.SampleID5;
+            sample.InvoiceNumber = sampleView.InvoiceNumber;
+            sample.CostTypeNumber = sampleView.CostTypeNumber;
+            return sample;
         }
         private SoilSampleModels GetSoilSample(int bn, int ln)
         {
@@ -223,29 +257,28 @@ namespace SampleData.Controllers
             }
             return recommendations;
         }
-        [HttpPost]
-        public JsonResult FindCustomer(int customerNumber)
+        public JsonResult FindCustomer(int cn, int stn)
         {
             CustomerModels customer = new CustomerModels();
             
-            if (CustomerExist(customerNumber)) {
-                customer = GetCustomer(customerNumber);
+            if (CustomerExist(cn))
+            {
+                customer = GetCustomer(cn);
 
                 CustomerViewModel customerView = new CustomerViewModel();
-
                 customerView.Name = customer.FirstName + " " + customer.LastName;
                 customerView.Company = customer.Company;
                 customerView.Address1 = customer.Address1;
                 customerView.CityStZip = customer.City + ", " + customer.State + " " + customer.Zip;
                 customerView.SampleEntryInformation = customer.SampleEntryInformation;
+                customerView.Growers = GetGrowers(cn, stn);
                 return Json(customerView, JsonRequestBehavior.AllowGet);                
             }
             else
             {
-                return Json("Customer Not Found", JsonRequestBehavior.AllowGet);
+                return Json(null, JsonRequestBehavior.AllowGet);
             }
         }        
-        [HttpPost]
         public JsonResult GetColumns(int stn)
         {       
             return Json(GetSampleColumns(stn), JsonRequestBehavior.AllowGet);
@@ -457,8 +490,7 @@ namespace SampleData.Controllers
         {
             CustomerModels c = (from cust in db.Customers
                                 where cust.CustomerNumber == cn
-                                select cust).SingleOrDefault();
-            Debug.Print("FirstName: " + c.FirstName);        
+                                select cust).SingleOrDefault();     
             return c;
         }
         private bool CustomerExist(int cn)
@@ -505,24 +537,27 @@ namespace SampleData.Controllers
         #endregion
         #region "Add Sample"
         [HttpPost]
-        public JsonResult AddSample(SampleModels sample, SoilSampleModels soilSample, List<SoilSampleRecModels> sampleRecs = null)
+        public JsonResult AddSample(SampleViewModel sampleView, SoilSampleModels soilSample, List<SoilSampleRecModels> sampleRecs = null)
         {
             EntryReturn entry = new EntryReturn();
             SampleResult sr = new SampleResult();
-            sr = ValidateSample(sample);
-            if (sr.ValidSample)
+            sr = ValidateSample(sampleView);
+            if (!SampleExist(sampleView.SampleTypeNumber, sampleView.BatchNumber, sampleView.LabNumber) && sr.ValidSample)
             {
-                sample.LabNumber = GetLabNumber(sample.SampleTypeNumber, sample.BatchNumber);
-                soilSample.LabNumber = sample.LabNumber;
-                sample.ReportCost = GetReportCost(sample.SampleTypeNumber, sample.ReportTypeNumber, sample.CostTypeNumber);
-                InvoiceModels invoice = GetInvoice(sample.CustomerNumber, sample.BatchNumber, sample.SampleTypeNumber);
+                SampleModels newSample = new SampleModels();
+                newSample = CreateSample(sampleView);
+                newSample.LabNumber = GetLabNumber(newSample.SampleTypeNumber, newSample.BatchNumber);
+                soilSample.LabNumber = newSample.LabNumber;
+                newSample.ReportCost = GetReportCost(newSample.SampleTypeNumber, newSample.ReportTypeNumber, newSample.CostTypeNumber);
+                InvoiceModels invoice = GetInvoice(newSample.CustomerNumber, newSample.BatchNumber, newSample.SampleTypeNumber);
                 if (invoice == null)
                 {
-                    InvoiceModels newInvoice = CreateInvoice(sample);
+                    InvoiceModels newInvoice = CreateInvoice(newSample);
                     if (newInvoice != null)
                     {
                         db.Invoices.Add(newInvoice);
-                        //sample.InvoiceNumber = newInvoice.InvoiceNumber;
+                        newSample.InvoiceNumber = newInvoice.InvoiceNumber;
+                        newSample.DateReported = newInvoice.DateReported;
                     }
                     else
                     {
@@ -534,8 +569,10 @@ namespace SampleData.Controllers
                 else
                 {
                     Debug.Print("Invoice already exists. Setting invoice....");
+                    newSample.InvoiceNumber = invoice.InvoiceNumber;
+                    newSample.DateReported = invoice.DateReported;
                 }
-
+                var errors = ModelState.Values.SelectMany(v => v.Errors);
                 if (ModelState.IsValid && sr.ValidInvoice)
                 {
                     // Add soilsample data and sampleRecs
@@ -551,16 +588,17 @@ namespace SampleData.Controllers
                     }
 
 
-                    sample = ConvertToUpperCase(sample);
-                    db.Samples.Add(sample);
+                    newSample = ConvertToUpperCase(newSample);
+                    db.Samples.Add(newSample);
                     db.SaveChanges();
+                    Debug.Print("Sample Added");
                     return Json(entry, JsonRequestBehavior.AllowGet);
                 }
                 else
                 {
                     if (!sr.ValidInvoice)
                     {
-                        Debug.Print("*******************Hit !sr.ValidInvoice*****************");
+                        Debug.Print("Invoice invalid");
                     }
                     else
                     {
@@ -574,7 +612,7 @@ namespace SampleData.Controllers
         #endregion
         #region "Update Sample"
         [HttpPost]
-        public JsonResult UpdateSample(SampleModels sample, SoilSampleModels soilSample, List<SoilSampleRecModels> sampleRecs)
+        public JsonResult UpdateSample(SampleViewModel sampleView, SoilSampleModels soilSample, List<SoilSampleRecModels> sampleRecs)
         {
             Debug.Print("Starting sample update.....");
             
@@ -583,11 +621,13 @@ namespace SampleData.Controllers
             entry.SampleTypes = db.SampleTypes.ToList();
            
             SampleModels oldSample = (from s in db.Samples
-                                      where s.SampleTypeNumber == sample.SampleTypeNumber && s.BatchNumber == sample.BatchNumber && s.LabNumber == sample.LabNumber
+                                      where s.SampleTypeNumber == sampleView.SampleTypeNumber && s.BatchNumber == sampleView.BatchNumber && s.LabNumber == sampleView.LabNumber
                                       select s).SingleOrDefault();
-            sr = ValidateSample(sample);
+            sr = ValidateSample(sampleView);
             if (sr.ValidSample)
             {  // need to get new or existing invoice is batch or customer numbers change
+                SampleModels sample = new SampleModels();
+                sample = CreateSample(sampleView);
                 InvoiceModels invoice = new InvoiceModels();
                 if (oldSample.BatchNumber != sample.BatchNumber)
                 {
@@ -625,7 +665,7 @@ namespace SampleData.Controllers
                         oldSample = ConvertToUpperCase(oldSample);
                         db.Entry(oldSample).State = EntityState.Modified;
                         // Add soilsample data and sampleRecs
-                        SoilSampleModels ssample = db.SoilSamples.Find(sample.BatchNumber, sample.LabNumber); // Do I need to find it first
+                        SoilSampleModels ssample = db.SoilSamples.Find(sample.BatchNumber, sample.LabNumber); // Do I need to find it first?
                         db.SoilSamples.Remove(ssample);
                         db.SoilSamples.Add(soilSample);
                         
@@ -704,7 +744,7 @@ namespace SampleData.Controllers
         }
         #endregion
         #region "Validate Sample"
-        public SampleResult ValidateSample(SampleModels sample)
+        public SampleResult ValidateSample(SampleViewModel sample)
         {
             SampleResult sr = new SampleResult();
             sr.ValidSample = true;
@@ -732,10 +772,14 @@ namespace SampleData.Controllers
             }
 
             //Check if Sample exists
-            if (sr.ValidSample)
-            {
-                SampleExist(sample.SampleTypeNumber, sample.BatchNumber, sample.LabNumber);
-            }
+            //if (sr.ValidSample)
+            //{
+            //    if (!SampleExist(sample.SampleTypeNumber, sample.BatchNumber, sample.LabNumber))
+            //    {
+            //        sr.ValidSample = false;
+            //        sbMessage.AppendLine("Sample already exists");
+            //    }
+            //}
 
             //ReportTypeNumber            
             if (Validator.isNumeric(sample.ReportTypeNumber.ToString()))

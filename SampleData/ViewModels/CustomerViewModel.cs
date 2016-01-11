@@ -12,5 +12,6 @@ namespace SampleData.ViewModels
         public string Address1 { get; set; }
         public string CityStZip { get; set; }
         public string SampleEntryInformation { get; set; }
+        public List<string> Growers { get; set; }
     }
 }
