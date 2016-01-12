@@ -19,7 +19,8 @@ namespace SampleData.Controllers
     public class SampleModelsController : Controller
     {
         private WardDBContext db = new WardDBContext();
-        
+        private SampleResult sr = new SampleResult();
+
         // GET: SampleModels
         public ActionResult Index()
         {
@@ -76,8 +77,9 @@ namespace SampleData.Controllers
                     entry.Sample.ReportCost = GetReportCost(entry.Sample.SampleTypeNumber, entry.Sample.CostTypeNumber, entry.Sample.ReportTypeNumber);
                     entry.Sample.ReportName = GetReportName(entry.Sample.SampleTypeNumber, entry.Sample.ReportTypeNumber);
                 }
-                
 
+                entry.PastCrops = GetPastCrops();
+                entry.SampleColumns = GetSampleColumns(entry.Sample.SampleTypeNumber);
                 // Build Sample Chain -Get first soil sample
                 entry.SoilSample = GetSoilSample(sample.BatchNumber, sample.LabNumber);
                 // Check in sample is linked - if so, get linked samples
@@ -97,7 +99,6 @@ namespace SampleData.Controllers
                                              orderby ss.BeginningDepth ascending
                                              select ss).ToList();
                     }
-                    entry.PastCrops = GetPastCrops();
                     entry.Sample.PastCropName = (from pc in entry.PastCrops
                                                  where pc.PastCropNumber == entry.SoilSample.PastCropNumber
                                                  select pc.PastCropName).SingleOrDefault();
@@ -124,9 +125,8 @@ namespace SampleData.Controllers
                     {
                         entry.Recommendations = GetSampleRecommendations(entry.Sample.SampleTypeNumber, entry.Sample.BatchNumber, entry.Sample.LabNumber, soilRecTypes, soilRecCrops);
                     }
-                }              
-
-                entry.SampleColumns = GetSampleColumns(entry.Sample.SampleTypeNumber);
+                }
+                entry.Messages = sr.Message;
                 return entry;
             }
             catch (Exception e)
@@ -177,27 +177,6 @@ namespace SampleData.Controllers
             sampleView.InvoiceNumber = sample.InvoiceNumber;
             sampleView.CostTypeNumber = sample.CostTypeNumber;
             return sampleView;
-        }
-        private SampleModels CreateSample(SampleViewModel sampleView)
-        {
-            SampleModels sample = new SampleModels();
-            sample.SampleTypeNumber = sampleView.SampleTypeNumber;
-            sample.CustomerNumber = sampleView.CustomerNumber;
-            sample.BatchNumber = sampleView.BatchNumber;
-            sample.LabNumber = sampleView.LabNumber;
-            sample.Grower = sampleView.Grower;
-            sample.ReportTypeNumber = sampleView.ReportTypeNumber;
-            sample.ReportCost = sampleView.ReportCost;
-            sample.DateReceived = sampleView.DateReceived;
-            sample.DateReported = sampleView.DateReported;
-            sample.SampleID1 = sampleView.SampleID1;
-            sample.SampleID2 = sampleView.SampleID2;
-            sample.SampleID3 = sampleView.SampleID3;
-            sample.SampleID4 = sampleView.SampleID4;
-            sample.SampleID5 = sampleView.SampleID5;
-            sample.InvoiceNumber = sampleView.InvoiceNumber;
-            sample.CostTypeNumber = sampleView.CostTypeNumber;
-            return sample;
         }
         private SoilSampleModels GetSoilSample(int bn, int ln)
         {
@@ -540,13 +519,25 @@ namespace SampleData.Controllers
         public JsonResult AddSample(SampleViewModel sampleView, SoilSampleModels soilSample, List<SoilSampleRecModels> sampleRecs = null)
         {
             EntryReturn entry = new EntryReturn();
-            SampleResult sr = new SampleResult();
-            sr = ValidateSample(sampleView);
+            ValidateSample(sampleView);
             if (!SampleExist(sampleView.SampleTypeNumber, sampleView.BatchNumber, sampleView.LabNumber) && sr.ValidSample)
             {
                 SampleModels newSample = new SampleModels();
-                newSample = CreateSample(sampleView);
-                newSample.LabNumber = GetLabNumber(newSample.SampleTypeNumber, newSample.BatchNumber);
+
+                newSample.SampleTypeNumber = sampleView.SampleTypeNumber;
+                newSample.CustomerNumber = sampleView.CustomerNumber;
+                newSample.Grower = sampleView.Grower;
+                newSample.BatchNumber = sampleView.BatchNumber;
+                newSample.ReportTypeNumber = sampleView.ReportTypeNumber;
+                newSample.DateReceived = sampleView.DateReceived;
+                newSample.CostTypeNumber = sampleView.CostTypeNumber;
+                newSample.SampleID1 = sampleView.SampleID1;
+                newSample.SampleID2 = sampleView.SampleID2;
+                newSample.SampleID3 = sampleView.SampleID3;
+                newSample.SampleID4 = sampleView.SampleID4;
+                newSample.SampleID5 = sampleView.SampleID5;
+
+                newSample.LabNumber = GetLabNumber(sampleView.SampleTypeNumber, sampleView.BatchNumber);
                 soilSample.LabNumber = newSample.LabNumber;
                 newSample.ReportCost = GetReportCost(newSample.SampleTypeNumber, newSample.ReportTypeNumber, newSample.CostTypeNumber);
                 InvoiceModels invoice = GetInvoice(newSample.CustomerNumber, newSample.BatchNumber, newSample.SampleTypeNumber);
@@ -562,119 +553,104 @@ namespace SampleData.Controllers
                     else
                     {
                         sr.ValidInvoice = false;
-                        sr.Message = "Invoice was not created.";
-                        Debug.Print(sr.Message);
+                        sr.Message.Add("Invoice was not created.");
                     }
                 }
                 else
                 {
-                    Debug.Print("Invoice already exists. Setting invoice....");
                     newSample.InvoiceNumber = invoice.InvoiceNumber;
                     newSample.DateReported = invoice.DateReported;
                 }
                 var errors = ModelState.Values.SelectMany(v => v.Errors);
                 if (ModelState.IsValid && sr.ValidInvoice)
-                {
+                {                    
                     // Add soilsample data and sampleRecs
                     db.SoilSamples.Add(soilSample);
                     if (sampleRecs[0].YieldGoal != 0.0 && sampleRecs != null) //check for blank recs
-                    {                        
+                    {
                         foreach (SoilSampleRecModels soilRec in sampleRecs)
                         {
                             if (soilRec.YieldGoal != 0.0) //check for blank recs
                                 db.SoilSampleRecs.Add(soilRec);
                         }
-                        
                     }
-
 
                     newSample = ConvertToUpperCase(newSample);
                     db.Samples.Add(newSample);
                     db.SaveChanges();
-                    Debug.Print("Sample Added");
                     return Json(entry, JsonRequestBehavior.AllowGet);
                 }
                 else
                 {
-                    if (!sr.ValidInvoice)
-                    {
-                        Debug.Print("Invoice invalid");
-                    }
-                    else
-                    {
-                        sr.Message += "   :Invalid ModelState";
-                    }
+                    sr.Message.Add("Invalid invoice or modelstate");
                 }
             }
-            Debug.Print("Error adding Sample   ========>   " + sr.Message);
             return null;
         }
         #endregion
-        #region "Update Sample"
+        #region "Update Sample"             
         [HttpPost]
         public JsonResult UpdateSample(SampleViewModel sampleView, SoilSampleModels soilSample, List<SoilSampleRecModels> sampleRecs)
         {
-            Debug.Print("Starting sample update.....");
-            
-            SampleResult sr = new SampleResult();
             EntryReturn entry = new EntryReturn();
-            entry.SampleTypes = db.SampleTypes.ToList();
-           
-            SampleModels oldSample = (from s in db.Samples
+            InvoiceModels invoice = new InvoiceModels();
+
+            SampleModels sample = (from s in db.Samples
                                       where s.SampleTypeNumber == sampleView.SampleTypeNumber && s.BatchNumber == sampleView.BatchNumber && s.LabNumber == sampleView.LabNumber
                                       select s).SingleOrDefault();
-            sr = ValidateSample(sampleView);
+
+            ValidateSample(sampleView);
             if (sr.ValidSample)
-            {  // need to get new or existing invoice is batch or customer numbers change
-                SampleModels sample = new SampleModels();
-                sample = CreateSample(sampleView);
-                InvoiceModels invoice = new InvoiceModels();
-                if (oldSample.BatchNumber != sample.BatchNumber)
-                {
-                    invoice = GetInvoice(sample.CustomerNumber, sample.BatchNumber, sample.SampleTypeNumber);
-                    if (invoice == null)
-                    {
-                        invoice = CreateInvoice(sample);
-                        db.Invoices.Add(invoice);
-                    }
-                }
-                else if (oldSample.CustomerNumber != sample.CustomerNumber)
+            {                
+                //sample.CustomerNumber = sampleView.CustomerNumber;
+                //sample.Grower = sampleView.Grower;
+                //sample.BatchNumber = sampleView.BatchNumber;
+                //sample.ReportTypeNumber = sampleView.ReportTypeNumber;
+                //sample.DateReceived = sampleView.DateReceived;
+                //sample.CostTypeNumber = sampleView.CostTypeNumber;
+                //sample.SampleID1 = sampleView.SampleID1;
+                //sample.SampleID2 = sampleView.SampleID2;
+                //sample.SampleID3 = sampleView.SampleID3;
+                //sample.SampleID4 = sampleView.SampleID4;
+                //sample.SampleID5 = sampleView.SampleID5;
+
+                // need to get new or existing invoice if batch or customer numbers change
+                if (sampleView.BatchNumber != sample.BatchNumber || sampleView.CustomerNumber != sample.CustomerNumber)
                 {
                     invoice = CreateInvoice(sample);
                     db.Invoices.Add(invoice);
-                }
-                sample.InvoiceNumber = invoice.InvoiceNumber;
-                sample.DateReported = invoice.DateReported;
-                
-                // Get new report cost if RTN or cost type changes
-                if (oldSample.ReportTypeNumber != sample.ReportTypeNumber || oldSample.CostTypeNumber != sample.CostTypeNumber)
-                {
-                    sample.ReportCost = GetReportCost(sample.SampleTypeNumber, sample.CostTypeNumber, sample.ReportTypeNumber);
+                    sample.InvoiceNumber = invoice.InvoiceNumber;
+                    sample.DateReported = invoice.DateReported;
                 }
 
-                if (LabNumberExists(sample.SampleTypeNumber, sample.BatchNumber, sample.LabNumber, sample.CustomerNumber) && oldSample.LabNumber != sample.LabNumber)
+                // Get new report cost if RTN or cost type changes
+                if (sampleView.ReportTypeNumber != sample.ReportTypeNumber || sampleView.CostTypeNumber != sample.CostTypeNumber)
+                {
+                    sample.ReportCost = GetReportCost(sampleView.SampleTypeNumber, sampleView.CostTypeNumber, sampleView.ReportTypeNumber);
+                }
+                if (LabNumberExists(sample.SampleTypeNumber, sample.BatchNumber, sample.LabNumber, sample.CustomerNumber) && sample.LabNumber != sample.LabNumber)
                 {
                     sr.ValidSample = false;
-                    sr.Message = "LabNumber already exists";
+                    sr.Message.Add("LabNumber already exists");
                 }
                 else
-                {
-                    oldSample = sample;
+                {                    
                     if (ModelState.IsValid)
                     {
-                        oldSample = ConvertToUpperCase(oldSample);
-                        db.Entry(oldSample).State = EntityState.Modified;
+                        sample = ConvertToUpperCase(sample);
+                        db.Entry(sample).State = EntityState.Modified;
+
                         // Add soilsample data and sampleRecs
-                        SoilSampleModels ssample = db.SoilSamples.Find(sample.BatchNumber, sample.LabNumber); // Do I need to find it first?
+                        SoilSampleModels ssample = db.SoilSamples.Find(sample.BatchNumber, sample.LabNumber);
                         db.SoilSamples.Remove(ssample);
                         db.SoilSamples.Add(soilSample);
-                        
+
                         List<SoilSampleRecModels> oldRecs = (from r in db.SoilSampleRecs
-                                                          where r.BatchNumber == sample.BatchNumber && r.LabNumber == sample.LabNumber
-                                                          select r).ToList();
+                                                             where r.BatchNumber == sample.BatchNumber && r.LabNumber == sample.LabNumber
+                                                             select r).ToList();
                         foreach (SoilSampleRecModels soilRec in oldRecs) // Delete old Recs
                         {
-                                db.SoilSampleRecs.Remove(soilRec);
+                            db.SoilSampleRecs.Remove(soilRec);
                         }
                         foreach (SoilSampleRecModels soilRec in sampleRecs) // Add updated Recs
                         {
@@ -682,20 +658,15 @@ namespace SampleData.Controllers
                                 db.SoilSampleRecs.Add(soilRec);
                         }
                         db.SaveChanges();
-
-                        Debug.Print("SAMPLE UPDATE COMPLETED-----------");
-                        entry = GetEntry(oldSample.SampleTypeNumber, oldSample);
-                        // Replace with invoice found or created from above
-
+                        entry = GetEntry(sample.SampleTypeNumber, sample);
                         return Json(entry, JsonRequestBehavior.AllowGet);
                     }
                     else
                     {
-                        Debug.Print("Invalid modelstate");
+                        sr.Message.Add("Invalid ModelState");
                     }
                 }
             }
-            Debug.Print(sr.Message);
             return Json(entry, JsonRequestBehavior.AllowGet); ;
         }
         #endregion
@@ -744,42 +715,30 @@ namespace SampleData.Controllers
         }
         #endregion
         #region "Validate Sample"
-        public SampleResult ValidateSample(SampleViewModel sample)
+        public void ValidateSample(SampleViewModel sample)
         {
-            SampleResult sr = new SampleResult();
             sr.ValidSample = true;
-            StringBuilder sbMessage = new StringBuilder();
 
             //SampleTypeNumber
             if (!Validator.isNumeric(sample.SampleTypeNumber.ToString()))
             {
                 sr.ValidSample = false;
-                sbMessage.AppendLine("Sample Type Number required");
+                sr.Message.Add("Sample Type Number required");
             }
 
             //BatchNumber            
             if (!Validator.isNumeric(sample.BatchNumber.ToString()) || sample.BatchNumber.ToString().Length != 8)
             {
                 sr.ValidSample = false;
-                sbMessage.AppendLine("Batch Number != Length.8");
+                sr.Message.Add("Batch Number != Length.8");
             }
 
             //LabNumber
             if (!Validator.isNumeric(sample.LabNumber.ToString()))
             {
                 sr.ValidSample = false;
-                sbMessage.AppendLine("Lab Number must be numeric");
+                sr.Message.Add("Lab Number must be numeric");
             }
-
-            //Check if Sample exists
-            //if (sr.ValidSample)
-            //{
-            //    if (!SampleExist(sample.SampleTypeNumber, sample.BatchNumber, sample.LabNumber))
-            //    {
-            //        sr.ValidSample = false;
-            //        sbMessage.AppendLine("Sample already exists");
-            //    }
-            //}
 
             //ReportTypeNumber            
             if (Validator.isNumeric(sample.ReportTypeNumber.ToString()))
@@ -789,46 +748,45 @@ namespace SampleData.Controllers
             else
             {
                 sr.ValidSample = false;
-                sbMessage.AppendLine("Report Type Number required");
+                sr.Message.Add("Report Type Number required");
             }
 
             //Grower
             if (!Validator.isPresent(sample.Grower))
             {
                 sr.ValidSample = false;
-                sbMessage.AppendLine("Grower required");
+                sr.Message.Add("Grower required");
             }
 
             //SampleID1
             if (!Validator.isPresent(sample.SampleID1))
             {
                 sr.ValidSample = false;
-                sbMessage.AppendLine("Location required");
+                sr.Message.Add("Location required");
             }
 
             //SampleID2
             if (!Validator.isPresent(sample.SampleID2))
             {
                 sr.ValidSample = false;
-                sbMessage.AppendLine("SampleID2 required");
+                sr.Message.Add("SampleID2 required");
             }
 
             //DateReceived
             if (!Validator.isPresent(sample.DateReceived.ToString()))
             {
                 sr.ValidSample = false;
-                sbMessage.AppendLine("Date Received required");
+                sr.Message.Add("Date Received required");
             }
 
             //CostType
             if (!Validator.isNumeric(sample.CostTypeNumber.ToString()))
             {
                 sr.ValidSample = false;
-                sbMessage.AppendLine("Cost Type required");
+                sr.Message.Add("Cost Type required");
             }
-            sr.Message = sbMessage.ToString();
+
             sr.Sample = sample;
-            return sr;
         }
         #endregion
     }

@@ -1,7 +1,7 @@
 ﻿<section id="right" class="col-sm-12 col-md-12 col-lg-5" ng-show="rightSide">
     <div class="col-lg-12">
         <div class="panel panel-default">
-            <span class="panel-heading">Sample Recommendations</span>
+            <span class="panel-heading">Sample Information</span>
             <div id="sampleRecs" class="panel-body-padding clearfix">
                 <div id="soil" ng-show="soilView">
                     <div id="sampleRecsTop" class="col-lg-12">
@@ -90,9 +90,9 @@
                         <form id="frmSampleRecs" name="frmSampleRecs" class="col-lg-12" novalidate>
                             <span>Rec Type</span><span style="margin-left: 160px;">Crop Type</span><span style="margin-left: 115px;">Yield Goal</span>
                             <div ng-repeat="rec in Recommendations">
-                                <input id="acoRecTypes{{$index}}" name="acoRecTypes{{$index}}" class="form-control text-uppercase" auto-complete="RecTypes" ng-readonly="readonly" ng-disabled="disabled" ng-model="Recommendations[$index].RecTypeName" ng-blur="ValidateTypes($index, 'Rec')" tabindex="{{23 + ($index + 1)}}" />
-                                <input id="acoCropTypes{{$index}}" name="acoCropTypes{{$index}}" class="form-control text-uppercase" auto-complete="CropTypes" ng-readonly="readonly" ng-disabled="disabled" ng-model="Recommendations[$index].CropTypeName" ng-blur="ValidateTypes($index, 'Crop')" tabindex="{{23 + ($index + 1) + 1}}" />
-                                <input type="text" id="txtYieldGoal{{$index}}" name="txtYieldGoal{{$index}}" class="form-control text-right" ng-readonly="readonly" ng-model="Recommendations[$index].YieldGoal" ng-pattern="regNumeric" />
+                                <input id="acoRecTypes{{$index}}" name="acoRecTypes" class="form-control text-uppercase" auto-complete="RecTypes" ng-readonly="readonly" ng-disabled="disabled" ng-model="Recommendations[$index].RecTypeName" ng-blur="ValidateTypes($index, 'Rec')" tabindex="{{23 + ($index + 1)}}" />
+                                <input id="acoCropTypes{{$index}}" name="acoCropTypes" class="form-control text-uppercase" auto-complete="CropTypes" ng-readonly="readonly" ng-disabled="disabled" ng-model="Recommendations[$index].CropTypeName" ng-blur="ValidateTypes($index, 'Crop')" tabindex="{{23 + ($index + 1) + 1}}" />
+                                <input type="text" id="txtYieldGoal{{$index}}" name="txtYieldGoal" class="form-control text-right" ng-readonly="readonly" ng-model="Recommendations[$index].YieldGoal" ng-pattern="regNumeric" />
                                 <button class="btn btn-sm btn-danger" ng-click="RemoveRec($index)" ng-show="action == 'update' || action == 'add'"><span class="glyphicon glyphicon-remove"></span></button>
                             </div>
                             <button class="btn btn-sm btn-success" ng-click="AddRec()" ng-show="action == 'update' || action == 'add'" tabindex="50"><span class="glyphicon glyphicon-plus"></span></button>

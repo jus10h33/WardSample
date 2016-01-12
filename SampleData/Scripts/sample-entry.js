@@ -14,9 +14,9 @@
     $scope.regBatch = new RegExp('20(0[6-9]|[1-9][0-9])(0[1-9]|1[0-2])(0[1-9]|[1-2][0-9]|3[0-1])');
     $scope.regDate = new RegExp('^20(0[7-9]|[1-9][0-9])-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$');
     $scope.required = true;
-    $scope.readonly = true; // Change this to true ------------------
-    $scope.disabled = false; // Change this to false ------------------
-    $scope.disabledUpdate = false; // Change this to false -----------
+    $scope.readonly = true;
+    $scope.disabled = false;
+    $scope.disabledUpdate = false; 
     $scope.SetFormValues = function (data) {
         $scope.readonly = true; // Change this to true ------------------
         
@@ -127,7 +127,7 @@
             return;
         }).error(function () { console.log("Load module - ajax call returned error"); return; });
     };
-    $scope.Load(1); //Load soil by default    
+    $scope.Load(1); // Change to load last sampletype in cache
 
     /* --------------- Validation scripts ------------- */
 
@@ -252,12 +252,12 @@
     $scope.ValidateSampleDates = function () {
         if ($scope.entryForm.dpkDateReceived.$invalid || $scope.entryForm.dpkDateReported.$invalid || ($scope.Sample.DateReceived > $scope.Sample.DateReported)) {
             if ($scope.entryForm.dpkDateReceived.$invalid) {
-                $scope.Validate($scope.entryForm.dpkDateReceived, 'dpkDateRecieved', 'Required form [yyyy-mm-dd]');
+                $scope.DisplayPopover('dpkDateRecieved', 'Required form [yyyy-mm-dd]');
             } else if ($scope.entryForm.dpkDateReported.$invalid) {
-                $scope.Validate($scope.entryForm.dpkDateReported, 'dpkDateReported', 'Required form [yyyy-mm-dd]');
+                $scope.DisplayPopover('dpkDateReported', 'Required form [yyyy-mm-dd]');
                 angular.element('#dpkDateReported').addClass('has-error');
             } else {
-                $scope.Validate($scope.entryForm.dpkDateReported, 'dpkDateReported', 'Must be greater than Date Received');
+                $scope.DisplayPopover('dpkDateReported', 'Must be greater than Date Received');
                 angular.element('#dpkDateReported').addClass('has-error');
             }
         } else {
@@ -542,6 +542,8 @@
                 } else if (action == 'update') {
                     $scope.UpdateSample();
                 }
+                $scope.disabled = true;
+                $scope.disabledUpdate = false;
             }            
         }
     };
@@ -549,12 +551,15 @@
     /*------------------- Misc dynamic form actions -----------------*/
 
     $scope.Change = function () {
-        var stn = parseInt(angular.element('#cboSampleType').val());
-        $scope.ClearForm();
-        $scope.Load(stn);
+        console.log("Action: " + $scope.action);
+        if ($scope.action != 'find') {
+            var stn = parseInt(angular.element('#cboSampleType').val());
+            $scope.ClearForm();
+            $scope.Load(stn);
+        }        
     };
     $scope.CancelAction = function () {
-        $scope.Load($scope.Sample.SampleTypeNumber);
+        $scope.Load(1); // Change to load last sampletype in cache
         $scope.readonly = true;
         $scope.disabled = false;
         $scope.disabledUpdate = false;
@@ -576,6 +581,7 @@
             $scope.ClearForm();
             $scope.disabled = true;
             $scope.action = 'find';
+            $scope.rightSide = false; // hide sample info and recommendations
             $scope.RemoveValidation();
         } else if (action == 'add') {
             $scope.disabled = false;
@@ -608,11 +614,13 @@
         }
     };
     $scope.SetDateReported = function () {
-        if ($scope.entryForm.txtBatchNumber.$invalid) {
-            $scope.Validate($scope.entryForm.txtBatchNumber, 'txtBatchNumber', 'Required format is [yyyymmdd]');
-        } else {
-            if ($scope.Sample.DateReported != ""/* && !$scope.ValidDateReported()*/) {
-                $scope.Sample.DateReported = $scope.Sample.BatchNumber.toString().substring(0, 4) + "-" + $scope.Sample.BatchNumber.toString().substring(4, 6) + "-" + $scope.Sample.BatchNumber.toString().substring(6, 8);
+        if ($scope.action == 'add') {
+            if ($scope.entryForm.txtBatchNumber.$invalid) {
+                $scope.Validate($scope.entryForm.txtBatchNumber, 'txtBatchNumber', 'Required format is [yyyymmdd]');
+            } else {
+                if ($scope.Sample.DateReported != ""/* && !$scope.ValidDateReported()*/) {
+                    $scope.Sample.DateReported = $scope.Sample.BatchNumber.toString().substring(0, 4) + "-" + $scope.Sample.BatchNumber.toString().substring(4, 6) + "-" + $scope.Sample.BatchNumber.toString().substring(6, 8);
+                }
             }
         }
     };
@@ -653,9 +661,10 @@
           .success(function (data) {
               if (data.Sample != null) {
                   $scope.SetFormValues(data);
+                  $scope.Messages = [];
               } else {
                   angular.element("#txtLabNumber").focus();
-                  alert("Sample not found");
+                  $scope.Messages = "Customer NOT found";
               }
           })
           .error(function () { });
@@ -678,6 +687,7 @@
     };
     $scope.UpdateSample = function () {
         $scope.SetSoilSample();
+        console.log($scope.Sample);
         $http({
             method: 'POST',
             url: '/SampleModels/UpdateSample',

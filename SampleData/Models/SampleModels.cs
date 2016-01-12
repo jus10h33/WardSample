@@ -50,8 +50,6 @@ namespace SampleData.Models
         public int ReviewerID { get; set; }
         public SampleModels()
         {
-            //this.ReportCost = 0.0;
-            this.ReportTypeNumber = 0;
             this.ReviewerID = 0;
             this.Emailed = 0;
             this.Reviewed = 0;
@@ -59,7 +57,6 @@ namespace SampleData.Models
             this.Faxed = 0;
             this.Hold = 0;
             this.Status = 0;
-            this.InvoiceNumber = 0;
             this.LastModified = DateTime.Now;
         }      
     }
