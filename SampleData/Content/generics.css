@@ -2,7 +2,9 @@
 .w-100 {
     width: 100%;
 }
-
+.d-inline-block {
+    display: inline-block;
+}
 /* Position */
 .p-relative { position: relative; }
 .p-absolute { position: absolute; }

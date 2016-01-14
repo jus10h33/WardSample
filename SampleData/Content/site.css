@@ -581,7 +581,7 @@ a.panel-heading:hover,
     height: 34px;
 }
 #btn-group-primary > button, #btn-group-secondary > button {
-    width: 20%;
+    width: 13%;
 }
 #btn-group-primary button {
 
@@ -639,7 +639,13 @@ a.panel-heading:hover,
   margin: 0em;
   line-height: 1.5em;
 }
-
+.fa-white {
+    color: #fff;
+}
+.fa-white:hover {
+    cursor: pointer;
+}
+/* Table */
 table.table.list tr:first-child td {
   border-top: 0px;
 }

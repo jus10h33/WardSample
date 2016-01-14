@@ -5,7 +5,7 @@
             <div id="sampleRecs" class="panel-body-padding clearfix">
                 <div id="soil" ng-show="soilView">
                     <div id="sampleRecsTop" class="col-lg-12">
-                        <form id="frmSampleInfo">
+                        <form id="frmSampleInfo" name="frmSampleInfo">
                             <div class="col-lg-2">
                                 <div class="form-group m-b-5">
                                     <label>Top Soil</label>
@@ -22,16 +22,17 @@
                                 <label class="control-label"></label><span class="color-white m-l-30">Begin</span><span class="color-white m-l-30">End</span>
                                 <div class="form-group">
                                     <label class="control-label">Depth</label>
-                                    <input type="text" id="txtBeginDepth" class="form-control" ng-disabled="disabled" ng-readonly="readonly" ng-model="SoilSample.BeginningDepth" ng-required="required" ng-pattern="regNumeric" ng-blur="Validate(frmSampleInfo.txtBeginDepth, 'txtBeginDepth', 'Must be numeric')" tabindex="18" />
-                                    <input type="text" id="txtEndDepth" class="form-control" ng-disabled="disabled" ng-readonly="readonly" ng-model="SoilSample.EndingDepth" ng-required="required" ng-pattern="regNumeric" ng-blur="Validate(frmSampleInfo.txtEndDepth, 'txtEndDepth', 'Must be numeric')" tabindex="19" />
+                                    <input type="text" id="txtBeginDepth" name="txtBeginDepth" class="form-control" ng-disabled="disabled" ng-readonly="readonly" ng-model="SoilSample.BeginningDepth" ng-required="required" ng-pattern="regNumeric" ng-blur="Validate(frmSampleInfo.txtBeginDepth, 'txtBeginDepth', 'Must be numeric')" tabindex="18" />
+                                    <input type="text" id="txtEndDepth" name="txtEndDepth" class="form-control" ng-disabled="disabled" ng-readonly="readonly" ng-model="SoilSample.EndingDepth" ng-required="required" ng-pattern="regNumeric" ng-blur="Validate(frmSampleInfo.txtEndDepth, 'txtEndDepth', 'Must be numeric')" tabindex="19" />
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label col-lg-7">Past Crop</label>
-                                    <select id="cboPastCrop" class="form-control" ng-disabled="disabled" ng-readonly="readonly" ng-model="SoilSample.PastCropNumber" tabindex="20">
+                                    <select id="cboPastCropNumber" class="form-control" ng-disabled="disabled" ng-readonly="readonly" ng-required="required" ng-model="SoilSample.PastCropNumber" tabindex="20">
                                         <option ng-repeat="pc in PastCrops" value="{{pc.PastCropNumber}}">{{pc.PastCropName}}</option>
                                     </select>
                                 </div>
                             </div>
+                        </form>
                             <div id="sampleChain" class="col-lg-3" ng-show="SoilSamples.length > 1">
                                 <div class="form-group">
                                     <label class="control-label">Sample Chain</label><br />
@@ -44,24 +45,25 @@
                                         </tbody>
                                     </table>
                                 </div>
-                            </div>
-                        </form>
+                            </div>                        
                     </div>
                     <div id="#sampleRecsMiddle">
-                        <form id="frmSampleLinks">
+                        <form id="frmSampleLinks" name="frmSampleLinks">
                             <div id="linkToSample" ng-hide="chkTopSoil" class="well well-sm well-sm col-sm-5 col-md-5 col-lg-6 p-l-10">
                                 <span>Link to Sample</span>
                                 <div class="form-group">
                                     <label class="control-label">Batch</label>
-                                    <input type="text" id="txtLinkSoilBatch" class="form-control m-l-30" ng-disabled="disabled" ng-readonly="readonly" ng-model="SoilSample.LinkedSampleBatch" ng-required="required" ng-pattern="regNumeric" ng-blur="Validate(frmSampleLinks.txtLinkSoilBatch, 'txtLinkSoilBatch', 'Must be numeric')" tabindex="21" />
+                                    <input type="text" id="txtLinkSoilBatch" name="txtLinkSoilBatch" class="form-control m-l-30" ng-disabled="disabled" ng-readonly="readonly" ng-model="SoilSample.LinkedSampleBatch" ng-required="required" ng-pattern="regNumeric" ng-blur="Validate(frmSampleLinks.txtLinkSoilBatch, 'txtLinkSoilBatch', 'Must be numeric')" tabindex="21" />
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label">Lab</label>
-                                    <input type="text" id="txtLinkSoilLab" class="form-control m-l-30" ng-disabled="disabled" ng-readonly="readonly" ng-model="SoilSample.LinkedSampleLab" ng-required="required" ng-pattern="regNumeric" ng-blur="Validate(frmSampleLinks.txtLinkSoilLab, 'txtLinkSoilLab', 'Must be numeric')" tabindex="22" />
+                                    <input type="text" id="txtLinkSoilLab" name="txtLinkSoilBatch" class="form-control m-l-30" ng-disabled="disabled" ng-readonly="readonly" ng-model="SoilSample.LinkedSampleLab" ng-required="required" ng-pattern="regNumeric" ng-blur="Validate(frmSampleLinks.txtLinkSoilLab, 'txtLinkSoilLab', 'Must be numeric')" tabindex="22" />
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label">Available</label>
-                                    <label id="lblLinkSoilAvailable" ng-disabled="disabled" ng-readonly="readonly" ng-model="SoilSample.Available" tabindex="23" />
+                                    <select id="cboLinkSoilAvailable" name="cboLinkSoilAvailable" class="form-control" ng-disabled="disabled" ng-readonly="readonly" ng-model="SoilSample.Available" tabindex="23">
+                                        <option ng-repeat="ts in TopSoils" value="{{ts}}">{{ts}}</option>
+                                    </select>
                                 </div>
                             </div>
                             <!--<div id="soilSampleLink" class="well well-sm col-sm-5 col-md-5 col-lg-5 m-l-15 p-l-10" ng-show="true">
@@ -89,13 +91,13 @@
                         <h3>Soil Recommendations</h3>
                         <form id="frmSampleRecs" name="frmSampleRecs" class="col-lg-12" novalidate>
                             <span>Rec Type</span><span style="margin-left: 160px;">Crop Type</span><span style="margin-left: 115px;">Yield Goal</span>
-                            <div ng-repeat="rec in Recommendations">
-                                <input id="acoRecTypes{{$index}}" name="acoRecTypes" class="form-control text-uppercase" auto-complete="RecTypes" ng-readonly="readonly" ng-disabled="disabled" ng-model="Recommendations[$index].RecTypeName" ng-blur="ValidateTypes($index, 'Rec')" tabindex="{{23 + ($index + 1)}}" />
-                                <input id="acoCropTypes{{$index}}" name="acoCropTypes" class="form-control text-uppercase" auto-complete="CropTypes" ng-readonly="readonly" ng-disabled="disabled" ng-model="Recommendations[$index].CropTypeName" ng-blur="ValidateTypes($index, 'Crop')" tabindex="{{23 + ($index + 1) + 1}}" />
-                                <input type="text" id="txtYieldGoal{{$index}}" name="txtYieldGoal" class="form-control text-right" ng-readonly="readonly" ng-model="Recommendations[$index].YieldGoal" ng-pattern="regNumeric" />
-                                <button class="btn btn-sm btn-danger" ng-click="RemoveRec($index)" ng-show="action == 'update' || action == 'add'"><span class="glyphicon glyphicon-remove"></span></button>
+                            <div id="recommendations" ng-repeat="rec in Recommendations">
+                                <input id="acoRecTypes{{$index}}" name="acoRecTypes" class="form-control text-uppercase" auto-complete="RecTypes" ng-readonly="readonly" ng-disabled="disabled" ng-required="required" ng-model="Recommendations[$index].RecTypeName" ng-keydown="" ng-keyup="" ng-blur="ValidateTypes($index, 'Rec')" tabindex="{{23 + $index}}" />
+                                <input id="acoCropTypes{{$index}}" name="acoCropTypes" class="form-control text-uppercase" auto-complete="CropTypes" ng-readonly="readonly" ng-disabled="disabled" ng-required="required" ng-model="Recommendations[$index].CropTypeName" ng-blur="ValidateTypes($index, 'Crop')" tabindex="{{23 + $index}}" />
+                                <input type="text" id="txtYieldGoal{{$index}}" name="txtYieldGoal" class="form-control text-right" ng-readonly="readonly" ng-required="required" ng-model="Recommendations[$index].YieldGoal" ng-pattern="regNumeric" ng-blur="ValidateYieldGoal($index)" tabindex="{{23 + $index}}" />
+                                <button class="btn btn-sm btn-danger" ng-click="RemoveRec($index)" ng-show="action == 'update' || action == 'add'" tabindex="-1"><span class="glyphicon glyphicon-remove"></span></button>
                             </div>
-                            <button class="btn btn-sm btn-success" ng-click="AddRec()" ng-show="action == 'update' || action == 'add'" tabindex="50"><span class="glyphicon glyphicon-plus"></span></button>
+                            <button class="btn btn-sm btn-success" ng-click="AddRec()" ng-show="action == 'update' || action == 'add'" tabindex="{{23 + ($index + 1)}}"><span class="glyphicon glyphicon-plus"></span></button>
                         </form>
                     </div>
                 </div>
@@ -125,9 +127,6 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="alert alert-danger" role="alert" ng-show="{{$scope.Messages.length > 0}}">
-            <span ng-repeat="m in Messages">s</span>
-        </div>
+        </div>        
     </div>
 </section>

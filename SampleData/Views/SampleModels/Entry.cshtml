@@ -1,4 +1,10 @@
-﻿<h2 class="page-title">Samples</h2>
+﻿<div class="m-t-20 m-b-20">
+    <h2 class="page-title inline-block m-t-0 m-b-0" style="width:15%;height:53;">Samples</h2>
+    @*<div class="alert alert-danger inline-block m-l-5 m-b-0" style="width:84%;" role="alert" ng-show="Messages.length == 0">
+        <span ng-repeat="m in Messages">{{m}}</span>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    </div>*@    
+</div>
 <div class="main-content">
     <section id="left" class="col-sm-12 col-md-12 col-lg-7">
         <div class="col-lg-12">
@@ -10,7 +16,7 @@
                             <div class="col-sm-12 col-md-12 col-lg-6 p-r-15">
                                 <div class="form-group">
                                     <label class="control-label">Sample Type:</label>
-                                    <select id="cboSampleType" name="cboSampleType" class="form-control" ng-required="required" ng-model="Sample.SampleTypeNumber" ng-change="Change()" ng-disabled="disabledUpdate" @*ng-blur="Validate(entryForm.txtSampleID1, 'txtSampleID1', 'Required field')"*@ tabindex="0">
+                                    <select id="cboSampleType" name="cboSampleType" class="form-control" ng-required="required" ng-model="Sample.SampleTypeNumber" ng-change="Change()" ng-disabled="disabledUpdate" tabindex="0">
                                         <option ng-repeat="st in SampleTypes" value="{{st.SampleTypeNumber}}">{{st.SampleTypeName}}</option>
                                     </select> 
                                 </div>
@@ -33,11 +39,16 @@
                                 <div class="form-group">
                                     <label class="control-label">Report Type #:</label>
                                     <input type="text" id="txtReportTypeNumber" name="txtReportTypeNumber" class="form-control" ng-required="required" ng-disabled="disabled" ng-readonly="readonly" ng-pattern="regNumeric" ng-model="Sample.ReportTypeNumber" ng-blur="GetReportName()" tabindex="5" />
+                                    <!-- Button trigger modal -->
+                                    <i class="fa fa-white fa-2x fa-search" ng-disabled="disabled" modal" data-target="#testItemsModal" ng-click="GetTestItems()"></i>                                   
+                                </div>       
+                                <div class="form-group">    
+                                    <label class="control-label">Report Name</label>
                                     <label id="lblReportName">{{Sample.ReportName}}</label>
-                                </div>                                                                                                                        
+                                </div>                                                                                                             
                                 <div class="form-group">
                                     <label class="control-label">Date Received:</label>
-                                    <div class="input-group date dateReceived" data-provide="datepicker" data-date-format="yyyy-mm-dd" data-date-today-highlight="true" data-date-autoclose="true">
+                                    <div class="input-group date dateReceived" data-provide="datepicker" data-date-format="yyyy-mm-dd" data-date-today-highlight="true" data-date-autoclose="true" data-date-orientation="bottom">
                                         <input type="text" id="dpkDateReceived" name="dpkDateReceived" class="form-control" ng-required="required" ng-pattern="regDate" ng-model="Sample.DateReceived"
                                                ng-blur="ValidateSampleDates()" ng-disabled="disabled" ng-readonly="readonly" tabindex="6" />
                                         <div class="input-group-addon">
@@ -47,13 +58,13 @@
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label">Date Reported:</label>
-                                    <div class="input-group date" data-provide="datepicker" data-date-format="yyyy-mm-dd" data-date-today-highlight="true" data-date-autoclose="true">
+                                    <div class="input-group date" data-provide="datepicker" data-date-format="yyyy-mm-dd" data-date-today-highlight="true" data-date-autoclose="true" data-date-orientation="bottom">
                                         <input type="text" id="dpkDateReported" name="dpkDateReported" class="form-control" ng-required="required" ng-pattern="regDate" ng-model="Sample.DateReported" ng-blur="ValidateSampleDates()" ng-disabled="disabledUpdate || disabled" ng-readonly="readonly" tabindex="7" />
                                         <div class="input-group-addon">
                                             <span class="glyphicon glyphicon-th"></span>
                                         </div>
                                     </div>
-                                </div> 
+                                </div>
                                 <div class="form-group">
                                     <label class="control-label">Cost Type:</label>
                                     <select id="cboCostTypeNumber" name="cboCostTypeNumber" class="form-control" ng-required="required" ng-model="Sample.CostTypeNumber" ng-blur="Validate(entryForm.cboCostTypeNumber, 'cboCostType', 'Required field')" ng-disabled="disabled" ng-readonly="readonly" tabindex="8">
@@ -90,7 +101,7 @@
                                 <div ng-show="{{SampleColumns[0].SampleTypeNumber == 12}}">
                                     <div class="form-group">
                                         <label class="control-label">{{SampleColumns[3].Label}}:</label>
-                                        <div class="input-group date" data-provide="datepicker" data-date-format="yyyy-mm-dd" data-date-today-highlight="true" data-date-autoclose="true">
+                                        <div class="input-group date" data-provide="datepicker" data-date-format="yyyy-mm-dd" data-date-today-highlight="true" data-date-autoclose="true" data-date-orientation="bottom">
                                             <input type="text" id="{{SampleColumns[3].ID}}" name="{{SampleColumns[3].ID}}" class="form-control" @*ng-required="required" ng-pattern="regDate"*@ ng-model="Sample.SampleID4" ng-blur="ValidateSampleDates()" ng-disabled="disabled" ng-readonly="readonly" tabindex="14" />
                                             <div class="input-group-addon">
                                                 <span class="glyphicon glyphicon-th"></span>
@@ -99,7 +110,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label class="control-label">{{SampleColumns[4].Label}}:</label>
-                                        <div class="input-group date" data-provide="datepicker" data-date-format="yyyy-mm-dd" data-date-today-highlight="true" data-date-autoclose="true">
+                                        <div class="input-group date" data-provide="datepicker" data-date-format="yyyy-mm-dd" data-date-today-highlight="true" data-date-autoclose="true" data-date-orientation="bottom">
                                             <input type="text" id="{{SampleColumns[4].ID}}" name="{{SampleColumns[4].ID}}" class="form-control"@* ng-required="required" ng-pattern="regDate"*@ ng-model="Sample.SampleID5" ng-blur="ValidateSampleDates()" ng-disabled="disabled" ng-readonly="readonly" tabindex="15" />
                                             <div class="input-group-addon">
                                                 <span class="glyphicon glyphicon-th"></span>
@@ -125,21 +136,63 @@
                         </form>
                         <div id="btn-container" class="m-t-15 clearfix">
                             <input id="txtAction" class="hidden-lg hidden-md hidden-sm hidden-xs" ng-model="action" />
-                            <div id="btn-group-primary" class="col-xs-12 col-sm-12 col-md-12 col-md-offset-0 col-lg-11 col-lg-offset-1" ng-show="readonly">
-                                <button id="btnFindSample" class="btn btn-info btn-md" ng-click="ToggleButtons('find')">Find</button>
-                                <button id="btnAdd" class="btn btn-success btn-md m-l-30" ng-click="ToggleButtons('add')">Add</button>
-                                <button id="btnUpdate" class="btn btn-primary m-l-30" ng-click="ToggleButtons('update')">Update</button>
-                                <button id="btnDelete" class="btn btn-danger btn-md m-l-30" ng-click="ToggleButtons('delete')">Delete</button>
+                            <div id="btn-group-primary" class="col-xs-12 col-sm-12 col-md-12 col-lg-11" ng-show="readonly">
+                                <button id="btnPrevSample" class="btn btn-warning btn-md" ng-click="ToggleButtons('prev')">Prev</button>
+                                <button id="btnFindSample" class="btn btn-info btn-md m-l-30" ng-click="ToggleButtons('find')">Find</button>
+                                <button id="btnAddSample" class="btn btn-success btn-md m-l-30" ng-click="ToggleButtons('add')">Add</button>
+                                <button id="btnUpdateSample" class="btn btn-primary m-l-30" ng-click="ToggleButtons('update')">Update</button>
+                                <button id="btnDeleteSample" class="btn btn-danger btn-md m-l-30" ng-click="ToggleButtons('delete')">Delete</button>
+                                <button id="btnNextSample" class="btn btn-warning btn-md m-l-30" ng-click="ToggleButtons('next')">Next</button>
                             </div>
                             <div id="btn-group-secondary" class="col-xs-12 col-sm-12 col-md-12 col-md-offset-0 col-lg-12 col-lg-offset-1 m-t-10" ng-hide="readonly">
                                 <button id="btnBlank" class="btn btn-default btn-md vis-hidden"></button>
-                                <button id="btnCommit" class="btn btn-success btn-md" ng-click="SubmitForm(action)">Commit</button>
-                                <button id="btnCancel" class="btn btn-warning m-l-30" ng-click="CancelAction()">Cancel</button>
+                                <button id="btnCommit" class="btn btn-success btn-md" ng-click="SubmitForm(action)" tabindex="50">Commit</button>
+                                <button id="btnCancel" class="btn btn-warning m-l-30" ng-click="CancelAction()" tabindex="50">Cancel</button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+            <div id="testItemsModal" class="modal fade" tabindex="-1" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h5 class="modal-title">Search By Test Content</h5>
+                        </div>
+                        <div class="modal-body">
+                            <h4>Test Items</h4>
+                            <div>
+                                    <label class="" ng-repeat="ti in TestItems">
+                                        <input type="checkbox" class="" id="ti.TestItemNumber" name="ti.TestItemNumber" value="ti.TestItemNumber" />{{ti.TestItemName}}
+                                    </label>                                                                    
+                            </div>
+                            <h4>Tests:</h4>
+                            <div>
+                                <table>
+                                    <thead>
+                                        <tr><th>Test #</th><th>Test Name</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        @*<tr ng-repeat="">
+                                            <td><input type="radio" id="" name="" value="" />{{}}</td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>*@
+                                    </tbody>
+                                </table>
+                                        
+
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-success">Select</button>
+                            <button type="button" class="btn btn-info">Display List</button>
+                            <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+                        </div>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal-dialog -->
+            </div><!-- /.modal -->
             <ng-include src="'../Content/partialviews/partialNotes.html'"></ng-include>
         </div>
     </section>

@@ -44,9 +44,9 @@ namespace SampleData.Controllers
             try
             {
                 entry.SampleTypes = GetSampleTypes();
-                Debug.Print("SampleType1: " + entry.SampleTypes[0].SampleTypeName);
                 if (sample == null)
                 {
+                    Debug.Print("sample is null");
                     sample = GetSample(stn);
                 }
                 entry.Sample = CreateSampleView(sample);
@@ -79,54 +79,76 @@ namespace SampleData.Controllers
                 }
 
                 entry.PastCrops = GetPastCrops();
+                entry.Messages = sr.Message;
                 entry.SampleColumns = GetSampleColumns(entry.Sample.SampleTypeNumber);
                 // Build Sample Chain -Get first soil sample
-                entry.SoilSample = GetSoilSample(sample.BatchNumber, sample.LabNumber);
-                // Check in sample is linked - if so, get linked samples
-                if ( entry.SoilSample != null)
+                if (entry.Sample.SampleTypeNumber == 1 || entry.Sample.SampleTypeNumber == 14)
                 {
-                    if (entry.SoilSample.LinkedSampleLab == 0)
+                    entry.SoilSample = GetSoilSample(entry.Sample.BatchNumber, entry.Sample.LabNumber);
+                    // Check in sample is linked - if so, get linked samples
+                    if (entry.SoilSample != null)
                     {
-                        entry.SoilSamples = (from ss in db.SoilSamples
-                                             where (ss.BatchNumber == entry.Sample.BatchNumber && ss.LabNumber == entry.Sample.LabNumber || (ss.LinkedSampleBatch == entry.Sample.BatchNumber && ss.LinkedSampleLab == entry.Sample.LabNumber))
-                                             orderby ss.BeginningDepth ascending
-                                             select ss).ToList();
-                    }
-                    else
-                    {
-                        entry.SoilSamples = (from ss in db.SoilSamples
-                                             where (ss.BatchNumber == entry.SoilSample.LinkedSampleBatch && ss.LabNumber == entry.SoilSample.LinkedSampleLab) || (ss.LinkedSampleBatch == entry.SoilSample.LinkedSampleBatch && ss.LinkedSampleLab == entry.SoilSample.LinkedSampleLab)
-                                             orderby ss.BeginningDepth ascending
-                                             select ss).ToList();
-                    }
-                    entry.Sample.PastCropName = (from pc in entry.PastCrops
-                                                 where pc.PastCropNumber == entry.SoilSample.PastCropNumber
-                                                 select pc.PastCropName).SingleOrDefault();
-                    List<SoilRecTypeModels> soilRecTypes = new List<SoilRecTypeModels>();
-                    if (entry.Sample.SampleTypeNumber == 1)
-                    {
-                        soilRecTypes = GetSoilRecTypes();
-                        entry.RecTypes = new List<string>();
-                        foreach (SoilRecTypeModels rt in soilRecTypes)
+                        if (entry.SoilSample.LinkedSampleLab == 0)
                         {
-                            entry.RecTypes.Add(rt.RecTypeNumber.ToString() + " - " + rt.RecTypeName);
+                            entry.SoilSamples = (from ss in db.SoilSamples
+                                                 where (ss.BatchNumber == entry.Sample.BatchNumber && ss.LabNumber == entry.Sample.LabNumber || (ss.LinkedSampleBatch == entry.Sample.BatchNumber && ss.LinkedSampleLab == entry.Sample.LabNumber))
+                                                 orderby ss.BeginningDepth ascending
+                                                 select ss).ToList();
+                        }
+                        else
+                        {
+                            entry.SoilSamples = (from ss in db.SoilSamples
+                                                 where (ss.BatchNumber == entry.SoilSample.LinkedSampleBatch && ss.LabNumber == entry.SoilSample.LinkedSampleLab) || (ss.LinkedSampleBatch == entry.SoilSample.LinkedSampleBatch && ss.LinkedSampleLab == entry.SoilSample.LinkedSampleLab)
+                                                 orderby ss.BeginningDepth ascending
+                                                 select ss).ToList();
+                        }
+                        if (entry.SoilSample.TopSoil == 0)
+                        {
+                            entry.TopSoils = (from ss in db.SoilSamples
+                                              join sx in db.Samples on ss.LabNumber equals sx.LabNumber
+                                              where sx.BatchNumber == entry.SoilSample.BatchNumber && sx.CustomerNumber == entry.Sample.CustomerNumber && ss.TopSoil == 1
+                                              select ss.LabNumber).ToList();
+                        }
+                        entry.Sample.PastCropName = (from pc in entry.PastCrops
+                                                     where pc.PastCropNumber == entry.SoilSample.PastCropNumber
+                                                     select pc.PastCropName).SingleOrDefault();
+                        List<SoilRecTypeModels> soilRecTypes = new List<SoilRecTypeModels>();
+                        if (entry.Sample.SampleTypeNumber == 1)
+                        {
+                            soilRecTypes = GetSoilRecTypes();
+                            entry.RecTypes = new List<string>();
+                            foreach (SoilRecTypeModels rt in soilRecTypes)
+                            {
+                                entry.RecTypes.Add(rt.RecTypeNumber.ToString() + " - " + rt.RecTypeName);
+                            }
+                        }
+
+                        List<SoilRecCropModels> soilRecCrops = GetSoilRecCrops();
+                        entry.CropTypes = new List<string>();
+                        foreach (SoilRecCropModels rc in soilRecCrops)
+                        {
+                            entry.CropTypes.Add(rc.CropTypeNumber.ToString() + " - " + rc.CropTypeName + ":" + rc.Unit);
+                        }
+
+
+                        if (entry.Sample.SampleTypeNumber == 1 || entry.Sample.SampleTypeNumber == 14)
+                        {
+                            entry.Recommendations = GetSampleRecommendations(entry.Sample.SampleTypeNumber, entry.Sample.BatchNumber, entry.Sample.LabNumber, soilRecTypes, soilRecCrops);
                         }
                     }
+                }    
+                else if (entry.Sample.SampleTypeNumber == 2 || entry.Sample.SampleTypeNumber == 3 || entry.Sample.SampleTypeNumber == 4 || entry.Sample.SampleTypeNumber == 6 || entry.Sample.SampleTypeNumber == 7 || entry.Sample.SampleTypeNumber == 9 || entry.Sample.SampleTypeNumber == 12)
+                {
 
-                    List<SoilRecCropModels> soilRecCrops = GetSoilRecCrops();
-                    entry.CropTypes = new List<string>();
-                    foreach (SoilRecCropModels rc in soilRecCrops)
-                    {
-                        entry.CropTypes.Add(rc.CropTypeNumber.ToString() + " - " + rc.CropTypeName + ":" + rc.Unit);
-                    }
-
-
-                    if (entry.Sample.SampleTypeNumber == 1 || entry.Sample.SampleTypeNumber == 14)
-                    {
-                        entry.Recommendations = GetSampleRecommendations(entry.Sample.SampleTypeNumber, entry.Sample.BatchNumber, entry.Sample.LabNumber, soilRecTypes, soilRecCrops);
-                    }
                 }
-                entry.Messages = sr.Message;
+                else if (entry.Sample.SampleTypeNumber == 5)
+                {
+
+                }  
+                else
+                {
+
+                }
                 return entry;
             }
             catch (Exception e)
@@ -296,6 +318,15 @@ namespace SampleData.Controllers
         public List<SampleTypeModels> GetSampleTypes()
         {
             return  db.SampleTypes.ToList();
+        }
+        public JsonResult GetTestItems(int sampleTypeNumber)
+        {
+            List<TestItemModels> testItems = (from ti in db.TestItems
+                    where ti.SampleTypeNumber == sampleTypeNumber
+                    orderby ti.TestItemName
+                    select ti).ToList();
+
+            return Json(testItems, JsonRequestBehavior.AllowGet);
         }
         private bool SampleExist(int stn, int bn, int ln)
         {
@@ -488,30 +519,58 @@ namespace SampleData.Controllers
         #endregion
         #region "Find Sample"
         [HttpPost]
-        public JsonResult FindSample(int sampleTypeNumber, int batchNumber, int labNumber)
+        public JsonResult FindSample(int sampleTypeNumber, int labNumber, int batchNumber = 0)
         {
-            if (batchNumber.ToString().Length == 8 && Validator.isNumeric(batchNumber.ToString()) && Validator.isNumeric(labNumber.ToString()) && labNumber != 0)
+            if (batchNumber == 0)
             {
-                EntryReturn entry = new EntryReturn();
-                try
+                if (Validator.isNumeric(sampleTypeNumber.ToString()) && Validator.isNumeric(labNumber.ToString()) && labNumber != 0)
                 {
-                    SampleModels sample = db.Samples.Find(sampleTypeNumber, batchNumber, labNumber);
-                    if (sample != null)
+                    try
                     {
-                        entry = GetEntry(sample.SampleTypeNumber, sample);                        
+                        SampleModels sample = (from s in db.Samples
+                                               where s.SampleTypeNumber == sampleTypeNumber && s.LabNumber >= labNumber
+                                               orderby s.LabNumber
+                                               select s).FirstOrDefault();
+                        if (sample != null)
+                        {
+                            EntryReturn entry = new EntryReturn();
+                            entry = GetEntry(sample.SampleTypeNumber, sample);
+                            return Json(entry, JsonRequestBehavior.AllowGet);
+                        }
                     }
-                    return Json(entry, JsonRequestBehavior.AllowGet);
-                }
-                catch (Exception e)
-                {
-                    Debug.Print(e.ToString());
-                    return null;
+                    catch (Exception e)
+                    {
+                        Debug.Print(e.ToString());
+                        return null;
+                    }
                 }
             }
             else
             {
-                return null;
+                if (batchNumber.ToString().Length == 8 && Validator.isNumeric(batchNumber.ToString()) && Validator.isNumeric(labNumber.ToString()) && labNumber != 0)
+                {                    
+                    try
+                    {
+                        SampleModels sample = (from s in db.Samples
+                                               where s.SampleTypeNumber == sampleTypeNumber && s.BatchNumber >= batchNumber && s.LabNumber >= labNumber
+                                               orderby s.LabNumber
+                                               select s).FirstOrDefault();
+                        if (sample != null)
+                        {
+                            EntryReturn entry = new EntryReturn();
+                            entry = GetEntry(sample.SampleTypeNumber, sample);
+                            return Json(entry, JsonRequestBehavior.AllowGet);
+                        }
+                        
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.Print(e.ToString());
+                        return null;
+                    }
+                }
             }
+            return Json(GetEntry(sampleTypeNumber), JsonRequestBehavior.AllowGet);
         }
         #endregion
         #region "Add Sample"
@@ -519,7 +578,7 @@ namespace SampleData.Controllers
         public JsonResult AddSample(SampleViewModel sampleView, SoilSampleModels soilSample, List<SoilSampleRecModels> sampleRecs = null)
         {
             EntryReturn entry = new EntryReturn();
-            ValidateSample(sampleView);
+            ValidateSample(sampleView, soilSample, sampleRecs);
             if (!SampleExist(sampleView.SampleTypeNumber, sampleView.BatchNumber, sampleView.LabNumber) && sr.ValidSample)
             {
                 SampleModels newSample = new SampleModels();
@@ -599,7 +658,7 @@ namespace SampleData.Controllers
                                       where s.SampleTypeNumber == sampleView.SampleTypeNumber && s.BatchNumber == sampleView.BatchNumber && s.LabNumber == sampleView.LabNumber
                                       select s).SingleOrDefault();
 
-            ValidateSample(sampleView);
+            ValidateSample(sampleView, soilSample, sampleRecs);
             if (sr.ValidSample)
             {                
                 //sample.CustomerNumber = sampleView.CustomerNumber;
@@ -715,32 +774,32 @@ namespace SampleData.Controllers
         }
         #endregion
         #region "Validate Sample"
-        public void ValidateSample(SampleViewModel sample)
+        public void ValidateSample(SampleViewModel sample, SoilSampleModels soilSample, List<SoilSampleRecModels> soilRecs)
         {
             sr.ValidSample = true;
 
-            //SampleTypeNumber
+            // SampleTypeNumber
             if (!Validator.isNumeric(sample.SampleTypeNumber.ToString()))
             {
                 sr.ValidSample = false;
                 sr.Message.Add("Sample Type Number required");
             }
 
-            //BatchNumber            
+            // BatchNumber            
             if (!Validator.isNumeric(sample.BatchNumber.ToString()) || sample.BatchNumber.ToString().Length != 8)
             {
                 sr.ValidSample = false;
                 sr.Message.Add("Batch Number != Length.8");
             }
 
-            //LabNumber
+            // LabNumber
             if (!Validator.isNumeric(sample.LabNumber.ToString()))
             {
                 sr.ValidSample = false;
                 sr.Message.Add("Lab Number must be numeric");
             }
 
-            //ReportTypeNumber            
+            // ReportTypeNumber            
             if (Validator.isNumeric(sample.ReportTypeNumber.ToString()))
             {
                 ReportTypeExist(sample.SampleTypeNumber, sample.ReportTypeNumber);
@@ -751,41 +810,117 @@ namespace SampleData.Controllers
                 sr.Message.Add("Report Type Number required");
             }
 
-            //Grower
+            // Grower
             if (!Validator.isPresent(sample.Grower))
             {
                 sr.ValidSample = false;
                 sr.Message.Add("Grower required");
             }
 
-            //SampleID1
+            // SampleID1
             if (!Validator.isPresent(sample.SampleID1))
             {
                 sr.ValidSample = false;
                 sr.Message.Add("Location required");
             }
 
-            //SampleID2
+            // SampleID2
             if (!Validator.isPresent(sample.SampleID2))
             {
                 sr.ValidSample = false;
                 sr.Message.Add("SampleID2 required");
             }
 
-            //DateReceived
+            // DateReceived
             if (!Validator.isPresent(sample.DateReceived.ToString()))
             {
                 sr.ValidSample = false;
                 sr.Message.Add("Date Received required");
             }
 
-            //CostType
+            // CostType
             if (!Validator.isNumeric(sample.CostTypeNumber.ToString()))
             {
                 sr.ValidSample = false;
                 sr.Message.Add("Cost Type required");
             }
 
+            // BeginningDepth
+            if (!Validator.isNumeric(soilSample.BeginningDepth.ToString()))
+            {
+                sr.ValidSample = false;
+                sr.Message.Add("Beginning Depth must be numeric");
+            }
+
+            // EndingDepth
+            if (!Validator.isNumeric(soilSample.EndingDepth.ToString()) && soilSample.EndingDepth > soilSample.BeginningDepth)
+            {
+                sr.ValidSample = false;
+                sr.Message.Add("Ending Depth must be numeric and greater than Beginning Depth");
+            }
+
+            // soilRecs
+            
+            if (soilRecs != null)
+            {
+                var count = 0;
+                var recTypes = (from rt in db.SoilRecTypes
+                                select rt).ToList();
+                var cropTypes = (from ct in db.SoilRecCrops
+                                 select ct).ToList();
+                int recLength = soilRecs.Count();
+                if (recLength > 0)
+                {
+                    foreach (SoilSampleRecModels sRecs in soilRecs)
+                    {
+                        var rec = (from r in recTypes
+                                   where r.RecTypeNumber == sRecs.RecTypeNumber
+                                   select r.RecTypeNumber).SingleOrDefault();
+                        var crop = (from c in cropTypes
+                                    where c.CropTypeNumber == sRecs.CropTypeNumber
+                                    select c.CropTypeNumber).SingleOrDefault();
+                        // RecType
+                        if (!Validator.isNumeric(sRecs.RecTypeNumber.ToString()) && rec != -1)
+                        {
+                            sr.ValidSample = false;
+                            sr.Message.Add("Rec Type " + count + " invalid");
+                        }
+
+                        // CropType
+                        if (!Validator.isNumeric(sRecs.CropTypeNumber.ToString()) && crop != -1)
+                        {
+                            sr.ValidSample = false;
+                            sr.Message.Add("Crop Type " + count + " invalid");
+                        }
+
+                        // YieldGoal
+                        if (!Validator.isNumeric(sRecs.YieldGoal.ToString()))
+                        {
+                            sr.ValidSample = false;
+                            sr.Message.Add("Yield Goal " + count + " invalid");
+                        }
+                        count++;
+                    }
+                    if (recLength > 1)
+                    {
+                        var lastRecType = soilRecs[recLength - 1].RecTypeNumber;
+                        var lastCropType = soilRecs[recLength - 1].CropTypeNumber;
+                        var lastYieldGoal = soilRecs[recLength - 1].YieldGoal;
+
+                        for (var i = 0; i <= recLength - 2; i++)
+                        {
+                            if (soilRecs[i].RecTypeNumber == lastRecType && soilRecs[i].CropTypeNumber == lastCropType && soilRecs[i].YieldGoal == lastYieldGoal)
+                            {
+                                sr.ValidSample = false;
+                                sr.Message.Add("Can not have duplicate recommendations");
+                            }
+                        }
+                    }
+                }
+            }
+            
+
+            
             sr.Sample = sample;
         }
         #endregion
