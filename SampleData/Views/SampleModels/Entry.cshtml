@@ -1,9 +1,9 @@
 ﻿<div class="m-t-20 m-b-20">
-    <h2 class="page-title inline-block m-t-0 m-b-0" style="width:15%;height:53;">Samples</h2>
+    <h2 class="page-title inline-block m-t-0 m-b-0">Samples</h2>
     @*<div class="alert alert-danger inline-block m-l-5 m-b-0" style="width:84%;" role="alert" ng-show="Messages.length == 0">
-        <span ng-repeat="m in Messages">{{m}}</span>
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-    </div>*@    
+            <span ng-repeat="m in Messages">{{m}}</span>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>*@
 </div>
 <div class="main-content">
     <section id="left" class="col-sm-12 col-md-12 col-lg-7">
@@ -18,7 +18,7 @@
                                     <label class="control-label">Sample Type:</label>
                                     <select id="cboSampleType" name="cboSampleType" class="form-control" ng-required="required" ng-model="Sample.SampleTypeNumber" ng-change="Change()" ng-disabled="disabledUpdate" tabindex="0">
                                         <option ng-repeat="st in SampleTypes" value="{{st.SampleTypeNumber}}">{{st.SampleTypeName}}</option>
-                                    </select> 
+                                    </select>
                                 </div>
                                 <div class="form-group">
                                     <label id="lblCustomerNumber" class="control-label">Customer #:</label>
@@ -27,7 +27,7 @@
                                 <div class="form-group">
                                     <label class="control-label">Grower:</label>
                                     <input type="text" id="acoGrower" name="acoGrower" class="form-control text-uppercase" ng-required="required" ng-model="Sample.Grower" ng-blur="Validate(entryForm.acoGrower, 'acoGrower', 'Required field')" ng-disabled="disabled" ng-readonly="readonly" tabindex="2" />
-                                </div>                                
+                                </div>
                                 <div class="form-group">
                                     <label class="control-label">Batch Number:</label>
                                     <input type="text" id="txtBatchNumber" name="txtBatchNumber" class="form-control" ng-required="required" ng-readonly="readonly" ng-pattern="regBatch" ng-minlength="8" ng-maxlength="8" ng-model="Sample.BatchNumber" ng-blur="SetDateReported()" tabindex="3" />
@@ -40,12 +40,12 @@
                                     <label class="control-label">Report Type #:</label>
                                     <input type="text" id="txtReportTypeNumber" name="txtReportTypeNumber" class="form-control" ng-required="required" ng-disabled="disabled" ng-readonly="readonly" ng-pattern="regNumeric" ng-model="Sample.ReportTypeNumber" ng-blur="GetReportName()" tabindex="5" />
                                     <!-- Button trigger modal -->
-                                    <i class="fa fa-white fa-2x fa-search" ng-disabled="disabled" modal" data-target="#testItemsModal" ng-click="GetTestItems()"></i>                                   
-                                </div>       
-                                <div class="form-group">    
+                                    <i class="fa fa-white fa-2x fa-search" ng-disabled="disabled" data-toggle="modal" data-target="#testItemsModal" ng-click="GetTestItems()"></i>
+                                </div>
+                                <div class="form-group">
                                     <label class="control-label">Report Name</label>
                                     <label id="lblReportName">{{Sample.ReportName}}</label>
-                                </div>                                                                                                             
+                                </div>
                                 <div class="form-group">
                                     <label class="control-label">Date Received:</label>
                                     <div class="input-group date dateReceived" data-provide="datepicker" data-date-format="yyyy-mm-dd" data-date-today-highlight="true" data-date-autoclose="true" data-date-orientation="bottom">
@@ -72,9 +72,9 @@
                                         <option value="1">Standard</option>
                                         <option value="2">Volume/Grid</option>
                                     </select>
-                                </div>                              
+                                </div>
                             </div>
-                            <div class="col-sm-12 col-md-12 col-lg-6 p-r-15">                                
+                            <div class="col-sm-12 col-md-12 col-lg-6 p-r-15">
                                 <!--Start of Dynamic labels-->
                                 <div class="form-group">
                                     <label class="control-label">{{SampleColumns[0].Label}}:</label>
@@ -111,7 +111,7 @@
                                     <div class="form-group">
                                         <label class="control-label">{{SampleColumns[4].Label}}:</label>
                                         <div class="input-group date" data-provide="datepicker" data-date-format="yyyy-mm-dd" data-date-today-highlight="true" data-date-autoclose="true" data-date-orientation="bottom">
-                                            <input type="text" id="{{SampleColumns[4].ID}}" name="{{SampleColumns[4].ID}}" class="form-control"@* ng-required="required" ng-pattern="regDate"*@ ng-model="Sample.SampleID5" ng-blur="ValidateSampleDates()" ng-disabled="disabled" ng-readonly="readonly" tabindex="15" />
+                                            <input type="text" id="{{SampleColumns[4].ID}}" name="{{SampleColumns[4].ID}}" class="form-control" @* ng-required="required" ng-pattern="regDate"*@ ng-model="Sample.SampleID5" ng-blur="ValidateSampleDates()" ng-disabled="disabled" ng-readonly="readonly" tabindex="15" />
                                             <div class="input-group-addon">
                                                 <span class="glyphicon glyphicon-th"></span>
                                             </div>
@@ -122,7 +122,7 @@
                                     <label class="control-label">Invoice Number</label>
                                     <label id="lblInvoiceNumber" name="lblInvoiceNumber" class="" ng-model="Sample.InvoiceNumber">{{Sample.InvoiceNumber}}</label>
                                 </div>
-                                <!-- End of Dynamic labels and inputs-->                                                                                     
+                                <!-- End of Dynamic labels and inputs-->
                                 <div class="form-group">
                                     <label>Customer Information:</label>
                                     <div id="customerInfo" class="well col-sm-6 col-md-7 col-lg-7 p-15 m-r-5 pull-right">
@@ -132,7 +132,7 @@
                                         <i><label id="lblCustomerCityStZip" class="" ng-show="Customer.CityStZip">{{Customer.CityStZip}}</label></i>
                                     </div>
                                 </div>
-                            </div>                            
+                            </div>
                         </form>
                         <div id="btn-container" class="m-t-15 clearfix">
                             <input id="txtAction" class="hidden-lg hidden-md hidden-sm hidden-xs" ng-model="action" />
@@ -162,10 +162,13 @@
                         </div>
                         <div class="modal-body">
                             <h4>Test Items</h4>
-                            <div>
-                                    <label class="" ng-repeat="ti in TestItems">
-                                        <input type="checkbox" class="" id="ti.TestItemNumber" name="ti.TestItemNumber" value="ti.TestItemNumber" />{{ti.TestItemName}}
-                                    </label>                                                                    
+                            <div style="height:300px;">
+                                <div class="d-block" ng-repeat="ti in TestItems">
+                                    <div class="cols-3">
+                                        <input type="checkbox" id="ti.TestItemNumber" name="ti.TestItemNumber" value="ti.TestItemNumber" />
+                                        <label>{{ti.TestItemName}}</label>
+                                    </div>
+                                </div>
                             </div>
                             <h4>Tests:</h4>
                             <div>
@@ -175,13 +178,13 @@
                                     </thead>
                                     <tbody>
                                         @*<tr ng-repeat="">
-                                            <td><input type="radio" id="" name="" value="" />{{}}</td>
-                                            <td></td>
-                                            <td></td>
-                                        </tr>*@
+                                                <td><input type="radio" id="" name="" value="" />{{}}</td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>*@
                                     </tbody>
                                 </table>
-                                        
+
 
                             </div>
                         </div>
@@ -196,5 +199,5 @@
             <ng-include src="'../Content/partialviews/partialNotes.html'"></ng-include>
         </div>
     </section>
-    <ng-include src="'../Content/partialviews/partialSoil.html'"></ng-include> 
+    <ng-include src="'../Content/partialviews/partialSoil.html'"></ng-include>
 </div>

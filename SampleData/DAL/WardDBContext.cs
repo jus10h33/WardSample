@@ -30,6 +30,8 @@ namespace SampleData.DAL
         public DbSet<SoilRecTypeModels> SoilRecTypes { get; set; }
         public DbSet<SoilRecCropModels> SoilRecCrops { get; set; }
         public DbSet<PastCropModels> PastCrops { get; set; }
+        public DbSet<SubSampleTypeModels> SubSampleTypes { get; set; }
+        public DbSet<SubSubSampleTypeModels> SubSubSampleTypes { get; set; }
         public DbSet<OldInvoiceTable> OldInvoices { get; set; }
         public DbSet<w_Samples> OldSamples { get; set; }
 

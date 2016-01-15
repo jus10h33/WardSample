@@ -277,6 +277,14 @@
     <Compile Include="Migrations\201601081723413_CostAndDateReported.Designer.cs">
       <DependentUpon>201601081723413_CostAndDateReported.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201601151635463_AddedSubTypes.cs" />
+    <Compile Include="Migrations\201601151635463_AddedSubTypes.Designer.cs">
+      <DependentUpon>201601151635463_AddedSubTypes.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201601151718389_fix.cs" />
+    <Compile Include="Migrations\201601151718389_fix.Designer.cs">
+      <DependentUpon>201601151718389_fix.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\CustomerModels.cs" />
@@ -284,6 +292,8 @@
     <Compile Include="Models\InvoiceModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\OldInvoiceTable.cs" />
+    <Compile Include="Models\SubSampleTypeModels.cs" />
+    <Compile Include="Models\SubSubSampleTypeModels.cs" />
     <Compile Include="Models\w_Samples.cs" />
     <Compile Include="Models\PastCropModels.cs" />
     <Compile Include="Models\ReportItemModels.cs" />
@@ -506,6 +516,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201601081723413_CostAndDateReported.resx">
       <DependentUpon>201601081723413_CostAndDateReported.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201601151635463_AddedSubTypes.resx">
+      <DependentUpon>201601151635463_AddedSubTypes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201601151718389_fix.resx">
+      <DependentUpon>201601151718389_fix.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

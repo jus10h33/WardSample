@@ -13,6 +13,8 @@
     $scope.SampleRecs = [];
     $scope.Recommendations = [];
     $scope.TestItems = [];
+    $scope.SubSampleType = {};
+    $scope.SubSampleTypes = [];
     $scope.regNumeric = new RegExp("^[0-9]+$");
     $scope.regBatch = new RegExp('20(0[6-9]|[1-9][0-9])(0[1-9]|1[0-2])(0[1-9]|[1-2][0-9]|3[0-1])');
     $scope.regDate = new RegExp('^20(0[7-9]|[1-9][0-9])-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$');
@@ -70,14 +72,13 @@
                         }
                     }
                 }
-            } // if stn is Feed, NIR, Water, Manure, Slurry, Fertilizer, Resin 
-        } else if ($scope.Sample.SampleTypeNumber == 2 || $scope.Sample.SampleTypeNumber == 3 || $scope.Sample.SampleTypeNumber == 4 || $scope.Sample.SampleTypeNumber == 6 || $scope.Sample.SampleTypeNumber == 7 || $scope.Sample.SampleTypeNumber == 9 || $scope.Sample.SampleTypeNumber == 12) {
-
-        } else if ($scope.Sample.SampleTypeNumber == 5) { // if stn is plant
-
-        } else { // if stn is Potato, Herbicide, Wastewater, Other
-
-        }                        
+            } // if stn is Feed, NIR, Water, Manure, Slurry, Fertilizer, Resin, Plant
+        } else if ($scope.Sample.SampleTypeNumber == 2 || $scope.Sample.SampleTypeNumber == 3 || $scope.Sample.SampleTypeNumber == 4 || $scope.Sample.SampleTypeNumber == 6 || $scope.Sample.SampleTypeNumber == 7 || $scope.Sample.SampleTypeNumber == 9 || $scope.Sample.SampleTypeNumber == 12 || $scope.Sample.SampleTypeNumber == 5)
+        {
+            $scope.SubSampleTypes = data.SubSampleTypes;
+            $scope.SubSubSampleType = {};
+            $scope.SubSubSampleTypes = [];
+        }                     
     };
     $scope.SetRecLayout = function () {
         switch ($scope.Sample.SampleTypeNumber) {
@@ -459,7 +460,7 @@
         return valid;
     }
 
-    /*---------------- Ajax calls for Customer, Grower, ReportName -------------*/
+    /*---------------- Ajax calls for Customer, Grower, ReportName, SubSubSampleTypes -------------*/
 
     $scope.FindCustomer = function () {
         if ($scope.entryForm.txtCustomerNumber.$valid) {
@@ -525,11 +526,26 @@
                   console.log(data);
                   $scope.TestItems = data;
               } else {
-                  alert("fuck!");
+                  alert("Error - data null");
               }
           })
           .error(function () {
-              alert("fuck!");
+              alert("DB Error");
+          });
+    };
+    $scope.GetSubSubSampleTypes = function () {
+        console.log("stn: " + $scope.Sample.SampleTypeNumber + ", sstn: " + $scope.SubSampleType.SubSampleTypeNumber);
+        $http.get('/SampleModels/GetSubSubSampleTypes?stn=' + $scope.Sample.SampleTypeNumber + '&sstn=' + $scope.SubSampleType.SubSampleTypeNumber)
+          .success(function (data) {
+              if (data != null) {
+                  console.log("SubSubSampleTypes: " + data);
+                  $scope.SubSubSampleTypes = data;
+              } else {
+                  alert("Error - data null");
+              }
+          })
+          .error(function () {
+              alert("DB Error");
           });
     };
 
@@ -679,6 +695,7 @@
         $scope.RemoveValidation();
     };
     $scope.ClearForm = function () {
+        console.log("inside ClearForm()");
         var stn = $scope.Sample.SampleTypeNumber;
         $scope.Sample = {};
         $scope.Sample.SampleTypeNumber = stn;
@@ -695,18 +712,17 @@
         if (action == 'prev') {
             $scope.ClearForm();
         } else if (action == 'find') {
-            console.log("hit find");
+            console.log("inside find");
             $scope.ClearForm();
             $scope.disabled = true;
             $scope.action = 'find';
             $scope.rightSide = false; // hide sample info and recommendations
-            $scope.RemoveValidation();
         } else if (action == 'add') {
             $scope.disabled = false;
             $scope.disabledUpdate = false;
             $scope.action = 'add';
-            var one = 1;  // use to set cost type to 'Standard' by default
-            $scope.Sample.CostTypeNumber = one.toString();
+            var standard = 1;  // use to set cost type to 'Standard' by default
+            $scope.Sample.CostTypeNumber = standard.toString();
             angular.element('#txtSampleID1').focus();
             $scope.Sample.LabNumber++;
             $scope.Sample.SampleID1 = "";
@@ -832,31 +848,31 @@
           .error(function () { });
     };
 
-    angular.element(document).keypress(function (e) {
-        console.log($scope.action);
-        if ($scope.action == 'add' || $scope.action == 'find' || $scope.action == 'update' || $scope.action == 'delete') {
-            if (e.which == 13 || e.keyCode == 13) {            
-                //$scope.SubmitForm($scope.action);
-                alert('You pressed enter!');
-            } else if ($.ui.keyCode.ESCAPE) {
-                $scope.CancelAction();
-            }
-        } else if (angular.isUndefined($scope.action) || $scope.action == "") {
-            console.log("keycode: " + e.keyCode + ", which: " +e.which);
-            if (e.which == 102 || e.keyCode == 102) { // f
-                console.log("find sample");
-                $scope.ToggleButtons('find');
-            } else if (e.which == 97 || e.keyCode == 97) { // a
-                $scope.ToggleButtons('add');
-            } else if (e.which == 117 || e.keyCode == 117) { // u
-                $scope.ToggleButtons('update');
-            } else if (e.which == 110 || e.keyCode == 110) { // n
-                $scope.ToggleButtons('next');
-            } else if (e.which == 112 || e.keyCode == 112) { // p
-                $scope.ToggleButtons('prev');
-            }
-        }
-    });
+    //angular.element(document).keypress(function (e) {
+    //    console.log($scope.action);
+    //    if ($scope.action == 'add' || $scope.action == 'find' || $scope.action == 'update' || $scope.action == 'delete') {
+    //        if (e.which == 13 || e.keyCode == 13) {            
+    //            //$scope.SubmitForm($scope.action);
+    //            alert('You pressed enter!');
+    //        } else if ($.ui.keyCode.ESCAPE) {
+    //            $scope.CancelAction();
+    //        }
+    //    } else if (angular.isUndefined($scope.action) || $scope.action == "") {
+    //        console.log("keycode: " + e.keyCode + ", which: " +e.which);
+    //        if (e.which == 102 || e.keyCode == 102) { // f
+    //            console.log("find sample");
+    //            $scope.ToggleButtons('find');
+    //        } else if (e.which == 97 || e.keyCode == 97) { // a
+    //            $scope.ToggleButtons('add');
+    //        } else if (e.which == 117 || e.keyCode == 117) { // u
+    //            $scope.ToggleButtons('update');
+    //        } else if (e.which == 110 || e.keyCode == 110) { // n
+    //            $scope.ToggleButtons('next');
+    //        } else if (e.which == 112 || e.keyCode == 112) { // p
+    //            $scope.ToggleButtons('prev');
+    //        }
+    //    }
+    //});
 })
  .directive('autoComplete', function () {
      return {

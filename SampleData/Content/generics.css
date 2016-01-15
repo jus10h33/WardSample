@@ -2,9 +2,11 @@
 .w-100 {
     width: 100%;
 }
-.d-inline-block {
-    display: inline-block;
+/* Columns */
+.cols-3 {
+    width: 30%;
 }
+
 /* Position */
 .p-relative { position: relative; }
 .p-absolute { position: absolute; }
@@ -23,6 +25,7 @@
 
 /* Display */
 .d-block { display: block; }
+.d-inline-block { display: inline-block; }
 
 /* Shadow */
 .t-s-0 { text-shadow: none; }

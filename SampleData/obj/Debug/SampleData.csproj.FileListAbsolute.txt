@@ -321,3 +321,5 @@ C:\Users\justin\projects\SampleData\SampleData\bin\Microsoft.Owin.Security.Googl
 C:\Users\justin\projects\SampleData\SampleData\bin\Microsoft.Owin.Security.Twitter.xml
 C:\Users\justin\projects\SampleData\SampleData\bin\Microsoft.Owin.Security.MicrosoftAccount.xml
 C:\Users\justin\projects\SampleData\SampleData\obj\Debug\SampleData.Migrations.CostAndDateReported.resources
+C:\Users\justin\projects\SampleData\SampleData\obj\Debug\SampleData.Migrations.AddedSubTypes.resources
+C:\Users\justin\projects\SampleData\SampleData\obj\Debug\SampleData.Migrations.fix.resources

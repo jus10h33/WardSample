@@ -30,7 +30,7 @@ namespace SampleData.Controllers
         // GET: SampleModels/Entry
         public ActionResult Entry()
         {         
-            return View();
+            return View(GetEntry(1));
         }
 
         #region "Helper Functions"
@@ -127,7 +127,12 @@ namespace SampleData.Controllers
                         entry.CropTypes = new List<string>();
                         foreach (SoilRecCropModels rc in soilRecCrops)
                         {
-                            entry.CropTypes.Add(rc.CropTypeNumber.ToString() + " - " + rc.CropTypeName + ":" + rc.Unit);
+                            var crop = rc.CropTypeNumber.ToString() + " - " + rc.CropTypeName;
+                            if (rc.Unit != null)
+                            {
+                                crop = crop + ":" + rc.Unit;
+                            }
+                            entry.CropTypes.Add(crop);
                         }
 
 
@@ -137,18 +142,13 @@ namespace SampleData.Controllers
                         }
                     }
                 }    
-                else if (entry.Sample.SampleTypeNumber == 2 || entry.Sample.SampleTypeNumber == 3 || entry.Sample.SampleTypeNumber == 4 || entry.Sample.SampleTypeNumber == 6 || entry.Sample.SampleTypeNumber == 7 || entry.Sample.SampleTypeNumber == 9 || entry.Sample.SampleTypeNumber == 12)
+                else if (entry.Sample.SampleTypeNumber == 2 || entry.Sample.SampleTypeNumber == 3 || entry.Sample.SampleTypeNumber == 4 || entry.Sample.SampleTypeNumber == 6 || entry.Sample.SampleTypeNumber == 7 || entry.Sample.SampleTypeNumber == 9 || entry.Sample.SampleTypeNumber == 12 || entry.Sample.SampleTypeNumber == 5)
                 {
-
+                    entry.SubSampleTypes = (from sst in db.SubSampleTypes
+                                            where sst.SampleTypeNumber == entry.Sample.SampleTypeNumber
+                                            select sst).ToList();
                 }
-                else if (entry.Sample.SampleTypeNumber == 5)
-                {
 
-                }  
-                else
-                {
-
-                }
                 return entry;
             }
             catch (Exception e)
@@ -515,7 +515,18 @@ namespace SampleData.Controllers
         {
            return db.PastCrops.ToList();
         }
-
+        public JsonResult GetSubSubSampleTypes(int stn, int sstn)
+        {
+            if (Validator.isNumeric(stn.ToString()) && Validator.isNumeric(sstn.ToString()))
+            {
+                var subSubSampleTypes = (from ssst in db.SubSubSampleTypes
+                                           where ssst.SampleTypeNumber == stn && ssst.SubSampleTypeNumber == sstn
+                                           select ssst).ToList();
+                return Json(subSubSampleTypes, JsonRequestBehavior.AllowGet);
+            }
+            else
+                return null;
+        }
         #endregion
         #region "Find Sample"
         [HttpPost]

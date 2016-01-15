@@ -19,7 +19,9 @@ namespace SampleData.Helpers
         public List<string> RecTypes { get; set; }
         public List<string> CropTypes { get; set; }
         public List<PastCropModels> PastCrops { get; set; } 
-        public List<int> TopSoils { get; set; }       
+        public List<int> TopSoils { get; set; }   
+        public List<SubSampleTypeModels> SubSampleTypes { get; set; }
+        public List<SubSubSampleTypeModels> SubSubSampleTypes { get; set; }    
         public List<string> Messages { get; set; }
     }
 }
