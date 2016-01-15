@@ -30,7 +30,7 @@ namespace SampleData.Controllers
         // GET: SampleModels/Entry
         public ActionResult Entry()
         {         
-            return View(GetEntry(1));
+            return View();
         }
 
         #region "Helper Functions"
