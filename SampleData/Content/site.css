@@ -57,8 +57,8 @@ label {
     background-color: #ddd;
     opacity: 1;
 }
-#entryForm .has-error {
-    border: 3px solid darkred;
+.has-error {
+    border: 3px solid darkred !important;
 }
 .error {
     color: red;

@@ -3,6 +3,7 @@
 
     /* ------------ OnLoad -------------*/
 
+    $scope.Samples = [];
     $scope.Sample = {};
     $scope.Customer = {};
     $scope.SoilSample = {};
@@ -22,9 +23,11 @@
     $scope.required = true;
     $scope.readonly = true;
     $scope.disabled = false;
+    $scope.disableNext = true;
+    $scope.disablePrev = false;
     $scope.disabledUpdate = false;    
     $scope.SetFormValues = function (data) {
-        $scope.readonly = true;  
+        $scope.readonly = true;
         $scope.Sample = data.Sample;
             $scope.Sample.SampleTypeNumber = data.Sample.SampleTypeNumber.toString();
             $scope.Sample.CostTypeNumber = data.Sample.CostTypeNumber.toString();
@@ -78,7 +81,8 @@
             $scope.SubSampleTypes = data.SubSampleTypes;
             $scope.SubSubSampleType = {};
             $scope.SubSubSampleTypes = [];
-        }                     
+        }
+        console.log("End of setformvalues");
     };
     $scope.SetRecLayout = function () {
         switch ($scope.Sample.SampleTypeNumber) {
@@ -134,7 +138,9 @@
     };
     $scope.Load = function (stn) {
         $http.get("/SampleModels/Load?sampleTypeNumber=" + stn).success(function (data) {
-            $scope.SetFormValues(data);
+            $scope.Samples = data;
+            console.log($scope.Samples[0]);
+            $scope.SetFormValues($scope.Samples[0]);
             $scope.SetRecLayout();
             return;
         }).error(function () { console.log("Load module - ajax call returned error"); return; });
@@ -217,8 +223,8 @@
         } else {
             valid = true;
         }
-        // Validate frmSampleLinks
 
+        // Validate frmSampleLinks
         if ($scope.IsPresent($scope.SoilSample.LinkedSampleLab) && $scope.SoilSample.LinkedSampleBatch != $scope.Sample.BatchNumber)
         {
             $scope.DisplayPopover("txtLinkSoilBatch", "Must match BatchNumber");
@@ -233,32 +239,32 @@
         }            
 
         // Validate Sample Recs
-        if ($scope.frmSampleRecs.$invalid) {
-            for (var i = 0; i < $scope.SampleRecs.length; i++) {
-                var recID = '#acoRecTypes' + i;
-                var cropID = '#acoCropTypes' + i;
-                var yieldID = '#txtYieldGoal' + i;
+        //if ($scope.frmSampleRecs.$invalid) {
+        //    for (var i = 0; i < $scope.SampleRecs.length; i++) {
+        //        var recID = '#acoRecTypes' + i;
+        //        var cropID = '#acoCropTypes' + i;
+        //        var yieldID = '#txtYieldGoal' + i;
 
-                if (angular.element(recID).val() != "") {
-                    angular.element(recID).addClass('has-error');
-                    recID = 'acoRecTypes' + i;
-                    $scope.DisplayPopover(recID, "Required field");
-                }
-                if (angular.element(cropID).val() != "") {
-                    angular.element(cropID).addClass('has-error');
-                    cropID = 'acoCropTypes' + i;
-                    $scope.DisplayPopover(cropID, "Required field");                    
-                }
-                if (!isNaN(angular.element(yieldID).val())) {
-                    angular.element(yieldID).addClass('has-error');
-                    yieldID = 'txtYieldGoal' + i;
-                    $scope.DisplayPopover(yieldID, "Must be numeric");                    
-                }
-            }
-            valid = false;
-        } else {
-            valid = true;
-        }
+        //        if (angular.element(recID).val() != "") {
+        //            angular.element(recID).addClass('has-error');
+        //            recID = 'acoRecTypes' + i;
+        //            $scope.DisplayPopover(recID, "Required field");
+        //        }
+        //        if (angular.element(cropID).val() != "") {
+        //            angular.element(cropID).addClass('has-error');
+        //            cropID = 'acoCropTypes' + i;
+        //            $scope.DisplayPopover(cropID, "Required field");                    
+        //        }
+        //        if (!isNaN(angular.element(yieldID).val())) {
+        //            angular.element(yieldID).addClass('has-error');
+        //            yieldID = 'txtYieldGoal' + i;
+        //            $scope.DisplayPopover(yieldID, "Must be numeric");                    
+        //        }
+        //    }
+        //    valid = false;
+        //} else {
+        //    valid = true;
+        //}
         if (valid) {
             $scope.RemoveValidation();
         } else {
@@ -437,7 +443,7 @@
             valid = $scope.ValidateTypes(i, 'Crop');
             valid = $scope.ValidateYieldGoal(i);
         }
-        if (valid) { // check for duplicates
+        if (valid && recLength > 1) { // check for duplicates
             var index = recLength - 1;
             var recs = $scope.Recommendations;
             var recID = '#acoRecTypes' + index;
@@ -584,7 +590,14 @@
             CropTypeNumber: 0,
             CropTypeName: "",
             YieldGoal: ""
-        }                
+        }
+        if (newRec.Priority == -1) {
+            newRec.Priority = 0;
+        }
+        if ($scope.Sample.SampleTypeNumber == 14) {
+            newRec.RecTypeNumber = 4;
+            newRec.RecTypeName = "4 - Haney";
+        }
         $scope.Recommendations.push(newRec);
     };
     $scope.AddRec = function () { // build rec and then place focus on RecType input for added rec
@@ -608,6 +621,9 @@
             $scope.SampleRecs.push(newRec);
             idx++;
 
+        }
+        if ($scope.SampleRecs.length == 1 && $scope.SampleRecs[0].RecTypeNumber == 0) {
+            $scope.SampleRecs = [];
         }
         return $scope.SampleRecs;
     };
@@ -711,6 +727,7 @@
         $scope.readonly = false;
         if (action == 'prev') {
             $scope.ClearForm();
+            $scope.readonly = true;
         } else if (action == 'find') {
             console.log("inside find");
             $scope.ClearForm();
@@ -733,6 +750,7 @@
             $scope.chkTopSoil = true;
             $scope.SoilSample = {};
             $scope.SoilSamples = {};
+            $scope.SoilSample.BeginningDepth = 0;
             $scope.Recommendations = [];
             $scope.BuildRec();
             $scope.RemoveValidation();
@@ -749,8 +767,7 @@
             $scope.RemoveValidation();
         } else if (action == 'next') {
             $scope.ClearForm();
-        } else {
-            console.log("fuck");
+            $scope.readonly = true;
         }
     };
     $scope.SetDateReported = function () {
@@ -814,13 +831,17 @@
             data: { 'sampleView': $scope.Sample, 'soilSample': $scope.SoilSample, 'sampleRecs': $scope.SampleRecs }
         })
           .success(function (data) {
+              console.log("add was success");
               if (data != null) {
-                  $scope.Load($scope.Sample.SampleTypeNumber);
+                  console.log("before setformvalues");
+                  $scope.SetFormValues(data);
+                  console.log("before setformvalues");
               } else {
-                  $scope.Load(1);
+                  console.log("data not null");
+                  $scope.Load($scope.Sample.SampleTypeNumber);
               }
           })
-          .error(function () { });
+          .error(function () { console.log("Error on AddSample")});
     };
     $scope.UpdateSample = function () {
         $scope.SetSoilSample();
@@ -842,10 +863,58 @@
             data: { 'sampleTypeNumber': $scope.Sample.SampleTypeNumber, 'batchNumber': $scope.Sample.BatchNumber, 'labNumber': $scope.Sample.LabNumber }
         })
           .success(function (data) {
-              $scope.Load();
+              $scope.Load($scope.Sample.SampleTypeNumber);
               console.log("Sample Deleted success");
           })
           .error(function () { });
+    };
+    $scope.Next = function (ln) {
+        var found = false;
+        var i = 0;
+        while (!found) {
+            if ($scope.Samples[i].Sample.LabNumber == ln) {
+                found = true;
+            }
+        }
+        if (found && i != 14) {
+            $scope.SetFormValues($scope.Samples[i + 1]);
+        }
+        else {
+            $http({
+                method: 'POST',
+                url: '/SampleModels/Next',
+                data: { 'sample': $scope.Sample }
+            })
+          .success(function (data) {
+              $scope.Samples = data;
+              $scope.SetFormValues($scope.Sample[0]);
+          })
+          .error(function () { });
+        }
+    };
+    $scope.Prev = function () {
+        var found = false;
+        var i = 0;
+        while (!found) {
+            if ($scope.Samples[i].Sample.LabNumber == ln) {
+                found = true;
+            }
+        }
+        if (found && i != 0) {
+            $scope.SetFormValues($scope.Samples[i - 1]);
+        }
+        else {
+            $http({
+                method: 'POST',
+                url: '/SampleModels/Prev',
+                data: { 'sample': $scope.Sample }
+            })
+          .success(function (data) {
+              $scope.Samples = data;
+              $scope.SetFormValues($scope.Sample[0]);
+          })
+          .error(function () { });
+        }
     };
 
     //angular.element(document).keypress(function (e) {
@@ -883,12 +952,12 @@
                  var length = term.length,
                      chck = false,
                      term = term.toUpperCase();
-                 for (var i = 0, z = data.length; i < z; i++) {
-                     var start = data[i].indexOf("-") + 2;
-                     if (data[i].substring(start, start + length).toUpperCase() === term || data[i].substring(0, length).toUpperCase() === term) {
-                         return true;
-                     }
-                 }
+                 //for (var i = 0, z = data.length; i < z; i++) {
+                 //    var start = data[i].indexOf("-") + 2;
+                 //    if (data[i].substring(start, start + length).toUpperCase() === term || data[i].substring(0, length).toUpperCase() === term) {
+                 //        return true;
+                 //    }
+                 //}
                  return false;
              }
              element.on("keyup", function (event) {
