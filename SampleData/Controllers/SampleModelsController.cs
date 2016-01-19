@@ -34,11 +34,10 @@ namespace SampleData.Controllers
         }
 
         #region "Helper Functions"
-        public JsonResult Load(int sampleTypeNumber)
+        public JsonResult Load(int sampleTypeNumber = 1)
         {          
             EntryReturn entry = new EntryReturn();
             entry = GetEntry(sampleTypeNumber);
-
             return Json(GetStart(entry.Sample.SampleTypeNumber, entry.Sample.BatchNumber, entry.Sample.LabNumber), JsonRequestBehavior.AllowGet);
         }
         private EntryReturn GetEntry(int stn, SampleModels sample = null)
@@ -842,13 +841,13 @@ namespace SampleData.Controllers
         {
             List<EntryReturn> entries = new List<EntryReturn>();
             var x = (from s in db.Samples
-                     where s.SampleTypeNumber == stn && s.BatchNumber >= bn && s.LabNumber <= ln
-                     orderby s.BatchNumber descending, s.LabNumber
-                     select s).ToList();
-            Debug.Print(x.Count.ToString());
-            for (var i = 0; i < 15; i++)
+                     where s.SampleTypeNumber == stn && s.BatchNumber <= bn && s.LabNumber <= ln
+                     orderby s.BatchNumber descending, s.LabNumber descending
+                     select s).ToList().Take(30);
+            Debug.Print(x.Count().ToString());
+            foreach (var e in x)
             {
-                entries.Add(GetEntry(x[i].SampleTypeNumber, x[i]));
+                entries.Add(GetEntry(e.SampleTypeNumber, e));
             }
 
             return Json(entries, JsonRequestBehavior.AllowGet);
@@ -860,27 +859,27 @@ namespace SampleData.Controllers
             List<EntryReturn> entries = new List<EntryReturn>();
             var x = (from s in db.Samples
                      where s.SampleTypeNumber == stn && s.BatchNumber >= bn && s.LabNumber > ln
-                     orderby s.BatchNumber descending, s.LabNumber
-                     select s).ToList();
-            for (var i = 0; i < 15; i++)
-            {                
-                entries.Add(GetEntry(x[i].SampleTypeNumber, x[i]));
+                     orderby s.BatchNumber descending, s.LabNumber descending
+                     select s).ToList().Take(30);
+            foreach (var e in x)
+            {
+                entries.Add(GetEntry(e.SampleTypeNumber, e));
             }
 
             return Json(entries, JsonRequestBehavior.AllowGet);
         }
         #endregion
-        #region "Next"
+        #region "Prev"
         public JsonResult GetPrev(int stn, int bn, int ln)
         {
             List<EntryReturn> entries = new List<EntryReturn>();
             var x = (from s in db.Samples
                      where s.SampleTypeNumber == stn && s.BatchNumber <= bn && s.LabNumber < ln
-                     orderby s.BatchNumber descending, s.LabNumber
-                     select s).ToList();
-            for (var i = 0; i < 15; i++)
+                     orderby s.BatchNumber descending, s.LabNumber descending
+                     select s).ToList().Take(30);
+            foreach (var e in x)
             {
-                entries.Add(GetEntry(x[i].SampleTypeNumber, x[i]));
+                entries.Add(GetEntry(e.SampleTypeNumber, e));
             }
 
             return Json(entries, JsonRequestBehavior.AllowGet);

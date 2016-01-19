@@ -3,7 +3,7 @@
 
     /* ------------ OnLoad -------------*/
 
-    $scope.Samples = [];
+    $scope.Samples = {};
     $scope.Sample = {};
     $scope.Customer = {};
     $scope.SoilSample = {};
@@ -27,6 +27,7 @@
     $scope.disablePrev = false;
     $scope.disabledUpdate = false;    
     $scope.SetFormValues = function (data) {
+        console.log("Begin SetFormValues: " + data.Sample.LabNumber);
         $scope.readonly = true;
         $scope.Sample = data.Sample;
             $scope.Sample.SampleTypeNumber = data.Sample.SampleTypeNumber.toString();
@@ -139,8 +140,8 @@
     $scope.Load = function (stn) {
         $http.get("/SampleModels/Load?sampleTypeNumber=" + stn).success(function (data) {
             $scope.Samples = data;
-            console.log($scope.Samples[0]);
-            $scope.SetFormValues($scope.Samples[0]);
+            console.log($scope.Samples);
+            $scope.SetFormValues($scope.Samples.Data[0]);
             $scope.SetRecLayout();
             return;
         }).error(function () { console.log("Load module - ajax call returned error"); return; });
@@ -868,50 +869,70 @@
           })
           .error(function () { });
     };
+    var y = 0;
     $scope.Next = function (ln) {
+        $scope.disablePrev = false;
         var found = false;
-        var i = 0;
-        while (!found) {
-            if ($scope.Samples[i].Sample.LabNumber == ln) {
+        while (!found && y >= 0) {
+            console.log("!found, y: " + y);
+            if ($scope.Samples.Data[y].Sample.LabNumber == ln) {
                 found = true;
             }
+            y--;
         }
-        if (found && i != 14) {
-            $scope.SetFormValues($scope.Samples[i + 1]);
-        }
-        else {
+        if (found && y >= 0) {
+            console.log("found, y: " + y);
+            $scope.SetFormValues($scope.Samples.Data[y])
+        } else {
             $http({
                 method: 'POST',
-                url: '/SampleModels/Next',
-                data: { 'sample': $scope.Sample }
+                url: '/SampleModels/GetNext',
+                data: { 'stn': $scope.Sample.SampleTypeNumber, 'bn': $scope.Sample.BatchNumber, 'ln': $scope.Sample.LabNumber }
             })
           .success(function (data) {
-              $scope.Samples = data;
-              $scope.SetFormValues($scope.Sample[0]);
+              console.log(data);
+              if (data != "") {
+                  $scope.Samples.Data = data;
+                  y = data.length - 1; 
+                  $scope.SetFormValues($scope.Samples.Data[y]);
+              } else {
+                  $scope.disableNext = true;
+                  y = 0;
+              }
+
           })
           .error(function () { });
         }
     };
-    $scope.Prev = function () {
+    $scope.Prev = function (ln) {
+        $scope.disableNext = false;
         var found = false;
-        var i = 0;
-        while (!found) {
-            if ($scope.Samples[i].Sample.LabNumber == ln) {
+        while (!found && y >= 0) {
+            console.log("!found, y: " + y);
+            if ($scope.Samples.Data[y].Sample.LabNumber == ln) {
                 found = true;
             }
+            y++;
         }
-        if (found && i != 0) {
-            $scope.SetFormValues($scope.Samples[i - 1]);
-        }
-        else {
+        if (found && y < $scope.Samples.Data.length) {
+            $scope.SetFormValues($scope.Samples.Data[y]);
+        } else {
             $http({
                 method: 'POST',
-                url: '/SampleModels/Prev',
-                data: { 'sample': $scope.Sample }
+                url: '/SampleModels/GetPrev',
+                data: { 'stn': $scope.Sample.SampleTypeNumber, 'bn': $scope.Sample.BatchNumber, 'ln': $scope.Sample.LabNumber }
             })
           .success(function (data) {
-              $scope.Samples = data;
-              $scope.SetFormValues($scope.Sample[0]);
+              if (data != "") {
+                  $scope.Samples.Data = data;
+                  console.log(data);
+                  console.log(data.length);
+                  $scope.SetFormValues($scope.Samples.Data[0]);
+              } else {
+                  $scope.disablePrev = true;
+                  y = $scope.Samples.Data.length - 1;
+              }
+              
           })
           .error(function () { });
         }
