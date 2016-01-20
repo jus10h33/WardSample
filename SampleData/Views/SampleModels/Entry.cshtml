@@ -142,7 +142,7 @@
                                 <button id="btnAddSample" class="btn btn-success btn-md m-l-30" ng-click="ToggleButtons('add')">Add</button>
                                 <button id="btnUpdateSample" class="btn btn-primary m-l-30" ng-click="ToggleButtons('update')">Update</button>
                                 <button id="btnDeleteSample" class="btn btn-danger btn-md m-l-30" ng-click="ToggleButtons('delete')">Delete</button>
-                                <button id="btnNextSample" class="btn btn-warning btn-md m-l-30" ng-disabled="disableNext" ng-click="Next(Sample.LabNumber)">Next</button>
+                                <button id="btnNextSample" class="btn btn-warning btn-md m-l-30 v-hidden" ng-disabled="disableNext" ng-click="Next(Sample.LabNumber)">Next</button>
                             </div>
                             <div id="btn-group-secondary" class="col-xs-12 col-sm-12 col-md-12 col-md-offset-0 col-lg-12 col-lg-offset-1 m-t-10" ng-hide="readonly">
                                 <button id="btnBlank" class="btn btn-default btn-md vis-hidden"></button>
@@ -162,36 +162,32 @@
                         </div>
                         <div class="modal-body">
                             <h4>Test Items</h4>
-                            <div style="height:300px;">
+                            <div class="clearfix">
                                 <div class="d-block" ng-repeat="ti in TestItems">
-                                    <div class="cols-3">
-                                        <input type="checkbox" id="ti.TestItemNumber" name="ti.TestItemNumber" value="ti.TestItemNumber" />
+                                    <div class="cols-5 pull-left">
+                                        <input type="checkbox" id="ti.TestItemNumber" name="ti.TestItemNumber" value="ti.TestItemNumber" ng-click="AddItemToList(ti.TestItemNumber)" />
                                         <label>{{ti.TestItemName}}</label>
                                     </div>
                                 </div>
-                            </div>
-                            <h4>Tests:</h4>
-                            <div>
+                            </div>                            
+                            <div ng-show="reportShown">
+                                <h4>Tests:</h4>
                                 <table>
                                     <thead>
                                         <tr><th>Test #</th><th>Test Name</th></tr>
                                     </thead>
                                     <tbody>
-                                        @*<tr ng-repeat="">
-                                                <td><input type="radio" id="" name="" value="" />{{}}</td>
-                                                <td></td>
-                                                <td></td>
-                                            </tr>*@
+                                            <tr ng-repeat="r in Reports">
+                                                <td><input type="radio" id="r.ReportName" name="reports" value="r.ReportTypeNumber" />{{r.ReportName}}</td>
+                                            </tr>                                    
                                     </tbody>
                                 </table>
-
-
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-success">Select</button>
-                            <button type="button" class="btn btn-info">Display List</button>
-                            <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-success" ng-show="reportShown" ng-click="SelectReport()">Select</button>
+                            <button type="button" class="btn btn-info" ng-click="GetReportList()">Display List</button>
+                            <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="CancelAction()">Cancel</button>
                         </div>
                     </div><!-- /.modal-content -->
                 </div><!-- /.modal-dialog -->

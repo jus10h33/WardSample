@@ -1,11 +1,10 @@
 /* Width */
-.w-100 {
-    width: 100%;
-}
+.w-100 { width: 100%; }
+
 /* Columns */
-.cols-3 {
-    width: 30%;
-}
+.cols-3 { width: 30%; }
+.cols-4 { width: 25%; }
+.cols-5 { width: 20%; }
 
 /* Position */
 .p-relative { position: relative; }
@@ -26,6 +25,9 @@
 /* Display */
 .d-block { display: block; }
 .d-inline-block { display: inline-block; }
+.d-inline { display: inline; }
+.v-visible { visibility: visible !important }
+.v-hidden { visibility: hidden !important }
 
 /* Shadow */
 .t-s-0 { text-shadow: none; }

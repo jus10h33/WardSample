@@ -14,6 +14,8 @@
     $scope.SampleRecs = [];
     $scope.Recommendations = [];
     $scope.TestItems = [];
+    $scope.Reports = [];
+    $scope.ItemsSelected = [];
     $scope.SubSampleType = {};
     $scope.SubSampleTypes = [];
     $scope.regNumeric = new RegExp("^[0-9]+$");
@@ -23,9 +25,8 @@
     $scope.required = true;
     $scope.readonly = true;
     $scope.disabled = false;
-    $scope.disableNext = true;
-    $scope.disablePrev = false;
-    $scope.disabledUpdate = false;    
+    $scope.disabledUpdate = false;
+    $scope.reportShown = false;
     $scope.SetFormValues = function (data) {
         console.log("Begin SetFormValues: " + data.Sample.LabNumber);
         $scope.readonly = true;
@@ -539,9 +540,26 @@
           .error(function () {
               alert("DB Error");
           });
-    };
+    };        
+    $scope.GetReportList = function () {
+        $http.get('/SampleModels/GetReportList?stn=' + $scope.Sample.SampleTypeNumber + '&rins=' + $scope.ItemsSelected)
+          .success(function (data) {
+              if (data != null) {
+                  console.log(data);
+                  if (data != null) {
+                      $scope.Reports = data;
+                      $scope.reportShown = true;
+                  }                  
+              } else {
+                  alert("Error - data null");
+              }
+          })
+          .error(function () {
+              alert("DB Error");
+          });
+        
+    };    
     $scope.GetSubSubSampleTypes = function () {
-        console.log("stn: " + $scope.Sample.SampleTypeNumber + ", sstn: " + $scope.SubSampleType.SubSampleTypeNumber);
         $http.get('/SampleModels/GetSubSubSampleTypes?stn=' + $scope.Sample.SampleTypeNumber + '&sstn=' + $scope.SubSampleType.SubSampleTypeNumber)
           .success(function (data) {
               if (data != null) {
@@ -632,7 +650,7 @@
         for (var i = 0; i < $scope.Recommendations.length; i++) {
             $scope.Recommendations[i].Priority = i;
         }
-    }
+    };
 
     /*-------------- Form Submission --------------*/
 
@@ -709,6 +727,7 @@
         $scope.disabled = false;
         $scope.disabledUpdate = false;
         $scope.action = "";
+        $scope.reportShown = false;
         $scope.RemoveValidation();
     };
     $scope.ClearForm = function () {
@@ -788,6 +807,36 @@
             angular.element('#txtBeginDepth').focus();
         }
     };
+    $scope.SetBtnVisibility = function (btn, action) {
+        var btnID = '#' + btn;
+        if (action == 'hide') {
+            angular.element(btnID).addClass("v-hidden");
+        } else {
+            angular.element(btnID).removeClass("v-hidden");
+        }
+    };
+    $scope.AddItemToList = function (testItemNumber) {
+        console.log("TestItemNumber: " + testItemNumber);
+        var found = false;
+        var i = 0
+        while (!found && i < $scope.TestItems.length) {
+            if ($scope.ItemsSelected[i] == testItemNumber) {
+                found = true;
+            }
+            i++;
+        }
+        if (!found) { // add
+            $scope.ItemsSelected.push(testItemNumber);
+        } else { // remove
+            $scope.ItemsSelected.splice(i - 1, 1);
+        }
+    };
+    $scope.SelectReport = function () {
+        $scope.Sample.ReportTypeNumber = angular.element('input[name=reports]:checked').val();
+        $scope.GetReportName();
+        $('#testItemsModal').modal('hide')
+        $scope.reportShown = false;
+    };
 
     /* -------------------- Setting values -----------------------*/
 
@@ -803,7 +852,7 @@
             $scope.SoilSample.LinkedSampleBatch = $scope.SoilSample.LinkedSampleBatch;
             $scope.SoilSample.LinkedSampleLab = $scope.SoilSample.LinkedSampleLab;
         }
-    }
+    };
 
     /* -------------- Find, Add, Update, Delete ------------------*/
 
@@ -817,6 +866,8 @@
               if (data.Sample != null) {
                   $scope.SetFormValues(data);
                   $scope.SetRecLayout();
+                  $scope.SetBtnVisibility('btnPrevSample', '');
+                  $scope.SetBtnVisibility('btnNextSample', '');
                   $scope.Messages = [];
               } else {
                   angular.element("#txtLabNumber").focus();
@@ -871,17 +922,15 @@
     };
     var y = 0;
     $scope.Next = function (ln) {
-        $scope.disablePrev = false;
+        $scope.SetBtnVisibility('btnPrevSample', '');
         var found = false;
         while (!found && y >= 0) {
-            console.log("!found, y: " + y);
             if ($scope.Samples.Data[y].Sample.LabNumber == ln) {
                 found = true;
             }
             y--;
         }
         if (found && y >= 0) {
-            console.log("found, y: " + y);
             $scope.SetFormValues($scope.Samples.Data[y])
         } else {
             $http({
@@ -893,21 +942,20 @@
               console.log(data);
               if (data != "") {
                   $scope.Samples.Data = data;
-                  y = data.length - 1; 
+                  y = data.length - 1;
                   $scope.SetFormValues($scope.Samples.Data[y]);
               } else {
-                  $scope.disableNext = true;
+                  $scope.SetBtnVisibility('btnNextSample', 'hide');
                   y = 0;
               }
-
           })
           .error(function () { });
         }
     };
     $scope.Prev = function (ln) {
-        $scope.disableNext = false;
+        $scope.SetBtnVisibility('btnNextSample', '');
         var found = false;
-        while (!found && y >= 0) {
+        while (!found && y >= 0 && y < $scope.Samples.Data.length) {
             console.log("!found, y: " + y);
             if ($scope.Samples.Data[y].Sample.LabNumber == ln) {
                 found = true;
@@ -925,14 +973,12 @@
           .success(function (data) {
               if (data != "") {
                   $scope.Samples.Data = data;
-                  console.log(data);
-                  console.log(data.length);
                   $scope.SetFormValues($scope.Samples.Data[0]);
+                  y = 0;
               } else {
-                  $scope.disablePrev = true;
+                  $scope.SetBtnVisibility('btnPrevSample', 'hide');
                   y = $scope.Samples.Data.length - 1;
-              }
-              
+              }              
           })
           .error(function () { });
         }

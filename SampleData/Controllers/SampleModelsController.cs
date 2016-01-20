@@ -526,6 +526,19 @@ namespace SampleData.Controllers
         {
            return db.PastCrops.ToList();
         }
+        private JsonResult GetReportList(int stn, List<int> rins)
+        {
+            Debug.Print("STN: " + stn);
+            foreach (int x in rins)
+            {
+                Debug.Print("ReportItemNumber: " + x);
+            }
+            //List<ReportModels> reports = (from r in db.Reports
+            //                              where r.SampleTypeNumber = stn && r.ReportTypeNumber ==
+            //                              select r).ToList();
+            //return Json(reports, JsonRequestBehavior.AllowGet);
+            return null;
+        }
         public JsonResult GetSubSubSampleTypes(int stn, int sstn)
         {
             if (Validator.isNumeric(stn.ToString()) && Validator.isNumeric(sstn.ToString()))
