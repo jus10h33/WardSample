@@ -22,7 +22,7 @@ namespace SampleData.DAL
         public DbSet<ReportItemModels> ReportItems { get; set; }
         public DbSet<ReportItemTestModels> ReportItemTests { get; set; }
         public DbSet<ReportModels> Reports { get; set; }
-        public DbSet<ReportReportItemModels> ReportReportItems { get; set; }
+        public DbSet<ReportReportItemModels> ReportReportItems { get; set; }       
         public DbSet<TestItemModels> TestItems { get; set; }
         public DbSet<SampleColumns> SampleColumns { get; set; }
         public DbSet<SoilSampleRecModels> SoilSampleRecs { get; set; }
@@ -31,6 +31,7 @@ namespace SampleData.DAL
         public DbSet<SoilRecCropModels> SoilRecCrops { get; set; }
         public DbSet<PastCropModels> PastCrops { get; set; }
         public DbSet<SubSampleTypeModels> SubSampleTypes { get; set; }
+        public DbSet<SubSampleInfoModels> SubSampleInfo { get; set; }
         public DbSet<SubSubSampleTypeModels> SubSubSampleTypes { get; set; }
         public DbSet<OldInvoiceTable> OldInvoices { get; set; }
         public DbSet<w_Samples> OldSamples { get; set; }

@@ -323,3 +323,5 @@ C:\Users\justin\projects\SampleData\SampleData\bin\Microsoft.Owin.Security.Micro
 C:\Users\justin\projects\SampleData\SampleData\obj\Debug\SampleData.Migrations.CostAndDateReported.resources
 C:\Users\justin\projects\SampleData\SampleData\obj\Debug\SampleData.Migrations.AddedSubTypes.resources
 C:\Users\justin\projects\SampleData\SampleData\obj\Debug\SampleData.Migrations.fix.resources
+C:\Users\justin\projects\SampleData\SampleData\obj\Debug\SampleData.Migrations.AddedSubSampleInfoModels.resources
+C:\Users\justin\projects\SampleData\SampleData\obj\Debug\SampleData.Migrations.fix2.resources

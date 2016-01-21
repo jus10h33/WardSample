@@ -1,0 +1,116 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ordesignerObjectsDiagram dslVersion="1.0.0.0" absoluteBounds="0, 0, 11, 11.75" name="WardDBContext">
+  <DataContextMoniker Name="/WardDBContextDataContext" />
+  <nestedChildShapes>
+    <classShape Id="4a373ad7-c61b-4844-8a2b-a8d0f3f54276" absoluteBounds="6.875, 0.5, 2, 2.5401025390625">
+      <DataClassMoniker Name="/WardDBContextDataContext/ReportModel" />
+      <nestedChildShapes>
+        <elementListCompartment Id="7e38805c-d591-40b2-8d6e-65a5710ad1ea" absoluteBounds="6.8900000000000006, 0.96, 1.9700000000000002, 1.9801025390625" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="6f2ad6fc-3cfa-4baa-87a0-8de56aabc120" absoluteBounds="6.875, 7.25, 2, 1.3862939453125">
+      <DataClassMoniker Name="/WardDBContextDataContext/ReportReportItemModel" />
+      <nestedChildShapes>
+        <elementListCompartment Id="34d41548-cd18-4dae-af14-f57c931d6721" absoluteBounds="6.8900000000000006, 7.71, 1.9700000000000002, 0.8262939453125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="2c21f73f-cb51-4643-a434-173ff038599d" absoluteBounds="0.5, 0.5, 2, 8.3091455078125">
+      <DataClassMoniker Name="/WardDBContextDataContext/CustomerModel" />
+      <nestedChildShapes>
+        <elementListCompartment Id="d11de45e-b6a1-48b9-bfc9-e2dde8594ff9" absoluteBounds="0.51500000000000057, 0.96, 1.9700000000000002, 7.7491455078125009" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="1a2d108b-e401-4f4d-85c7-4aa57da32427" absoluteBounds="4.75, 0.5, 2, 2.7324039713541666">
+      <DataClassMoniker Name="/WardDBContextDataContext/InvoiceModel" />
+      <nestedChildShapes>
+        <elementListCompartment Id="cc0822cc-1a7e-49de-a179-b0fe0025db78" absoluteBounds="4.7650000000000006, 0.96, 1.9700000000000002, 2.1724039713541665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="8e8c64be-369c-49d1-ac70-d2a71a8b4eb6" absoluteBounds="2.625, 0.5, 2, 5.4246240234375">
+      <DataClassMoniker Name="/WardDBContextDataContext/SampleModel" />
+      <nestedChildShapes>
+        <elementListCompartment Id="6a30e22e-6b7d-4414-bf99-678db644bd76" absoluteBounds="2.6399999999999997, 0.96, 1.9700000000000002, 4.8646240234375" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="f936854e-0fd2-4b7b-943a-b778e5b2447f" absoluteBounds="6.875, 3.125, 2, 2.5401025390625">
+      <DataClassMoniker Name="/WardDBContextDataContext/ReportItemModel" />
+      <nestedChildShapes>
+        <elementListCompartment Id="4753415a-6a8a-449e-bc86-d345428f3f4d" absoluteBounds="6.89, 3.585, 1.9700000000000002, 1.9801025390625" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="fbb679b3-66ac-4ebe-8e13-b94e60d0749c" absoluteBounds="6.875, 5.75, 2, 1.3862939453125">
+      <DataClassMoniker Name="/WardDBContextDataContext/ReportItemTestModel" />
+      <nestedChildShapes>
+        <elementListCompartment Id="52903a3f-666d-4fb6-88cf-d7b220390825" absoluteBounds="6.89, 6.21, 1.9700000000000002, 0.8262939453125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="ed833650-3132-429a-aa55-7a48d579427f" absoluteBounds="4.75, 3.375, 2, 1.3862939453125">
+      <DataClassMoniker Name="/WardDBContextDataContext/PastCropModel" />
+      <nestedChildShapes>
+        <elementListCompartment Id="77ded5ea-4f68-417b-9d01-44d474521752" absoluteBounds="4.765, 3.835, 1.9700000000000002, 0.8262939453125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="e532a717-1f73-4b1f-a7a5-99ff2ddabd41" absoluteBounds="0.5, 9, 2, 1.7708968098958331">
+      <DataClassMoniker Name="/WardDBContextDataContext/SampleColumn" />
+      <nestedChildShapes>
+        <elementListCompartment Id="fee8470b-e591-494c-80e4-01d39fa726ea" absoluteBounds="0.51500000000000012, 9.46, 1.9700000000000002, 1.2108968098958333" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="1e36d109-77f3-4f72-9329-21eca0309f4c" absoluteBounds="6.875, 8.75, 2, 1.1939925130208333">
+      <DataClassMoniker Name="/WardDBContextDataContext/SampleTypeModel" />
+      <nestedChildShapes>
+        <elementListCompartment Id="6429e8dc-294b-4945-8a95-0b248f4f21db" absoluteBounds="6.89, 9.21, 1.9700000000000002, 0.63399251302083326" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="f2ed3629-12a2-4e91-aeb6-20293337c8da" absoluteBounds="4.75, 4.875, 2, 1.3862939453125">
+      <DataClassMoniker Name="/WardDBContextDataContext/SoilRecCropModel" />
+      <nestedChildShapes>
+        <elementListCompartment Id="97f7cb01-f81a-4ccb-bca1-e9f474959613" absoluteBounds="4.765, 5.335, 1.9700000000000002, 0.8262939453125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="62cab450-c4ab-4128-96b1-afdfa65c38e0" absoluteBounds="4.75, 6.375, 2, 1.1939925130208333">
+      <DataClassMoniker Name="/WardDBContextDataContext/SoilRecTypeModel" />
+      <nestedChildShapes>
+        <elementListCompartment Id="881542ff-efee-4833-8936-fd33dd3ba72a" absoluteBounds="4.765, 6.835, 1.9700000000000002, 0.63399251302083326" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="788521a2-fe91-497c-af0a-26ffadec0c19" absoluteBounds="2.625, 6, 2, 2.3478011067708335">
+      <DataClassMoniker Name="/WardDBContextDataContext/SoilSampleModel" />
+      <nestedChildShapes>
+        <elementListCompartment Id="50931631-d1a7-43aa-b3ec-4e35c1404657" absoluteBounds="2.6399999999999997, 6.4600000000000009, 1.9700000000000002, 1.7878011067708335" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="0cf229f8-bf37-47c9-9c5f-26477af157b4" absoluteBounds="2.625, 8.5, 2, 1.9631982421875">
+      <DataClassMoniker Name="/WardDBContextDataContext/SoilSampleRecModel" />
+      <nestedChildShapes>
+        <elementListCompartment Id="39c68a2a-466b-4b11-a55b-15203742dbc3" absoluteBounds="2.6399999999999997, 8.96, 1.9700000000000002, 1.4031982421875" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="704409c6-319f-421d-b067-2fef2210d2e5" absoluteBounds="7, 10.125, 2, 1.3862939453125">
+      <DataClassMoniker Name="/WardDBContextDataContext/SubSampleTypeModel" />
+      <nestedChildShapes>
+        <elementListCompartment Id="7f143568-877d-4ea1-935e-e0e7301a0bab" absoluteBounds="7.015, 10.585, 1.9700000000000002, 0.8262939453125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <associationConnector edgePoints="[(7.9375 : 9.94399251302083); (7.9375 : 10.125)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/WardDBContextDataContext/SampleTypeModel/SampleTypeModel_SubSampleTypeModel" />
+      <nodes>
+        <classShapeMoniker Id="1e36d109-77f3-4f72-9329-21eca0309f4c" />
+        <classShapeMoniker Id="704409c6-319f-421d-b067-2fef2210d2e5" />
+      </nodes>
+    </associationConnector>
+    <classShape Id="c816559a-a8d7-4e1b-b198-b28d043600f7" absoluteBounds="4.75, 7.75, 2, 1.5785953776041666">
+      <DataClassMoniker Name="/WardDBContextDataContext/SubSubSampleTypeModel" />
+      <nestedChildShapes>
+        <elementListCompartment Id="41ff49fa-12a7-410b-8011-d491e98a02fc" absoluteBounds="4.765, 8.21, 1.9700000000000002, 1.0185953776041665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <associationConnector edgePoints="[(7 : 10.8181469726562); (5.75 : 10.8181469726562); (5.75 : 9.32859537760417)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/WardDBContextDataContext/SubSampleTypeModel/SubSampleTypeModel_SubSubSampleTypeModel" />
+      <nodes>
+        <classShapeMoniker Id="704409c6-319f-421d-b067-2fef2210d2e5" />
+        <classShapeMoniker Id="c816559a-a8d7-4e1b-b198-b28d043600f7" />
+      </nodes>
+    </associationConnector>
+  </nestedChildShapes>
+</ordesignerObjectsDiagram>

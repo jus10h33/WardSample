@@ -16,6 +16,7 @@
     $scope.TestItems = [];
     $scope.Reports = [];
     $scope.ItemsSelected = [];
+    $scope.SubSampleInfo = {};
     $scope.SubSampleType = {};
     $scope.SubSampleTypes = [];
     $scope.regNumeric = new RegExp("^[0-9]+$");
@@ -81,6 +82,10 @@
         } else if ($scope.Sample.SampleTypeNumber == 2 || $scope.Sample.SampleTypeNumber == 3 || $scope.Sample.SampleTypeNumber == 4 || $scope.Sample.SampleTypeNumber == 6 || $scope.Sample.SampleTypeNumber == 7 || $scope.Sample.SampleTypeNumber == 9 || $scope.Sample.SampleTypeNumber == 12 || $scope.Sample.SampleTypeNumber == 5)
         {
             $scope.SubSampleTypes = data.SubSampleTypes;
+            $scope.SubSampleInfo.SubSampleTypeNumber = data.SubSampleInfo.SubSampleTypeNumber.toString();
+            if ($scope.Sample.SampleTypeNumber == 5) {
+                $scope.SubSampleInfo.SubSubSampleTypeNumber = data.SubSampleInfo.SubSubSampleTypeNumber.toString();
+            }
             $scope.SubSubSampleType = {};
             $scope.SubSubSampleTypes = [];
         }
@@ -154,7 +159,7 @@
     $scope.ValidateForm = function () {
         // Validate sample entry
         if ($scope.entryForm.$invalid) {
-            if ($scope.entryForm.cboCostType.$invalid) {
+            if ($scope.entryForm.cboCostTypeNumber.$invalid) {
                 $scope.DisplayPopover("cboSampleTypeNumber", "Required field");
                 angular.element('#cboSampleTypeNumber').addClass('has-error');
             }
@@ -542,6 +547,7 @@
           });
     };        
     $scope.GetReportList = function () {
+        console.log($scope.ItemsSelected);
         $http.get('/SampleModels/GetReportList?stn=' + $scope.Sample.SampleTypeNumber + '&rins=' + $scope.ItemsSelected)
           .success(function (data) {
               if (data != null) {
@@ -699,16 +705,21 @@
             }
         }
         if ($scope.ValidateForm()) {
-            if ($scope.ValidateRecs()) {
-                $scope.SampleRecs = $scope.ConvertRecs();
-                if (action == 'add') {
-                    $scope.AddSample();
-                } else if (action == 'update') {
-                    $scope.UpdateSample();
+            if ($scope.Sample.SampleTypeNumber == 1 || $scope.Sample.SampleTypeNumber == 14) {
+                if ($scope.ValidateRecs()) {
+                    $scope.SampleRecs = $scope.ConvertRecs();                    
                 }
-                $scope.disabled = true;
-                $scope.disabledUpdate = false;
-            }            
+            } else if ($scope.Sample.SampleTypeNumber == 2 || $scope.Sample.SampleTypeNumber == 3 || $scope.Sample.SampleTypeNumber == 4 || $scope.Sample.SampleTypeNumber == 6 || $scope.Sample.SampleTypeNumber == 7 || $scope.Sample.SampleTypeNumber == 9 || $scope.Sample.SampleTypeNumber == 12 || $scope.Sample.SampleTypeNumber == 5)
+            {
+                $scope.SetSubSampleInfo();
+            }
+            if (action == 'add') {
+                $scope.AddSample();
+            } else if (action == 'update') {
+                $scope.UpdateSample();
+            }
+            $scope.disabled = true;
+            $scope.disabledUpdate = false;
         }
     };
 
@@ -853,6 +864,19 @@
             $scope.SoilSample.LinkedSampleLab = $scope.SoilSample.LinkedSampleLab;
         }
     };
+    $scope.SetSubSampleInfo = function () {
+        $scope.SubSampleInfo.SampleTypeNumber = $scope.Sample.SampleTypeNumber;
+        $scope.SubSampleInfo.BatchNumber = $scope.Sample.BatchNumber;
+        $scope.SubSampleInfo.LabNumber = $scope.Sample.LabNumber;
+        if ($scope.Sample.SampleTypeNumber != 5) {
+            $scope.SubSampleInfo.SubSampleTypeNumber = angular.element('#cboType').val();
+            console.log("SubSampleTypeNumber1: " + $scope.SubSampleInfo.SubSampleTypeNumber);
+            $scope.SubSampleInfo.SubSubSampleTypeNumber == 0;
+        } else {
+            $scope.SubSampleInfo.SubSampleTypeNumber = angular.element('#cboPlantType').val();
+            $scope.SubSampleInfo.SubSampleTypeNumber = angular.element('#cboPlant').val();
+        }
+    };
 
     /* -------------- Find, Add, Update, Delete ------------------*/
 
@@ -879,8 +903,8 @@
         $scope.SetSoilSample();
         $http({
             method: 'POST',
-            url: '/SampleModels/AddSample',
-            data: { 'sampleView': $scope.Sample, 'soilSample': $scope.SoilSample, 'sampleRecs': $scope.SampleRecs }
+            url: '/SampleModels/AddSample', 
+            data: { 'sampleView': $scope.Sample, 'soilSample': $scope.SoilSample, 'sampleRecs': $scope.SampleRecs, 'subSampleInfo': $scope.SubSampleInfo }
         })
           .success(function (data) {
               console.log("add was success");
@@ -901,7 +925,7 @@
         $http({
             method: 'POST',
             url: '/SampleModels/UpdateSample',
-            data: { 'sampleView': $scope.Sample, 'soilSample': $scope.SoilSample, 'sampleRecs': $scope.SampleRecs }
+            data: { 'sampleView': $scope.Sample, 'soilSample': $scope.SoilSample, 'sampleRecs': $scope.SampleRecs, 'subSampleInfo': $scope.SubSampleInfo }
         })
           .success(function (data) {
               $scope.SetFormValues(data);

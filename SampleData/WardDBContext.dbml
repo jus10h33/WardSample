@@ -1,0 +1,209 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="WardDB" Class="WardDBContextDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="WebSettings" ConnectionString="Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\WardDB.mdf;Integrated Security=True" SettingsObjectName="System.Configuration.ConfigurationManager.ConnectionStrings" SettingsPropertyName="WardDBContext" Provider="System.Data.SqlClient" />
+  <Table Name="dbo.ReportModels" Member="ReportModels">
+    <Type Name="ReportModel" Id="ID1">
+      <Column Name="SampleTypeNumber" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="ReportTypeNumber" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="ReportName" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="StandardCost" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="PrimaryVolumeCost" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="SecondaryVolumeCost" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="FileReferenceNumber" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="SplitOverride" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ReportReportItemModels" Member="ReportReportItemModels">
+    <Type Name="ReportReportItemModel">
+      <Column Name="SampleTypeNumber" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="ReportTypeNumber" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="ReportItemNumber" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="dbo.CustomerModels" Member="CustomerModels">
+    <Type Name="CustomerModel">
+      <Column Name="CustomerNumber" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="LastName" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="FirstName" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="Company" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="Address1" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="Address2" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="City" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="State" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="Zip" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="Country" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="BillToCompany" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Discount" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="ActiveCustomer" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Mailresults" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="MailedCopies" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="FaxResults" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="EmailResults" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="PostResultsToWeb" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Newsletter" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="WardGuide" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="ChristmasCard" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="NamaCust" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="SendPDF" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="PrintPDFHeaderFooter" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="EPAInfo" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="PrintInvNow" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="PrintInvLater" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="SendInvoice" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="SendTextData" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="SplitGrowers" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="SplitFields" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="ExtraInformation" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="CustomerStatus" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="LastModified" Type="System.DateTime" DbType="DateTime2" CanBeNull="true" />
+      <Column Name="MachineID" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="UserID" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="SampleEntryInformation" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="CreatedOn" Type="System.DateTime" DbType="DateTime2" CanBeNull="true" />
+      <Column Name="ForceStandardSoilReport" Type="System.Int32" DbType="Int" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.InvoiceModels" Member="InvoiceModels">
+    <Type Name="InvoiceModel">
+      <Column Name="Row" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="InvoiceNumber" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="CustomerNumber" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="SampleTypeNumber" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="BatchNumber" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="DateReported" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="PostageCost" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="Comments" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="CustomerDiscount" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="Locked" Type="System.Byte" DbType="TinyInt" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.SampleModels" Member="SampleModels">
+    <Type Name="SampleModel">
+      <Column Name="SampleTypeNumber" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="BatchNumber" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="LabNumber" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="CustomerNumber" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="InvoiceNumber" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="DateReceived" Type="System.DateTime" DbType="DateTime2 NOT NULL" CanBeNull="false" />
+      <Column Name="ReportTypeNumber" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="ReportCost" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="SampleID1" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="SampleID2" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="SampleID3" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="SampleID4" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="Reviewed" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Emailed" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Uploaded" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Faxed" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Hold" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Status" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="LastModified" Type="System.DateTime" DbType="DateTime2" CanBeNull="true" />
+      <Column Name="ReviewerID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Grower" Type="System.String" DbType="NVarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Column Name="SampleID5" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="DateReported" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="CostTypeNumber" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ReportItemModels" Member="ReportItemModels">
+    <Type Name="ReportItemModel">
+      <Column Name="SampleTypeNumber" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="ReportItemNumber" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="ReportItemName" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="ReportItemDisplay" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="ReportItemCost" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Column Name="EquationNumber" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="ReportItemDecimals" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="MinimumValue" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Column Name="ReportOrder" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ReportItemTestModels" Member="ReportItemTestModels">
+    <Type Name="ReportItemTestModel">
+      <Column Name="SampleTypeNumber" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="ReportItemNumber" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="TestItemNumber" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="dbo.PastCropModels" Member="PastCropModels">
+    <Type Name="PastCropModel">
+      <Column Name="PastCropNumber" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="PastCropName" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="NitrogenCredit" Type="System.Double" DbType="Float" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.SampleColumns" Member="SampleColumns">
+    <Type Name="SampleColumn">
+      <Column Name="SampleTypeNumber" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="ColumnOrder" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Label" Type="System.String" DbType="VarChar(150) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Model" Type="System.String" DbType="NVarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Column Name="ID" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.SampleTypeModels" Member="SampleTypeModels">
+    <Type Name="SampleTypeModel">
+      <Column Name="SampleTypeNumber" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="SampleTypeName" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Association Name="SampleTypeModel_SubSampleTypeModel" Member="SubSampleTypeModels" ThisKey="SampleTypeNumber" OtherKey="SampleTypeNumber" Type="SubSampleTypeModel" />
+    </Type>
+  </Table>
+  <Table Name="dbo.SoilRecCropModels" Member="SoilRecCropModels">
+    <Type Name="SoilRecCropModel">
+      <Column Name="CropTypeNumber" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="CropTypeName" Type="System.String" DbType="NVarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Column Name="Unit" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.SoilRecTypeModels" Member="SoilRecTypeModels">
+    <Type Name="SoilRecTypeModel">
+      <Column Name="RecTypeNumber" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="RecTypeName" Type="System.String" DbType="NVarChar(MAX) NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="dbo.SoilSampleModels" Member="SoilSampleModels">
+    <Type Name="SoilSampleModel">
+      <Column Name="BatchNumber" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="LabNumber" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="BeginningDepth" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="EndingDepth" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="PastCropNumber" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="LinkedSampleBatch" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="LinkedSampleLab" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="TopSoil" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="dbo.SoilSampleRecModels" Member="SoilSampleRecModels">
+    <Type Name="SoilSampleRecModel">
+      <Column Name="BatchNumber" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="LabNumber" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Priority" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="RecTypeNumber" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="CropTypeNumber" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="YieldGoal" Type="System.Double" DbType="Float NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="dbo.SubSampleTypeModels" Member="SubSampleTypeModels">
+    <Type Name="SubSampleTypeModel">
+      <Column Name="SampleTypeNumber" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="SubSampleTypeNumber" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="SubSampleTypeName" Type="System.String" DbType="NVarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Association Name="SubSampleTypeModel_SubSubSampleTypeModel" Member="SubSubSampleTypeModels" ThisKey="SampleTypeNumber,SubSampleTypeNumber" OtherKey="SampleTypeNumber,SubSampleTypeNumber" Type="SubSubSampleTypeModel" />
+      <Association Name="SampleTypeModel_SubSampleTypeModel" Member="SampleTypeModel" ThisKey="SampleTypeNumber" OtherKey="SampleTypeNumber" Type="SampleTypeModel" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.SubSubSampleTypeModels" Member="SubSubSampleTypeModels">
+    <Type Name="SubSubSampleTypeModel">
+      <Column Name="SampleTypeNumber" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="SubSampleTypeNumber" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="SubSubSampleTypeNumber" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="SubSubSampleTypeName" Type="System.String" DbType="NVarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Association Name="SubSampleTypeModel_SubSubSampleTypeModel" Member="SubSampleTypeModel" ThisKey="SampleTypeNumber,SubSampleTypeNumber" OtherKey="SampleTypeNumber,SubSampleTypeNumber" Type="SubSampleTypeModel" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Function Name="dbo.ListReportsByContent" Method="ListReportsByContent">
+    <Parameter Name="ST" Parameter="sT" Type="System.Byte" DbType="TinyInt" />
+    <Parameter Name="RIL" Parameter="rIL" Type="System.String" DbType="VarChar(200)" />
+    <ElementType IdRef="ID1" />
+  </Function>
+</Database>

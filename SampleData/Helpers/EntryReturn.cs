@@ -15,6 +15,9 @@ namespace SampleData.Helpers
         public List<SampleColumns> SampleColumns { get; set;}
         public List<Recommendations> Recommendations { get; set; }
         public SoilSampleModels SoilSample { get; set; }
+        public SubSampleTypeModels SubSampleType { get; set; }
+        public SubSubSampleTypeModels SubSubSampleType { get; set; }
+        public SubSampleInfoModels SubSampleInfo { get; set; }
         public List<SoilSampleModels> SoilSamples { get; set; }
         public List<string> RecTypes { get; set; }
         public List<string> CropTypes { get; set; }

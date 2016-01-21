@@ -104,7 +104,7 @@
                 <div id="other" class="m-10" ng-show="otherView">
                     <div class="form-group">
                         <label class="control-label">Type</label>
-                        <select id="cboType" class="form-control" ng-model="SubSampleType.SubSampleTypeNumber">
+                        <select id="cboType" class="form-control" ng-readonly="readonly" ng-disabled="disabled" ng-model="SubSampleInfo.SubSampleTypeNumber">
                             <option ng-repeat="sst in SubSampleTypes" value="{{sst.SubSampleTypeNumber}}">{{sst.SubSampleTypeName}}</option>
                         </select>
                     </div>
@@ -112,13 +112,13 @@
                 <div id="plant" class="m-10" ng-show="plantView">
                     <div class="form-group">
                         <label class="control-label">Type</label>
-                        <select id="cboPlantType" class="form-control" ng-blur="GetSubSubSampleTypes()" ng-model="SubSampleType.SubSampleTypeNumber">
+                        <select id="cboPlantType" class="form-control" ng-blur="GetSubSubSampleTypes()" ng-readonly="readonly" ng-disabled="disabled" ng-model="SubSampleInfo.SubSampleTypeNumber">
                             <option ng-repeat="sst in SubSampleTypes" value="{{sst.SubSampleTypeNumber}}">{{sst.SubSampleTypeName}}</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label class="control-label">Plant</label>
-                        <select id="cboPlant" class="form-control" ng-model="SubSubSampleType.SubSubSampleTypeNumber">
+                        <select id="cboPlant" class="form-control" ng-readonly="readonly" ng-disabled="disabled" ng-model="SubSampleInfo.SubSubSampleTypeNumber">
                             <option ng-repeat="ssst in SubSubSampleTypes" value="{{ssst.SubSubSampleTypeNumber}}">{{ssst.SubSubSampleTypeName}}</option>
                         </select>
                     </div>
