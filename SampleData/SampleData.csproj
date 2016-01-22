@@ -182,6 +182,7 @@
     <Compile Include="Helpers\JavaScriptConvert.cs" />
     <Compile Include="Helpers\Recommendations.cs" />
     <Compile Include="Helpers\ResultsFor.cs" />
+    <Compile Include="Helpers\SampleInfoReturn.cs" />
     <Compile Include="Helpers\SampleModelsControllerBak.cs" />
     <Compile Include="Helpers\SampleResult.cs" />
     <Compile Include="Helpers\EntryReturn.cs" />
@@ -553,9 +554,7 @@
       <DependentUpon>WardDBContext.dbml</DependentUpon>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="ViewModels\NewFolder1\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />
   </ItemGroup>

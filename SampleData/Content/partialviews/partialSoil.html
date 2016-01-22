@@ -41,7 +41,7 @@
                                             <tr><th>Lab</th><th>Depth</th></tr>
                                         </thead>
                                         <tbody>
-                                            <tr ng-repeat="ss in SoilSamples"><td class="edit text-right">{{ss.LabNumber}}</td><td class="edit">{{ss.BeginningDepth}}:{{ss.EndingDepth}}</td></tr>
+                                            <tr ng-repeat="ss in SoilSamples"><!--<td class="edit text-right">{{ss.LabNumber}}</td><td class="edit">{{ss.BeginningDepth}}:{{ss.EndingDepth}}</td>--></tr>
                                         </tbody>
                                     </table>
                                 </div>
@@ -87,7 +87,7 @@
                     </div>-->
                         </form>
                     </div>
-                    <div id="sampleRecsBottom" class="pull-left clear-left" ng-show="Recommendations.length > 0">
+                    <div id="sampleRecsBottom" class="pull-left clear-left" ng-show="Recommendations.length > 0  || action == 'add' || action == 'update'">
                         <h3>Soil Recommendations</h3>
                         <form id="frmSampleRecs" name="frmSampleRecs" class="col-lg-12" novalidate>
                             <span>Rec Type</span><span style="margin-left: 160px;">Crop Type</span><span style="margin-left: 115px;">Yield Goal</span>

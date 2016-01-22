@@ -3,49 +3,69 @@
 
     /* ------------ OnLoad -------------*/
 
-    $scope.Samples = {};
+    $scope.Samples = [];
     $scope.Sample = {};
+    $scope.Customers = [];
     $scope.Customer = {};
     $scope.SoilSample = {};
-    $scope.entryForm = {};
-    $scope.frmSampleInfo = {};
-    $scope.frmSampleLinks = {};
-    $scope.frmSampleRecs = {};
+    $scope.CropTypes = [];
+    $scope.RecTypes = [];
+    $scope.PastCrops = [];    
     $scope.SampleRecs = [];
     $scope.Recommendations = [];
     $scope.TestItems = [];
     $scope.Reports = [];
     $scope.ItemsSelected = [];
     $scope.SubSampleInfo = {};
-    $scope.SubSampleType = {};
     $scope.SubSampleTypes = [];
-    $scope.regNumeric = new RegExp("^[0-9]+$");
-    $scope.regBatch = new RegExp('20(0[6-9]|[1-9][0-9])(0[1-9]|1[0-2])(0[1-9]|[1-2][0-9]|3[0-1])');
-    $scope.regDate = new RegExp('^20(0[7-9]|[1-9][0-9])-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$');
+    $scope.entryForm = {};
+    $scope.frmSampleInfo = {};
+    $scope.frmSampleLinks = {};
+    $scope.frmSampleRecs = {};    
     $scope.action == ""
     $scope.required = true;
     $scope.readonly = true;
     $scope.disabled = false;
     $scope.disabledUpdate = false;
     $scope.reportShown = false;
-    $scope.SetFormValues = function (data) {
-        console.log("Begin SetFormValues: " + data.Sample.LabNumber);
+    $scope.regNumeric = new RegExp("^[0-9]+$");
+    $scope.regBatch = new RegExp('20(0[6-9]|[1-9][0-9])(0[1-9]|1[0-2])(0[1-9]|[1-2][0-9]|3[0-1])');
+    $scope.regDate = new RegExp('^20(0[7-9]|[1-9][0-9])-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$');
+
+    $scope.SetGenerics = function (sampleTypes, sampleColumns, samples, customers, soilSamples, subSampleInfos, cropTypes, recTypes, pastCrops, subSampleTypes, messages) {
+        $scope.disableNext = true;
+        $scope.Samples = samples;
+        $scope.Customers = customers;
+        $scope.SoilSamples = soilSamples;        
+        var stn = $scope.Samples[0].SampleTypeNumber; console.log("stn: " + stn);
+        if (stn == 1 || stn == 14) {
+            $scope.CropTypes = cropTypes;
+            $scope.RecTypes = recTypes;
+            $scope.PastCrops = pastCrops;
+        } else if (stn == 2, stn == 3, stn == 4, stn == 5, stn == 6, stn == 7, stn == 9, stn == 12) {
+            $scope.SubSampleTypes = subSampleTypes;
+            $scope.SubSampleInfos = subSampleInfos;
+        }      
+        $scope.Messages = messages;
+        $scope.SampleTypes = sampleTypes;
+        $scope.SampleColumns = sampleColumns;
+    };
+    $scope.SetFormValues = function (sample, customer, soilSample, recommendations, subSampleInfo) {
+        console.log("Begin SetFormValues: " + sample.LabNumber);
         $scope.readonly = true;
-        $scope.Sample = data.Sample;
-            $scope.Sample.SampleTypeNumber = data.Sample.SampleTypeNumber.toString();
-            $scope.Sample.CostTypeNumber = data.Sample.CostTypeNumber.toString();
-            $scope.Sample.DateReceived = new Date(parseInt(data.Sample.DateReceived.replace(/(^.*\()|([+-].*$)/g, ''))).toISOString().substring(0, 10);
-            $scope.Sample.DateReported = new Date(parseInt(data.Sample.DateReported.replace(/(^.*\()|([+-].*$)/g, ''))).toISOString().substring(0, 10);
-        $scope.Customer = data.Customer;            
-            angular.element("#acoGrower").autocomplete({ source: data.Customer.Growers, minLength: 0 }).focus(function () { $(this).autocomplete("search"); });
-        $scope.SampleTypes = data.SampleTypes;
-        $scope.SampleColumns = data.SampleColumns;
-        $scope.Messages = data.Messages;
+        $scope.Sample = sample;        
+            $scope.Sample.SampleTypeNumber = sample.SampleTypeNumber.toString();
+            $scope.Sample.CostTypeNumber = sample.CostTypeNumber.toString();
+            $scope.Sample.DateReceived = new Date(parseInt(sample.DateReceived.replace(/(^.*\()|([+-].*$)/g, ''))).toISOString().substring(0, 10);
+            $scope.Sample.DateReported = new Date(parseInt(sample.DateReported.replace(/(^.*\()|([+-].*$)/g, ''))).toISOString().substring(0, 10);
+        $scope.Customer = customer;            
+            angular.element("#acoGrower").autocomplete({ source: customer.Growers, minLength: 0 }).focus(function () { $(this).autocomplete("search"); });        
+        
         // if stn is soil or bio
         if ($scope.Sample.SampleTypeNumber == 1 || $scope.Sample.SampleTypeNumber == 14) {
-            if (data.SoilSample != null) {
-                $scope.SoilSample = data.SoilSample;
-                $scope.SoilSample.PastCropNumber = data.SoilSample.PastCropNumber.toString();
+            if (soilSample != null) {
+                $scope.SoilSample = soilSample;
+                $scope.SoilSample.PastCropNumber = soilSample.PastCropNumber.toString();
                 if ($scope.SoilSample.TopSoil == 1) {
                     $scope.chkTopSoil = true;
                 }
@@ -58,19 +78,13 @@
                     $scope.chkLinkToSoil = true;
                     $scope.chkTopSoil = false;
                 }
-                $scope.TopSoils = data.TopSoils;
-                $scope.SoilSamples = data.SoilSamples;
-                $scope.RecTypes = data.RecTypes;
-                $scope.CropTypes = data.CropTypes;
-                $scope.PastCrops = data.PastCrops;
-            
-                if ($scope.Sample.SampleTypeNumber == 1) {
-                    $scope.RecTypes = data.RecTypes;
-                }
-                $scope.CropTypes = data.CropTypes;
-                if (data.Recommendations != null && data.Recommendations.length != 0) {
-                    $scope.Recommendations = data.Recommendations;
+                //$scope.TopSoils = data.TopSoils;
+                //$scope.SoilSamples = data.SoilSamples;
+
+                if (recommendations != null && recommendations.length != 0) {
+                    $scope.Recommendations = recommendations;
                     if ($scope.Sample.SampleTypeNumber == 14) {
+                        $scope.RecTypes = [];
                         for (var i = 0; i < $scope.Recommendations.length; i++) {
                             var id = '#acoRecTypes' + i;
                             $scope.Recommendations[i].RecTypeName = '4 - Haney';
@@ -81,15 +95,14 @@
             } // if stn is Feed, NIR, Water, Manure, Slurry, Fertilizer, Resin, Plant
         } else if ($scope.Sample.SampleTypeNumber == 2 || $scope.Sample.SampleTypeNumber == 3 || $scope.Sample.SampleTypeNumber == 4 || $scope.Sample.SampleTypeNumber == 6 || $scope.Sample.SampleTypeNumber == 7 || $scope.Sample.SampleTypeNumber == 9 || $scope.Sample.SampleTypeNumber == 12 || $scope.Sample.SampleTypeNumber == 5)
         {
-            $scope.SubSampleTypes = data.SubSampleTypes;
-            $scope.SubSampleInfo.SubSampleTypeNumber = data.SubSampleInfo.SubSampleTypeNumber.toString();
+            $scope.SubSampleInfo.SubSampleTypeNumber = subSampleInfo.SubSampleTypeNumber.toString();
+            $scope.SubSampleInfo = subSampleInfo;
             if ($scope.Sample.SampleTypeNumber == 5) {
-                $scope.SubSampleInfo.SubSubSampleTypeNumber = data.SubSampleInfo.SubSubSampleTypeNumber.toString();
+                $scope.SubSampleInfo.SubSubSampleTypeNumber = subSampleInfo.SubSubSampleTypeNumber.toString();
             }
             $scope.SubSubSampleType = {};
             $scope.SubSubSampleTypes = [];
         }
-        console.log("End of setformvalues");
     };
     $scope.SetRecLayout = function () {
         switch ($scope.Sample.SampleTypeNumber) {
@@ -145,9 +158,15 @@
     };
     $scope.Load = function (stn) {
         $http.get("/SampleModels/Load?sampleTypeNumber=" + stn).success(function (data) {
-            $scope.Samples = data;
-            console.log($scope.Samples);
-            $scope.SetFormValues($scope.Samples.Data[0]);
+            console.log(data.SampleInfoReturn);
+            $scope.SetGenerics(data.SampleTypes, data.SampleColumns, data.SampleInfoReturn.Samples, data.SampleInfoReturn.Customers, data.SampleInfoReturn.SoilSamples, data.SampleInfoReturn.SubSampleInfos, data.CropTypes, data.RecTypes, data.PastCrops, data.SubSampleTypes, data.Messages)
+            var stn = data.SampleInfoReturn.Samples[0].SampleTypeNumber;
+            if (stn == 1 || stn == 14) {
+                $scope.SetFormValues(data.SampleInfoReturn.Samples[0], data.SampleInfoReturn.Customers[0], data.SampleInfoReturn.SoilSamples[0], data.SampleInfoReturn.Recommendations[0], null);
+            } else if (stn == 2 || stn == 3 || stn == 4 || stn == 5 || stn == 6 || stn == 7 || stn == 9 || stn == 12) {
+                $scope.SetFormValues(data.SampleInfoReturn.Samples[0], data.SampleInfoReturn.Customers[0], data.SampleInfoReturn.SoilSamples[0], data.SampleInfoReturn.Recommendations[0], data.SampleInfoReturn.SubSampleInfos[0]);
+            }
+            
             $scope.SetRecLayout();
             return;
         }).error(function () { console.log("Load module - ajax call returned error"); return; });
@@ -783,7 +802,6 @@
             $scope.SoilSamples = {};
             $scope.SoilSample.BeginningDepth = 0;
             $scope.Recommendations = [];
-            $scope.BuildRec();
             $scope.RemoveValidation();
         } else if (action == 'update') {
             $scope.disabled = false;
@@ -946,16 +964,21 @@
     };
     var y = 0;
     $scope.Next = function (ln) {
-        $scope.SetBtnVisibility('btnPrevSample', '');
+        $scope.disablePrev = false;
         var found = false;
         while (!found && y >= 0) {
-            if ($scope.Samples.Data[y].Sample.LabNumber == ln) {
+            if ($scope.Samples[y].LabNumber == ln) {
                 found = true;
             }
             y--;
         }
         if (found && y >= 0) {
-            $scope.SetFormValues($scope.Samples.Data[y])
+            var stn = $scope.Samples[0].SampleTypeNumber;
+            if (stn == 1 || stn == 14) {
+                $scope.SetFormValues($scope.Samples[y], $scope.Customers[y], $scope.SoilSamples[y], $scope.Recommendations[y], null);
+            } else if (stn == 2 || stn == 3 || stn == 4 || stn == 5 || stn == 6 || stn == 7 || stn == 9 || stn == 12) {
+                $scope.SetFormValues($scope.Samples[y], $scope.Customers[y], $scope.SoilSamples[y], $scope.Recommendations[y], $scope.SubSampleInfos[y]);
+            }
         } else {
             $http({
                 method: 'POST',
@@ -965,11 +988,20 @@
           .success(function (data) {
               console.log(data);
               if (data != "") {
-                  $scope.Samples.Data = data;
-                  y = data.length - 1;
-                  $scope.SetFormValues($scope.Samples.Data[y]);
+                  $scope.Samples = data.Samples;
+                  $scope.Customers = data.Customers;
+                  $scope.SoilSamples = data.SoilSamples;
+                  $scope.Recommendations = data.Recommendations;
+                  $scope.SubSampleInfos = data.SubSampleInfos;
+                  y = $scope.Samples.length - 1;
+                  var stn = $scope.Samples[0].SampleTypeNumber;
+                  if (stn == 1 || stn == 14) {
+                      $scope.SetFormValues($scope.Samples[y], $scope.Customers[y], $scope.SoilSamples[y], $scope.Recommendations[y], null);
+                  } else if (stn == 2 || stn == 3 || stn == 4 || stn == 5 || stn == 6 || stn == 7 || stn == 9 || stn == 12) {
+                      $scope.SetFormValues($scope.Samples[y], $scope.Customers[y], $scope.SoilSamples[y], $scope.Recommendations[y], $scope.SubSampleInfos[y]);
+                  }
               } else {
-                  $scope.SetBtnVisibility('btnNextSample', 'hide');
+                  $scope.disableNext = true;
                   y = 0;
               }
           })
@@ -977,17 +1009,22 @@
         }
     };
     $scope.Prev = function (ln) {
-        $scope.SetBtnVisibility('btnNextSample', '');
+        $scope.disableNext = false;
         var found = false;
-        while (!found && y >= 0 && y < $scope.Samples.Data.length) {
+        while (!found && y >= 0 && y < $scope.Samples.length) {
             console.log("!found, y: " + y);
-            if ($scope.Samples.Data[y].Sample.LabNumber == ln) {
+            if ($scope.Samples[y].LabNumber == ln) {
                 found = true;
             }
             y++;
         }
-        if (found && y < $scope.Samples.Data.length) {
-            $scope.SetFormValues($scope.Samples.Data[y]);
+        if (found && y < $scope.Samples.length) {
+            var stn = $scope.Samples[0].SampleTypeNumber;
+            if (stn == 1 || stn == 14) {
+                $scope.SetFormValues($scope.Samples[y], $scope.Customers[y], $scope.SoilSamples[y], $scope.Recommendations[y], null);
+            } else if (stn == 2 || stn == 3 || stn == 4 || stn == 5 || stn == 6 || stn == 7 || stn == 9 || stn == 12) {
+                $scope.SetFormValues($scope.Samples[y], $scope.Customers[y], $scope.SoilSamples[y], $scope.Recommendations[y], $scope.SubSampleInfos[y]);
+            }
         } else {
             $http({
                 method: 'POST',
@@ -996,12 +1033,21 @@
             })
           .success(function (data) {
               if (data != "") {
-                  $scope.Samples.Data = data;
-                  $scope.SetFormValues($scope.Samples.Data[0]);
-                  y = 0;
+                  $scope.Samples = data.Samples;
+                  $scope.Customers = data.Customers;
+                  $scope.SoilSamples = data.SoilSamples;
+                  $scope.Recommendations = data.Recommendations;
+                  $scope.SubSampleInfos = data.SubSampleInfos;
+                  y = 0
+                  var stn = $scope.Samples[0].SampleTypeNumber;
+                  if (stn == 1 || stn == 14) {
+                      $scope.SetFormValues($scope.Samples[y], $scope.Customers[y], $scope.SoilSamples[y], $scope.Recommendations[y], null);
+                  } else if (stn == 2 || stn == 3 || stn == 4 || stn == 5 || stn == 6 || stn == 7 || stn == 9 || stn == 12) {
+                      $scope.SetFormValues($scope.Samples[y], $scope.Customers[y], $scope.SoilSamples[y], $scope.Recommendations[y], $scope.SubSampleInfos[y]);
+                  }
               } else {
-                  $scope.SetBtnVisibility('btnPrevSample', 'hide');
-                  y = $scope.Samples.Data.length - 1;
+                  $scope.disablePrev = true;
+                  y = $scope.Samples.length - 1;
               }              
           })
           .error(function () { });

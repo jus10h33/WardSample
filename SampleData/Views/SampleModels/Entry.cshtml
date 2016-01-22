@@ -1,9 +1,9 @@
 ﻿<div class="m-t-20 m-b-20">
-    <h2 class="page-title inline-block m-t-0 m-b-0">Samples</h2>
-    @*<div class="alert alert-danger inline-block m-l-5 m-b-0" style="width:84%;" role="alert" ng-show="Messages.length == 0">
-            <span ng-repeat="m in Messages">{{m}}</span>
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        </div>*@
+    <h2 class="page-title inline-block m-t-0 m-b-0" style="position:relative;bottom:15px;">Samples</h2>
+    <div class="alert alert-danger inline-block m-l-5 m-b-0" style="width:84%;" role="alert" ng-show="Messages.length == 0">
+        <span ng-repeat="m in Messages">{{m}}</span>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    </div>
 </div>
 <div class="main-content">
     <section id="left" class="col-sm-12 col-md-12 col-lg-7">
@@ -138,11 +138,11 @@
                             <input id="txtAction" class="hidden-lg hidden-md hidden-sm hidden-xs" ng-model="action" />
                             <div id="btn-group-primary" class="col-xs-12 col-sm-12 col-md-12 col-lg-11" ng-show="readonly">
                                 <button id="btnPrevSample" class="btn btn-warning btn-md" ng-disabled="disablePrev" ng-click="Prev(Sample.LabNumber)">Prev</button>
+                                <button id="btnNextSample" class="btn btn-warning btn-md m-l-30" ng-disabled="disableNext" ng-click="Next(Sample.LabNumber)">Next</button>
                                 <button id="btnFindSample" class="btn btn-info btn-md m-l-30" ng-click="ToggleButtons('find')">Find</button>
                                 <button id="btnAddSample" class="btn btn-success btn-md m-l-30" ng-click="ToggleButtons('add')">Add</button>
                                 <button id="btnUpdateSample" class="btn btn-primary m-l-30" ng-click="ToggleButtons('update')">Update</button>
-                                <button id="btnDeleteSample" class="btn btn-danger btn-md m-l-30" ng-click="ToggleButtons('delete')">Delete</button>
-                                <button id="btnNextSample" class="btn btn-warning btn-md m-l-30 v-hidden" ng-disabled="disableNext" ng-click="Next(Sample.LabNumber)">Next</button>
+                                <button id="btnDeleteSample" class="btn btn-danger btn-md m-l-30" ng-click="ToggleButtons('delete')">Delete</button>                                
                             </div>
                             <div id="btn-group-secondary" class="col-xs-12 col-sm-12 col-md-12 col-md-offset-0 col-lg-12 col-lg-offset-1 m-t-10" ng-hide="readonly">
                                 <button id="btnBlank" class="btn btn-default btn-md vis-hidden"></button>
