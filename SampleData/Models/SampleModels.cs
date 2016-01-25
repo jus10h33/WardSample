@@ -22,7 +22,7 @@ namespace SampleData.Models
         [Required]
         public int LabNumber { get; set; }
         [Required]
-        public int CustomerNumber { get; set; }
+        public int AccountNumber { get; set; }
         [Required]
         public int InvoiceNumber { get; set; }
         [Required]

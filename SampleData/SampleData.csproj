@@ -179,13 +179,18 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\GenericInfo.cs" />
+    <Compile Include="Helpers\GenericMasters.cs" />
     <Compile Include="Helpers\JavaScriptConvert.cs" />
     <Compile Include="Helpers\Recommendations.cs" />
     <Compile Include="Helpers\ResultsFor.cs" />
     <Compile Include="Helpers\SampleInfoReturn.cs" />
     <Compile Include="Helpers\SampleModelsControllerBak.cs" />
     <Compile Include="Helpers\SampleResult.cs" />
-    <Compile Include="Helpers\EntryReturn.cs" />
+    <Compile Include="Helpers\OtherReturn.cs" />
+    <Compile Include="Helpers\SoilMasters.cs" />
+    <Compile Include="Helpers\SoilReturn.cs" />
+    <Compile Include="Helpers\SubSampleReturn.cs" />
     <Compile Include="Helpers\Validator.cs" />
     <Compile Include="Migrations\201512091621319_Startup.cs" />
     <Compile Include="Migrations\201512091621319_Startup.Designer.cs">
@@ -297,15 +302,13 @@
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
-    <Compile Include="Models\CustomerModels.cs" />
+    <Compile Include="Models\AccountModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\InvoiceModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
-    <Compile Include="Models\OldInvoiceTable.cs" />
     <Compile Include="Models\SubSampleInfoModels.cs" />
     <Compile Include="Models\SubSampleTypeModels.cs" />
     <Compile Include="Models\SubSubSampleTypeModels.cs" />
-    <Compile Include="Models\w_Samples.cs" />
     <Compile Include="Models\PastCropModels.cs" />
     <Compile Include="Models\ReportItemModels.cs" />
     <Compile Include="Models\ReportItemTestModels.cs" />
@@ -316,12 +319,12 @@
     <Compile Include="Models\SampleTypeModels.cs" />
     <Compile Include="Models\SoilRecCropModels.cs" />
     <Compile Include="Models\SoilRecTypeModels.cs" />
-    <Compile Include="Models\SoilSampleModels.cs" />
+    <Compile Include="Models\SampleChainModels.cs" />
     <Compile Include="Models\SoilSampleRecModels.cs" />
     <Compile Include="Models\TestItemModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
-    <Compile Include="ViewModels\CustomerViewModel.cs" />
+    <Compile Include="ViewModels\AccountViewModel.cs" />
     <Compile Include="ViewModels\InvoiceViewModel.cs" />
     <Compile Include="ViewModels\ReportViewModel.cs" />
     <Compile Include="ViewModels\SampleViewModel.cs" />

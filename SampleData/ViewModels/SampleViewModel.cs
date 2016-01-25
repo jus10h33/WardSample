@@ -10,7 +10,7 @@ namespace SampleData.ViewModels
         public int SampleTypeNumber { get; set; }
         public int BatchNumber { get; set; }
         public int LabNumber { get; set; }
-        public int CustomerNumber { get; set; }
+        public int AccountNumber { get; set; }
         public int InvoiceNumber { get; set; }
         public DateTime DateReceived { get; set; }
         public DateTime DateReported { get; set; }

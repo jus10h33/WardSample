@@ -28,7 +28,7 @@ namespace SampleData.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            CustomerModels customerModels = db.Customers.Find(id);
+            AccountModels customerModels = db.Customers.Find(id);
             if (customerModels == null)
             {
                 return HttpNotFound();
@@ -47,7 +47,7 @@ namespace SampleData.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "CustomerNumber,LastName,FirstName,Company,Address1,Address2,City,State,Zip,Country,BillToCompany,Discount,ActiveCustomer,Mailresults,MailedCopies,FaxResults,EmailResults,PostResultsToWeb,Newsletter,WardGuide,ChristmasCard,NamaCust,SendPDF,PrintPDFHeaderFooter,EPAInfo,PrintInvNow,PrintInvLater,SendInvoice,SendTextData,SplitGrowers,SplitFields,ExtraInformation,CustomerStatus,LastModified,MachineID,UserID,SampleEntryInformation,CreatedOn,ForceStandardSoilReport")] CustomerModels customerModels)
+        public ActionResult Create([Bind(Include = "CustomerNumber,LastName,FirstName,Company,Address1,Address2,City,State,Zip,Country,BillToCompany,Discount,ActiveCustomer,Mailresults,MailedCopies,FaxResults,EmailResults,PostResultsToWeb,Newsletter,WardGuide,ChristmasCard,NamaCust,SendPDF,PrintPDFHeaderFooter,EPAInfo,PrintInvNow,PrintInvLater,SendInvoice,SendTextData,SplitGrowers,SplitFields,ExtraInformation,CustomerStatus,LastModified,MachineID,UserID,SampleEntryInformation,CreatedOn,ForceStandardSoilReport")] AccountModels customerModels)
         {
             if (ModelState.IsValid)
             {
@@ -66,7 +66,7 @@ namespace SampleData.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            CustomerModels customerModels = db.Customers.Find(id);
+            AccountModels customerModels = db.Customers.Find(id);
             if (customerModels == null)
             {
                 return HttpNotFound();
@@ -79,7 +79,7 @@ namespace SampleData.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "CustomerNumber,LastName,FirstName,Company,Address1,Address2,City,State,Zip,Country,BillToCompany,Discount,ActiveCustomer,Mailresults,MailedCopies,FaxResults,EmailResults,PostResultsToWeb,Newsletter,WardGuide,ChristmasCard,NamaCust,SendPDF,PrintPDFHeaderFooter,EPAInfo,PrintInvNow,PrintInvLater,SendInvoice,SendTextData,SplitGrowers,SplitFields,ExtraInformation,CustomerStatus,LastModified,MachineID,UserID,SampleEntryInformation,CreatedOn,ForceStandardSoilReport")] CustomerModels customerModels)
+        public ActionResult Edit([Bind(Include = "CustomerNumber,LastName,FirstName,Company,Address1,Address2,City,State,Zip,Country,BillToCompany,Discount,ActiveCustomer,Mailresults,MailedCopies,FaxResults,EmailResults,PostResultsToWeb,Newsletter,WardGuide,ChristmasCard,NamaCust,SendPDF,PrintPDFHeaderFooter,EPAInfo,PrintInvNow,PrintInvLater,SendInvoice,SendTextData,SplitGrowers,SplitFields,ExtraInformation,CustomerStatus,LastModified,MachineID,UserID,SampleEntryInformation,CreatedOn,ForceStandardSoilReport")] AccountModels customerModels)
         {
             if (ModelState.IsValid)
             {
@@ -97,7 +97,7 @@ namespace SampleData.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            CustomerModels customerModels = db.Customers.Find(id);
+            AccountModels customerModels = db.Customers.Find(id);
             if (customerModels == null)
             {
                 return HttpNotFound();
@@ -110,7 +110,7 @@ namespace SampleData.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            CustomerModels customerModels = db.Customers.Find(id);
+            AccountModels customerModels = db.Customers.Find(id);
             db.Customers.Remove(customerModels);
             db.SaveChanges();
             return RedirectToAction("Index");

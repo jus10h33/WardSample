@@ -14,7 +14,7 @@ namespace SampleData.Models
         [Key]
         [Column(Order = 2)]
         [Required]
-        public int CustomerNumber { get; set; }
+        public int AccountNumber { get; set; }
         [Key]
         [Column(Order = 3)]
         [Required]
@@ -26,7 +26,7 @@ namespace SampleData.Models
         public DateTime DateReported { get; set; }
         public double PostageCost { get; set; }
         public string Comments { get; set; }
-        public double CustomerDiscount { get; set; }
+        public double AccountDiscount { get; set; }
         public byte Locked { get; set; }
     }
 }

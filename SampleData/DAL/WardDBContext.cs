@@ -15,7 +15,7 @@ namespace SampleData.DAL
         {
         }
 
-        public DbSet<CustomerModels> Customers { get; set; }
+        public DbSet<AccountModels> Accounts { get; set; }
         public DbSet<SampleModels> Samples { get; set; }
         public DbSet<InvoiceModels> Invoices { get; set; }
         public DbSet<SampleTypeModels> SampleTypes { get; set; }
@@ -26,35 +26,17 @@ namespace SampleData.DAL
         public DbSet<TestItemModels> TestItems { get; set; }
         public DbSet<SampleColumns> SampleColumns { get; set; }
         public DbSet<SoilSampleRecModels> SoilSampleRecs { get; set; }
-        public DbSet<SoilSampleModels> SoilSamples { get; set; }
+        public DbSet<SampleChainModels> SoilSamples { get; set; }
         public DbSet<SoilRecTypeModels> SoilRecTypes { get; set; }
         public DbSet<SoilRecCropModels> SoilRecCrops { get; set; }
         public DbSet<PastCropModels> PastCrops { get; set; }
         public DbSet<SubSampleTypeModels> SubSampleTypes { get; set; }
         public DbSet<SubSampleInfoModels> SubSampleInfo { get; set; }
         public DbSet<SubSubSampleTypeModels> SubSubSampleTypes { get; set; }
-        public DbSet<OldInvoiceTable> OldInvoices { get; set; }
-        public DbSet<w_Samples> OldSamples { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
         }        
-    }
-
-    public class Ward2004DBContext : DbContext
-    {
-
-        public Ward2004DBContext() : base("Ward2004DBContext")
-        {
-        }
-
-        public DbSet<w_Samples> WardSamples { get; set; }
-        
-
-        protected override void OnModelCreating(DbModelBuilder modelBuilder)
-        {
-            //modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
-        }
     }
 }
