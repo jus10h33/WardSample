@@ -1,6 +1,6 @@
 ﻿<div class="m-t-20 m-b-20">
     <h2 class="page-title inline-block m-t-0 m-b-0" style="position:relative;bottom:15px;">Samples</h2>
-    <div class="alert alert-danger inline-block m-l-5 m-b-0" style="width:84%;" role="alert" ng-show="Messages.length == 0">
+    <div class="alert alert-danger inline-block m-l-5 m-b-0" style="width:84%;" role="alert" ng-show="Messages.length > 0">
         <span ng-repeat="m in Messages">{{m}}</span>
         <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
     </div>
@@ -21,8 +21,8 @@
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <label id="lblCustomerNumber" class="control-label">Customer #:</label>
-                                    <input type="text" id="txtCustomerNumber" name="txtCustomerNumber" class="form-control" ng-required="required" ng-pattern="regNumeric" ng-model="Sample.CustomerNumber" ng-disabled="disabled" ng-readonly="readonly" ng-blur="FindCustomer()" tabindex="1" />
+                                    <label id="lblAccountNumber" class="control-label">Account #:</label>
+                                    <input type="text" id="txtAccountNumber" name="txtAccountNumber" class="form-control" ng-required="required" ng-pattern="regNumeric" ng-model="Sample.AccountNumber" ng-disabled="disabled" ng-readonly="readonly" ng-blur="FindAccount()" tabindex="1" />
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label">Grower:</label>
@@ -124,12 +124,12 @@
                                 </div>
                                 <!-- End of Dynamic labels and inputs-->
                                 <div class="form-group">
-                                    <label>Customer Information:</label>
+                                    <label>Account Information:</label>
                                     <div id="customerInfo" class="well col-sm-6 col-md-7 col-lg-7 p-15 m-r-5 pull-right">
-                                        <i><label id="lblCustomerName" class="" ng-show="Customer.Name">{{Customer.Name}}</label></i>
-                                        <i><label id="lblCustomerCompany" class="" ng-show="Customer.Company">{{Customer.Company}}</label></i>
-                                        <i><label id="lblCustomerAddress" class="" ng-show="Customer.Address1">{{Customer.Address1}}</label></i>
-                                        <i><label id="lblCustomerCityStZip" class="" ng-show="Customer.CityStZip">{{Customer.CityStZip}}</label></i>
+                                        <i><label id="lblAccountName" class="" ng-show="Account.Name">{{Account.Name}}</label></i>
+                                        <i><label id="lblAccountCompany" class="" ng-show="Account.Company">{{Account.Company}}</label></i>
+                                        <i><label id="lblAccountAddress" class="" ng-show="Account.Address1">{{Account.Address1}}</label></i>
+                                        <i><label id="lblAccountCityStZip" class="" ng-show="Account.CityStZip">{{Account.CityStZip}}</label></i>
                                     </div>
                                 </div>
                             </div>

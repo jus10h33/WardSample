@@ -228,7 +228,6 @@ C:\Users\justin\Dropbox\SampleData\SampleData\obj\Debug\SampleData.Migrations.In
 C:\Users\justin\Dropbox\SampleData\SampleData\obj\Debug\SampleData.Migrations.ChangeToGrower.resources
 C:\Users\justin\Dropbox\SampleData\SampleData\obj\Debug\SampleData.Migrations.AddedUnit.resources
 C:\Users\justin\Dropbox\SampleData\SampleData\obj\Debug\SampleData.Migrations.AddedSampleID5.resources
-C:\Users\justin\projects\SampleData\SampleData\obj\Debug\SampleData.csprojResolveAssemblyReference.cache
 C:\Users\justin\projects\SampleData\SampleData\obj\Debug\SampleData.Migrations.Startup.resources
 C:\Users\justin\projects\SampleData\SampleData\obj\Debug\SampleData.Migrations.WardDBContextChanged.resources
 C:\Users\justin\projects\SampleData\SampleData\obj\Debug\SampleData.Migrations.AddedRowToInvoiceTable.resources
@@ -325,3 +324,6 @@ C:\Users\justin\projects\SampleData\SampleData\obj\Debug\SampleData.Migrations.A
 C:\Users\justin\projects\SampleData\SampleData\obj\Debug\SampleData.Migrations.fix.resources
 C:\Users\justin\projects\SampleData\SampleData\obj\Debug\SampleData.Migrations.AddedSubSampleInfoModels.resources
 C:\Users\justin\projects\SampleData\SampleData\obj\Debug\SampleData.Migrations.fix2.resources
+C:\Users\justin\projects\SampleData\SampleData\obj\Debug\SampleData.Migrations.GroupedByTypes.resources
+C:\Users\justin\projects\SampleData\SampleData\obj\Debug\SampleData.Migrations.ChangedSoilRecs.resources
+C:\Users\justin\projects\SampleData\SampleData\obj\Debug\SampleData.csprojResolveAssemblyReference.cache

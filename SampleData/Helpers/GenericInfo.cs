@@ -10,7 +10,6 @@ namespace SampleData.Helpers
     {
         public List<SampleViewModel> Samples { get; set; }
         public List<AccountViewModel> Accounts { get; set; }
-        public List<InvoiceViewModel> Invoices { get; set; }
         public List<string> Messages { get; set; }
     }
 }

@@ -11,24 +11,24 @@ using SampleData.Models;
 
 namespace SampleData.Controllers
 {
-    public class CustomerModelsController : Controller
+    public class AccountModelsController : Controller
     {
         private WardDBContext db = new WardDBContext();
 
-        // GET: CustomerModels
+        // GET: AccountModels
         public ActionResult Index()
         {
-            return View(db.Customers.ToList());
+            return View(db.Accounts.ToList());
         }
 
-        // GET: CustomerModels/Details/5
+        // GET: AccountModels/Details/5
         public ActionResult Details(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            AccountModels customerModels = db.Customers.Find(id);
+            AccountModels customerModels = db.Accounts.Find(id);
             if (customerModels == null)
             {
                 return HttpNotFound();
@@ -36,22 +36,22 @@ namespace SampleData.Controllers
             return View(customerModels);
         }
 
-        // GET: CustomerModels/Create
+        // GET: AccountModels/Create
         public ActionResult Create()
         {
             return View();
         }
 
-        // POST: CustomerModels/Create
+        // POST: AccountModels/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "CustomerNumber,LastName,FirstName,Company,Address1,Address2,City,State,Zip,Country,BillToCompany,Discount,ActiveCustomer,Mailresults,MailedCopies,FaxResults,EmailResults,PostResultsToWeb,Newsletter,WardGuide,ChristmasCard,NamaCust,SendPDF,PrintPDFHeaderFooter,EPAInfo,PrintInvNow,PrintInvLater,SendInvoice,SendTextData,SplitGrowers,SplitFields,ExtraInformation,CustomerStatus,LastModified,MachineID,UserID,SampleEntryInformation,CreatedOn,ForceStandardSoilReport")] AccountModels customerModels)
+        public ActionResult Create([Bind(Include = "AccountNumber,LastName,FirstName,Company,Address1,Address2,City,State,Zip,Country,BillToCompany,Discount,ActiveAccount,Mailresults,MailedCopies,FaxResults,EmailResults,PostResultsToWeb,Newsletter,WardGuide,ChristmasCard,NamaCust,SendPDF,PrintPDFHeaderFooter,EPAInfo,PrintInvNow,PrintInvLater,SendInvoice,SendTextData,SplitGrowers,SplitFields,ExtraInformation,AccountStatus,LastModified,MachineID,UserID,SampleEntryInformation,CreatedOn,ForceStandardSoilReport")] AccountModels customerModels)
         {
             if (ModelState.IsValid)
             {
-                db.Customers.Add(customerModels);
+                db.Accounts.Add(customerModels);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
@@ -59,14 +59,14 @@ namespace SampleData.Controllers
             return View(customerModels);
         }
 
-        // GET: CustomerModels/Edit/5
+        // GET: AccountModels/Edit/5
         public ActionResult Edit(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            AccountModels customerModels = db.Customers.Find(id);
+            AccountModels customerModels = db.Accounts.Find(id);
             if (customerModels == null)
             {
                 return HttpNotFound();
@@ -74,12 +74,12 @@ namespace SampleData.Controllers
             return View(customerModels);
         }
 
-        // POST: CustomerModels/Edit/5
+        // POST: AccountModels/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "CustomerNumber,LastName,FirstName,Company,Address1,Address2,City,State,Zip,Country,BillToCompany,Discount,ActiveCustomer,Mailresults,MailedCopies,FaxResults,EmailResults,PostResultsToWeb,Newsletter,WardGuide,ChristmasCard,NamaCust,SendPDF,PrintPDFHeaderFooter,EPAInfo,PrintInvNow,PrintInvLater,SendInvoice,SendTextData,SplitGrowers,SplitFields,ExtraInformation,CustomerStatus,LastModified,MachineID,UserID,SampleEntryInformation,CreatedOn,ForceStandardSoilReport")] AccountModels customerModels)
+        public ActionResult Edit([Bind(Include = "AccountNumber,LastName,FirstName,Company,Address1,Address2,City,State,Zip,Country,BillToCompany,Discount,ActiveAccount,Mailresults,MailedCopies,FaxResults,EmailResults,PostResultsToWeb,Newsletter,WardGuide,ChristmasCard,NamaCust,SendPDF,PrintPDFHeaderFooter,EPAInfo,PrintInvNow,PrintInvLater,SendInvoice,SendTextData,SplitGrowers,SplitFields,ExtraInformation,AccountStatus,LastModified,MachineID,UserID,SampleEntryInformation,CreatedOn,ForceStandardSoilReport")] AccountModels customerModels)
         {
             if (ModelState.IsValid)
             {
@@ -90,14 +90,14 @@ namespace SampleData.Controllers
             return View(customerModels);
         }
 
-        // GET: CustomerModels/Delete/5
+        // GET: AccountModels/Delete/5
         public ActionResult Delete(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            AccountModels customerModels = db.Customers.Find(id);
+            AccountModels customerModels = db.Accounts.Find(id);
             if (customerModels == null)
             {
                 return HttpNotFound();
@@ -105,13 +105,13 @@ namespace SampleData.Controllers
             return View(customerModels);
         }
 
-        // POST: CustomerModels/Delete/5
+        // POST: AccountModels/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            AccountModels customerModels = db.Customers.Find(id);
-            db.Customers.Remove(customerModels);
+            AccountModels customerModels = db.Accounts.Find(id);
+            db.Accounts.Remove(customerModels);
             db.SaveChanges();
             return RedirectToAction("Index");
         }

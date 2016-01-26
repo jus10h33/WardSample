@@ -182,6 +182,7 @@
     <Compile Include="Helpers\GenericInfo.cs" />
     <Compile Include="Helpers\GenericMasters.cs" />
     <Compile Include="Helpers\JavaScriptConvert.cs" />
+    <Compile Include="Helpers\PlantReturn.cs" />
     <Compile Include="Helpers\Recommendations.cs" />
     <Compile Include="Helpers\ResultsFor.cs" />
     <Compile Include="Helpers\SampleInfoReturn.cs" />
@@ -300,6 +301,14 @@
     <Compile Include="Migrations\201601211752495_fix2.Designer.cs">
       <DependentUpon>201601211752495_fix2.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201601261503363_GroupedByTypes.cs" />
+    <Compile Include="Migrations\201601261503363_GroupedByTypes.Designer.cs">
+      <DependentUpon>201601261503363_GroupedByTypes.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201601261549330_ChangedSoilRecs.cs" />
+    <Compile Include="Migrations\201601261549330_ChangedSoilRecs.Designer.cs">
+      <DependentUpon>201601261549330_ChangedSoilRecs.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\AccountModels.cs" />
@@ -320,7 +329,7 @@
     <Compile Include="Models\SoilRecCropModels.cs" />
     <Compile Include="Models\SoilRecTypeModels.cs" />
     <Compile Include="Models\SampleChainModels.cs" />
-    <Compile Include="Models\SoilSampleRecModels.cs" />
+    <Compile Include="Models\SoilRecModels.cs" />
     <Compile Include="Models\TestItemModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
@@ -552,6 +561,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201601211752495_fix2.resx">
       <DependentUpon>201601211752495_fix2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201601261503363_GroupedByTypes.resx">
+      <DependentUpon>201601261503363_GroupedByTypes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201601261549330_ChangedSoilRecs.resx">
+      <DependentUpon>201601261549330_ChangedSoilRecs.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="WardDBContext.dbml.layout">
       <DependentUpon>WardDBContext.dbml</DependentUpon>

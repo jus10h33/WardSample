@@ -25,8 +25,8 @@ namespace SampleData.DAL
         public DbSet<ReportReportItemModels> ReportReportItems { get; set; }       
         public DbSet<TestItemModels> TestItems { get; set; }
         public DbSet<SampleColumns> SampleColumns { get; set; }
-        public DbSet<SoilSampleRecModels> SoilSampleRecs { get; set; }
-        public DbSet<SampleChainModels> SoilSamples { get; set; }
+        public DbSet<SoilRecModels> SoilRecs { get; set; }
+        public DbSet<SampleChainModels> SampleChains { get; set; }
         public DbSet<SoilRecTypeModels> SoilRecTypes { get; set; }
         public DbSet<SoilRecCropModels> SoilRecCrops { get; set; }
         public DbSet<PastCropModels> PastCrops { get; set; }

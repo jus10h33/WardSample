@@ -14,7 +14,7 @@
                                 <div id="linkToSoil" ng-show="linkToSoil">
                                     <div class="form-group">
                                         <label>Link Soil</label>
-                                        <input type="checkbox" id="chkLinkToSoil" ng-readonly="readonly" ng-checked="{{SoilSample.LinkedSampleBatch}}" ng-model="chkLinkToSoil" tabindex="17" />
+                                        <input type="checkbox" id="chkLinkToSoil" ng-readonly="readonly" ng-checked="{{SampleChain.LinkedSampleBatch}}" ng-model="chkLinkToSoil" tabindex="17" />
                                     </div>
                                 </div>
                             </div>
@@ -22,18 +22,18 @@
                                 <label class="control-label"></label><span class="color-white m-l-30">Begin</span><span class="color-white m-l-30">End</span>
                                 <div class="form-group">
                                     <label class="control-label">Depth</label>
-                                    <input type="text" id="txtBeginDepth" name="txtBeginDepth" class="form-control" ng-disabled="disabled" ng-readonly="readonly" ng-model="SoilSample.BeginningDepth" ng-required="required" ng-pattern="regNumeric" ng-blur="Validate(frmSampleInfo.txtBeginDepth, 'txtBeginDepth', 'Must be numeric')" tabindex="18" />
-                                    <input type="text" id="txtEndDepth" name="txtEndDepth" class="form-control" ng-disabled="disabled" ng-readonly="readonly" ng-model="SoilSample.EndingDepth" ng-required="required" ng-pattern="regNumeric" ng-blur="Validate(frmSampleInfo.txtEndDepth, 'txtEndDepth', 'Must be numeric')" tabindex="19" />
+                                    <input type="text" id="txtBeginDepth" name="txtBeginDepth" class="form-control" ng-disabled="disabled" ng-readonly="readonly" ng-model="SampleChain.BeginningDepth" ng-required="required" ng-pattern="regNumeric" ng-blur="Validate(frmSampleInfo.txtBeginDepth, 'txtBeginDepth', 'Must be numeric')" tabindex="18" />
+                                    <input type="text" id="txtEndDepth" name="txtEndDepth" class="form-control" ng-disabled="disabled" ng-readonly="readonly" ng-model="SampleChain.EndingDepth" ng-required="required" ng-pattern="regNumeric" ng-blur="Validate(frmSampleInfo.txtEndDepth, 'txtEndDepth', 'Must be numeric')" tabindex="19" />
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label col-lg-7">Past Crop</label>
-                                    <select id="cboPastCropNumber" class="form-control" ng-disabled="disabled" ng-readonly="readonly" ng-required="required" ng-model="SoilSample.PastCropNumber" tabindex="20">
+                                    <select id="cboPastCropNumber" class="form-control" ng-disabled="disabled" ng-readonly="readonly" ng-required="required" ng-model="SampleChain.PastCropNumber" tabindex="20">
                                         <option ng-repeat="pc in PastCrops" value="{{pc.PastCropNumber}}">{{pc.PastCropName}}</option>
                                     </select>
                                 </div>
                             </div>
                         </form>
-                            <div id="sampleChain" class="col-lg-3" ng-show="SoilSamples.length > 1">
+                            <div id="sampleChain" class="col-lg-3" ng-show="SampleChains.length > 1">
                                 <div class="form-group">
                                     <label class="control-label">Sample Chain</label><br />
                                     <table id="tblSampleChain" class="table table-condensed table-bordered table-responsive col-lg-11">
@@ -41,7 +41,7 @@
                                             <tr><th>Lab</th><th>Depth</th></tr>
                                         </thead>
                                         <tbody>
-                                            <tr ng-repeat="ss in SoilSamples"><!--<td class="edit text-right">{{ss.LabNumber}}</td><td class="edit">{{ss.BeginningDepth}}:{{ss.EndingDepth}}</td>--></tr>
+                                            <tr ng-repeat="ss in SampleChains"><!--<td class="edit text-right">{{ss.LabNumber}}</td><td class="edit">{{ss.BeginningDepth}}:{{ss.EndingDepth}}</td>--></tr>
                                         </tbody>
                                     </table>
                                 </div>
@@ -53,20 +53,20 @@
                                 <span>Link to Sample</span>
                                 <div class="form-group">
                                     <label class="control-label">Batch</label>
-                                    <input type="text" id="txtLinkSoilBatch" name="txtLinkSoilBatch" class="form-control m-l-30" ng-disabled="disabled" ng-readonly="readonly" ng-model="SoilSample.LinkedSampleBatch" ng-required="required" ng-pattern="regNumeric" ng-blur="Validate(frmSampleLinks.txtLinkSoilBatch, 'txtLinkSoilBatch', 'Must be numeric')" tabindex="21" />
+                                    <input type="text" id="txtLinkSoilBatch" name="txtLinkSoilBatch" class="form-control m-l-30" ng-disabled="disabled" ng-readonly="readonly" ng-model="SampleChain.LinkedSampleBatch" ng-required="required" ng-pattern="regNumeric" ng-blur="Validate(frmSampleLinks.txtLinkSoilBatch, 'txtLinkSoilBatch', 'Must be numeric')" tabindex="21" />
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label">Lab</label>
-                                    <input type="text" id="txtLinkSoilLab" name="txtLinkSoilBatch" class="form-control m-l-30" ng-disabled="disabled" ng-readonly="readonly" ng-model="SoilSample.LinkedSampleLab" ng-required="required" ng-pattern="regNumeric" ng-blur="Validate(frmSampleLinks.txtLinkSoilLab, 'txtLinkSoilLab', 'Must be numeric')" tabindex="22" />
+                                    <input type="text" id="txtLinkSoilLab" name="txtLinkSoilBatch" class="form-control m-l-30" ng-disabled="disabled" ng-readonly="readonly" ng-model="SampleChain.LinkedSampleLab" ng-required="required" ng-pattern="regNumeric" ng-blur="Validate(frmSampleLinks.txtLinkSoilLab, 'txtLinkSoilLab', 'Must be numeric')" tabindex="22" />
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label">Available</label>
-                                    <select id="cboLinkSoilAvailable" name="cboLinkSoilAvailable" class="form-control m-l-30" ng-disabled="disabled" ng-readonly="readonly" ng-model="SoilSample.Available" tabindex="23">
+                                    <select id="cboLinkSoilAvailable" name="cboLinkSoilAvailable" class="form-control m-l-30" ng-disabled="disabled" ng-readonly="readonly" ng-model="SampleChain.Available" tabindex="23">
                                         <option ng-repeat="ts in TopSoils" value="{{ts}}">{{ts}}</option>
                                     </select>
                                 </div>
                             </div>
-                            <!--<div id="soilSampleLink" class="well well-sm col-sm-5 col-md-5 col-lg-5 m-l-15 p-l-10" ng-show="true">
+                            <!--<div id="SampleChainLink" class="well well-sm col-sm-5 col-md-5 col-lg-5 m-l-15 p-l-10" ng-show="true">
                         <span>Soil Sample Link</span>
                         <div class="form-group">
                             <label class="control-label">Test #</label>

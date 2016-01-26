@@ -16,9 +16,8 @@ namespace SampleData.Helpers
         public SoilMasters SoilMasters { get; set; }
 
         // Soil Specific
-        public List<SampleChainModels> SampleChains { get; set; }
-        public List<Recommendations> Recommendations { get; set; }
-        public List<List<SampleChainModels>> SampleChainsList { get; set; }
-        public List<int> TopSoils { get; set; }        
+        public List<List<SampleChainModels>> SampleChains { get; set; }
+        public List<List<Recommendations>> Recommendations { get; set; }
+        public List<List<int>> TopSoils { get; set; }        
     }
 }
