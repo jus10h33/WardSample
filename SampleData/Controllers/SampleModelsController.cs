@@ -191,8 +191,6 @@ namespace SampleData.Controllers
         {
             //try
             //{
-            Debug.Print("Account Number: " + an);
-            Debug.Print("SampleTypeNumber: " + stn);
                 AccountViewModel avm = new AccountViewModel();
                 AccountModels am = (from a in db.Accounts
                                     where a.AccountNumber == an
@@ -379,7 +377,16 @@ namespace SampleData.Controllers
                     recommendations.Add(rec);
                 }
                 recommendationsList.Add(recommendations);
-            }                           
+            }
+            foreach (List<Recommendations> recs in recommendationsList)
+            {
+                Debug.Print("---------------------------------");
+                foreach(Recommendations rec in recs)
+                {
+                    Debug.Print(rec.ToString());
+                }
+                Debug.Print("---------------------------------");
+            }
             return recommendationsList;
         }
         public JsonResult FindAccount(int cn, int stn)
@@ -1029,10 +1036,20 @@ namespace SampleData.Controllers
         {
             IEnumerable<SampleModels> x = (from s in db.Samples
                      where s.SampleTypeNumber == stn && s.BatchNumber >= bn && s.LabNumber > ln
-                     orderby s.BatchNumber descending, s.LabNumber descending
-                     select s).ToList().Take(30);
+                     orderby s.LabNumber, s.BatchNumber descending
+                     select s).Take(30).ToList();
 
-            return Json(GetMoreSamples(x), JsonRequestBehavior.AllowGet);
+            if (x.Any())
+            {
+                x = (from s in x
+                     orderby s.BatchNumber descending, s.LabNumber descending
+                     select s).ToList();
+                return Json(GetMoreSamples(x), JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                return null;
+            }            
         }
         #endregion
         #region "Prev"
@@ -1041,9 +1058,16 @@ namespace SampleData.Controllers
             IEnumerable<SampleModels> x = (from s in db.Samples
                      where s.SampleTypeNumber == stn && s.BatchNumber <= bn && s.LabNumber < ln
                      orderby s.BatchNumber descending, s.LabNumber descending
-                     select s).ToList().Take(30);
+                     select s).Take(30).ToList();
 
-            return Json(GetMoreSamples(x), JsonRequestBehavior.AllowGet);
+            if (x.Any())
+            {
+                return Json(GetMoreSamples(x), JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                return null;
+            }
 
         }
         #endregion

@@ -29,7 +29,7 @@ namespace SampleData.Models
         [Key]
         [Column(Order = 5)]
         [Required]
-        public double YieldGoal { get; set; }
+        public double YieldGoal { get; set; }        
         public override string ToString()
         {
             return "BatchNumber: " + BatchNumber +

@@ -1,5 +1,5 @@
 ﻿var samplesEntry = angular.module("samplesEntry", [])
-.controller("defaultCtrl", function ($scope, $http) {
+.controller("defaultCtrl", function ($scope, $http, $filter) {
 
     /* ------------ OnLoad -------------*/
 
@@ -7,12 +7,17 @@
     $scope.Sample = {};
     $scope.Accounts = [];
     $scope.Account = {};
-    $scope.SoilSample = {};
+    $scope.TopSoils = [];
+    $scope.TopSoilsList = [];
+    $scope.SampleChain = {};
+    $scope.SampleChains = [];
+    $scope.SampleChainsList = [];
     $scope.CropTypes = [];
     $scope.RecTypes = [];
-    $scope.PastCrops = [];    
+    $scope.PastCrops = [];
     $scope.SampleRecs = [];
     $scope.Recommendations = [];
+    $scope.RecommendationsList = [];
     $scope.TestItems = [];
     $scope.Reports = [];
     $scope.ItemsSelected = [];
@@ -21,8 +26,9 @@
     $scope.entryForm = {};
     $scope.frmSampleInfo = {};
     $scope.frmSampleLinks = {};
-    $scope.frmSampleRecs = {};    
+    $scope.frmSampleRecs = {};
     $scope.action == ""
+    $scope.MAX_RECS = 30;
     $scope.required = true;
     $scope.readonly = true;
     $scope.disabled = false;
@@ -33,68 +39,61 @@
     $scope.regDate = new RegExp('^20(0[7-9]|[1-9][0-9])-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$');
     $scope.disableNext = true;
 
-    $scope.SetMasters = function (stn, samples, accounts, sampleTypes, sampleColumns, cropTypes, recTypes, pastCrops, subSampleTypes, subSubSampleTypes) {
-        
+    $scope.SetGenericMasters = function (samples, accounts, sampleTypes, sampleColumns) {
         $scope.Samples = samples;
         $scope.Accounts = accounts;
         $scope.SampleTypes = sampleTypes;
         $scope.SampleColumns = sampleColumns;
-        if (stn == 1 || stn == 14) {
-            $scope.CropTypes = cropTypes;
-            $scope.PastCrops = pastCrops;
-            if (stn == 1) {
-                $scope.RecTypes = recTypes;
-            }                        
-        } else if (stn == 2 || stn == 3 || stn == 4 || stn == 5 || stn == 6 || stn == 7 || stn == 9 || stn == 12) {
-            $scope.SubSampleTypes = subSampleTypes;            
-            if (stn == 5) {
-                $scope.SubSubSampleTypes = subsubSampleTypes
-            }
-        }                
     };
-    $scope.SetFormValues = function (sample, account, sampleChain, sampleChains, topSoils, subSampleInfo, subSampleInfos, messages) {
-        console.log("Begin SetFormValues: " + sample.LabNumber);
+    $scope.SetSoilMasters = function (cropTypes, recTypes, pastCrops) {
+        $scope.CropTypes = cropTypes;
+        $scope.PastCrops = pastCrops;
+        $scope.RecTypes = recTypes;
+    };
+    $scope.SetSubMasters = function (subSampleTypes, subSubSampleTypes) {
+        $scope.SubSampleTypes = subSampleTypes;
+        if (subSubSampleTypes != null) {
+            $scope.SubSubSampleTypes = subsubSampleTypes
+        }
+    };
+    $scope.SetGenericValues = function (sample, account, messages) {
         $scope.readonly = true;
-        $scope.Sample = sample;        
-            $scope.Sample.SampleTypeNumber = sample.SampleTypeNumber.toString();
-            $scope.Sample.CostTypeNumber = sample.CostTypeNumber.toString();
-            $scope.Sample.DateReceived = new Date(parseInt(sample.DateReceived.replace(/(^.*\()|([+-].*$)/g, ''))).toISOString().substring(0, 10);
-            $scope.Sample.DateReported = new Date(parseInt(sample.DateReported.replace(/(^.*\()|([+-].*$)/g, ''))).toISOString().substring(0, 10);
+        $scope.Sample = sample;
+        $scope.Sample.DateReceived = new Date(parseInt(sample.DateReceived.replace(/(^.*\()|([+-].*$)/g, ''))).toISOString().substring(0, 10);
+        $scope.Sample.DateReported = new Date(parseInt(sample.DateReported.replace(/(^.*\()|([+-].*$)/g, ''))).toISOString().substring(0, 10);
         $scope.Account = account;
-            angular.element("#acoGrower").autocomplete({ source: account.Growers, minLength: 0 }).focus(function () { $(this).autocomplete("search"); });
+        angular.element("#acoGrower").autocomplete({ source: account.Growers, minLength: 0 }).focus(function () { $(this).autocomplete("search"); });
         $scope.Messages = messages;
-        var stn = $scope.Sample.SampleTypeNumber;
-        // if stn is soil or bio
-        if (stn == 1 || stn == 14) {
-            if (sampleChain != null) {
-                $scope.SampleChain = sampleChain;
-                $scope.SampleChain.PastCropNumber = $scope.SampleChain.PastCropNumber.toString();
-                if ($scope.SampleChain.TopSoil == 1) {
-                    $scope.chkTopSoil = true;
-                }
-                if ($scope.SampleChain.BeginningDepth == 0) {
-                    $scope.sampleChainLink = false;
-                    $scope.chkLinkToSoil = false;
-                    $scope.chkTopSoil = true;
-                } else {
-                    $scope.sampleChainLink = true;
-                    $scope.chkLinkToSoil = true;
-                    $scope.chkTopSoil = false;
-                }
-                $scope.TopSoils = topSoils;
-                $scope.SampleChains = sampleChains;
-                
-            } // if stn is Feed, NIR, Water, Manure, Slurry, Fertilizer, Resin, Plant
-        } else if (stn == 2 || stn == 3 || stn == 4 || stn == 6 || stn == 7 || stn == 9 || stn == 12 || stn == 5) {
-            $scope.SubSampleInfo = subSampleInfo;
-            $scope.SubSampleInfos = subSampleInfos;
-            $scope.SubSampleInfo.SubSampleTypeNumber = $scope.SubSampleInfo.SubSampleTypeNumber.toString();            
-            if (stn == 5) {
-                $scope.SubSampleInfo.SubSubSampleTypeNumber = $scope.SubSampleInfo.SubSubSampleTypeNumber.toString();
-            }
-            $scope.SubSubSampleType = {};
-            $scope.SubSubSampleTypes = [];
-        }        
+    };
+    $scope.SetTopSoils = function (index) {
+        $scope.TopSoils = $scope.TopSoilsList[index];
+    };
+    $scope.SetSampleChains = function (index) {
+        $scope.SampleChains = $scope.SampleChainsList[index];
+        $scope.SampleChain = $scope.SampleChains[0];
+        $scope.SampleChain.PastCropNumber = $scope.SampleChain.PastCropNumber.toString();
+        if ($scope.SampleChain.TopSoil == 1) {
+            $scope.chkTopSoil = true;
+            $scope.sampleChainLink = false;
+            $scope.chkLinkToSoil = false;
+        } else {
+            $scope.sampleChainLink = true;
+            $scope.chkLinkToSoil = true;
+            $scope.chkTopSoil = false;
+        }
+    };
+    $scope.SetRecommendations = function (index) {
+        if ($scope.RecommendationsList != null && $scope.RecommendationsList[index].length != 0) {
+            $scope.SetRecForm($scope.Recommendations[index]);
+        }
+    };
+    $scope.SetSubValues = function (subSampleInfo, subSampleInfos) { // if stn is Feed, NIR, Water, Manure, Slurry, Fertilizer, Resin, Plant  
+        $scope.SubSampleInfo = subSampleInfo;
+        $scope.SubSampleInfos = subSampleInfos;
+        $scope.SubSampleInfo.SubSampleTypeNumber = $scope.SubSampleInfo.SubSampleTypeNumber.toString();
+        if ($scope.SubSampleInfo.SubSubSampleType != null) {
+            $scope.SubSampleInfo.SubSubSampleTypeNumber = $scope.SubSampleInfo.SubSubSampleTypeNumber.toString();
+        }
     };
     $scope.SetRecLayout = function () {
         switch ($scope.Sample.SampleTypeNumber) {
@@ -148,8 +147,7 @@
                 break;
         }
     };
-    $scope.SetRecForm = function (recommendations)
-    {
+    $scope.SetRecForm = function (recommendations) {
         $scope.Recommendations = recommendations;
         if ($scope.Sample.SampleTypeNumber == 14) {
             $scope.RecTypes = [];
@@ -163,24 +161,23 @@
     $scope.Load = function (stn) {
         $http.get("/SampleModels/Load?sampleTypeNumber=" + stn).success(function (data) {
             console.log(data);
-            var stn = data.GenericInfo.Samples[0].SampleTypeNumber;            
+            $scope.SetGenericMasters(data.GenericInfo.Samples, data.GenericInfo.Accounts, data.GenericMasters.SampleTypes, data.GenericMasters.SampleColumns);
+            $scope.SetGenericValues(data.GenericInfo.Samples[0], data.GenericInfo.Accounts[0], data.GenericInfo.Messages);
+            var stn = $scope.Samples[0].SampleTypeNumber;
             if (stn == 1 || stn == 14) {
-                $scope.SetMasters(stn, data.GenericInfo.Samples, data.GenericInfo.Accounts, data.GenericMasters.SampleTypes, data.GenericMasters.SampleColumns, data.SoilMasters.CropTypes, data.SoilMasters.RecTypes, data.SoilMasters.PastCrops, null, null)
-                $scope.SetFormValues(data.GenericInfo.Samples[0], data.GenericInfo.Accounts[0], data.SampleChains[0][0], data.SampleChains[0], data.TopSoils, null, null, data.GenericInfo.Messages);
-                if (data.Recommendations != null && data.Recommendations.length != 0) {
-                    $scope.SetRecForm(data.Recommendations[0]);
-                }
-            } else if (stn == 2 || stn == 3 || stn == 4 || stn == 6 || stn == 7 || stn == 9 || stn == 12) {
-                $scope.SetMasters(stn, data.GenericInfo.Samples, data.GenericInfo.Accounts, data.GenericMasters.SampleTypes, data.GenericMasters.SampleColumns, null, null, null, data.SubSampleTypes, null)
-                $scope.SetFormValues(data.GenericInfo.Samples[0], data.GenericInfo.Accounts[0], null, null, null, data.SubSampleInfos[0], data.SubSampleInfos, data.GenericInfo.Messages);
-            } else if (stn == 5) {
-                $scope.SetMasters(stn, data.GenericInfo.Samples, data.GenericInfo.Accounts, data.GenericMasters.SampleTypes, data.GenericMasters.SampleColumns, null, null, null, data.SubSampleTypes, data.SubSubSampleTypes)
-                $scope.SetFormValues(data.GenericInfo.Samples[0], data.GenericInfo.Accounts[0], null, null, null, data.SubSampleInfos[0], data.SubSampleInfos, data.GenericInfo.Messages);
-            } else {
-                $scope.SetMasters(stn, data.GenericInfo.Samples, data.GenericInfo.Accounts, data.GenericMasters.SampleTypes, data.GenericMasters.SampleColumns, null, null, null, null, null)
-                $scope.SetFormValues($scope.Samples[0], $scope.Accounts[0], null, null, null, null, null, data.GenericInfo.Messages);
+                $scope.SetSoilMasters(data.SoilMasters.CropTypes, data.SoilMasters.RecTypes, data.SoilMasters.PastCrops)
+                $scope.TopSoilsList = data.TopSoils;
+                $scope.SampleChainsList = data.SampleChains;
+                $scope.RecommendationsList = data.Recommendations;
+                console.log($scope.RecommendationsList);
+                $scope.SetTopSoils(0);
+                $scope.SetSampleChains(0);
+                $scope.SetRecommendations(0);
+            } else if (stn == 2 || stn == 3 || stn == 4 || stn == 5 || stn == 6 || stn == 7 || stn == 9 || stn == 12) {
+                $scope.SetSubMasters(data.SubSampleTypes, data.SubSubSampleTypes)
+                $scope.SetSubValues(data.SubSampleInfos[0], data.SubSampleInfos);
             }
-            
+
             $scope.SetRecLayout();
             return;
         }).error(function () { console.log("Load module - ajax call returned error"); return; });
@@ -240,13 +237,13 @@
             if ($scope.entryForm.cboCostTypeNumber.$invalid) {
                 $scope.DisplayPopover("cboCostTypeNumber", "Required field");
                 angular.element('#cboCostTypeNumber').addClass('has-error');
-            }            
+            }
             valid = false;
         } else {
             valid = true;
         }
         // Validate Sample Info
-        if ($scope.frmSampleInfo.$invalid) {            
+        if ($scope.frmSampleInfo.$invalid) {
             if ($scope.entryForm.txtBeginningDepth.$invalid) {
                 $scope.DisplayPopover("txtBeginDepth", "Must be numeric");
                 angular.element('#txtBeginDepth').addClass('has-error');
@@ -265,18 +262,16 @@
         }
 
         // Validate frmSampleLinks
-        if ($scope.IsPresent($scope.SoilSample.LinkedSampleLab) && $scope.SoilSample.LinkedSampleBatch != $scope.Sample.BatchNumber)
-        {
+        if ($scope.IsPresent($scope.SoilSample.LinkedSampleLab) && $scope.SoilSample.LinkedSampleBatch != $scope.Sample.BatchNumber) {
             $scope.DisplayPopover("txtLinkSoilBatch", "Must match BatchNumber");
             angular.element('#txtLinkSoilBatch').addClass('has-error');
             valid = false;
         }
-        if ($scope.IsPresent($scope.SoilSample.LinkedSampleBatch) && isNaN($scope.SoilSample.LinkedSampleLab) && $scope.SoilSample.LinkedSampleLab != "")
-        {
+        if ($scope.IsPresent($scope.SoilSample.LinkedSampleBatch) && isNaN($scope.SoilSample.LinkedSampleLab) && $scope.SoilSample.LinkedSampleLab != "") {
             $scope.DisplayPopover("txtLinkSoilLab", "Must be numeric");
             angular.element('#txtLinkSoilLab').addClass('has-error');
             valid = false;
-        }            
+        }
 
         // Validate Sample Recs
         //if ($scope.frmSampleRecs.$invalid) {
@@ -315,7 +310,7 @@
         return valid;
     };
     $scope.Validate = function (elem, id, message) {
-            angular.element('input[id=acoGrower]').controller('ngModel').$setViewValue(angular.element('input[id=acoGrower]').val());
+        angular.element('input[id=acoGrower]').controller('ngModel').$setViewValue(angular.element('input[id=acoGrower]').val());
         if (elem.$invalid && elem.$dirty) {
             $scope.DisplayPopover(id, message);
             id = "#" + id;
@@ -528,7 +523,7 @@
                         $scope.Customer.Name = "Customer Not Found";
                         $scope.RemovePopover('txtCustomerNumber');
                         $scope.DisplayPopover('txtCustomerNumber', 'Customer does NOT exist');
-                        angular.element('#txtCustomerNumber').focus();                        
+                        angular.element('#txtCustomerNumber').focus();
                     }
                 });
         } else {
@@ -539,20 +534,20 @@
         if ($scope.entryForm.txtReportTypeNumber.$valid) {
             $http.get('/SampleModels/GetReportName?sampleTypeNumber=' + $scope.Sample.SampleTypeNumber + '&reportTypeNumber=' + $scope.Sample.ReportTypeNumber)
              .success(function (data) {
-              if (data != null) {
-                  $scope.entryForm.txtReportTypeNumber.$valid = true;
-                  $scope.entryForm.txtReportTypeNumber.$invalid = false;
-                  angular.element('#txtReportTypeNumber').removeClass('has-error');
-                  $scope.RemovePopover('txtReportTypeNumber');
-                  $scope.Sample.ReportName = data;
-              } else {
-                  $scope.entryForm.txtReportTypeNumber.$valid = false;
-                  $scope.entryForm.txtReportTypeNumber.$invalid = true;
-                  $scope.DisplayPopover('txtReportTypeNumber', 'No Results');
-                  angular.element('#txtReportTypeNumber').focus();
-                  $scope.Sample.ReportTypeNumber = "";
-              }
-          })
+                 if (data != null) {
+                     $scope.entryForm.txtReportTypeNumber.$valid = true;
+                     $scope.entryForm.txtReportTypeNumber.$invalid = false;
+                     angular.element('#txtReportTypeNumber').removeClass('has-error');
+                     $scope.RemovePopover('txtReportTypeNumber');
+                     $scope.Sample.ReportName = data;
+                 } else {
+                     $scope.entryForm.txtReportTypeNumber.$valid = false;
+                     $scope.entryForm.txtReportTypeNumber.$invalid = true;
+                     $scope.DisplayPopover('txtReportTypeNumber', 'No Results');
+                     angular.element('#txtReportTypeNumber').focus();
+                     $scope.Sample.ReportTypeNumber = "";
+                 }
+             })
           .error(function () {
               $scope.Sample.ReportName = "Error";
               $scope.entryForm.txtReportTypeNumber.$valid = false;
@@ -578,7 +573,7 @@
           .error(function () {
               alert("DB Error");
           });
-    };        
+    };
     $scope.GetReportList = function () {
         console.log($scope.ItemsSelected);
         $http.get('/SampleModels/GetReportList?stn=' + $scope.Sample.SampleTypeNumber + '&rins=' + $scope.ItemsSelected)
@@ -588,7 +583,7 @@
                   if (data != null) {
                       $scope.Reports = data;
                       $scope.reportShown = true;
-                  }                  
+                  }
               } else {
                   alert("Error - data null");
               }
@@ -596,8 +591,8 @@
           .error(function () {
               alert("DB Error");
           });
-        
-    };    
+
+    };
     $scope.GetSubSubSampleTypes = function () {
         $http.get('/SampleModels/GetSubSubSampleTypes?stn=' + $scope.Sample.SampleTypeNumber + '&sstn=' + $scope.SubSampleType.SubSampleTypeNumber)
           .success(function (data) {
@@ -661,7 +656,7 @@
     $scope.AddRec = function () { // build rec and then place focus on RecType input for added rec
         $scope.BuildRec();
         //angular.element('input[id=acoRecTypes2]').focus();
-    };    
+    };
     $scope.ConvertRecs = function () {
         $('input[auto-complete]').each(function () {
             angular.element(this).controller('ngModel').$setViewValue($(this).val());
@@ -713,7 +708,7 @@
                 if ($scope.entryForm.txtLabNumber.$invalid) {
                     $scope.DisplayPopover("txtLabNumber", "Must be numeric");
                     angular.element('#txtLabNumber').addClass('has-error');
-                }                
+                }
             }
             return;
         }
@@ -740,10 +735,9 @@
         if ($scope.ValidateForm()) {
             if ($scope.Sample.SampleTypeNumber == 1 || $scope.Sample.SampleTypeNumber == 14) {
                 if ($scope.ValidateRecs()) {
-                    $scope.SampleRecs = $scope.ConvertRecs();                    
+                    $scope.SampleRecs = $scope.ConvertRecs();
                 }
-            } else if ($scope.Sample.SampleTypeNumber == 2 || $scope.Sample.SampleTypeNumber == 3 || $scope.Sample.SampleTypeNumber == 4 || $scope.Sample.SampleTypeNumber == 6 || $scope.Sample.SampleTypeNumber == 7 || $scope.Sample.SampleTypeNumber == 9 || $scope.Sample.SampleTypeNumber == 12 || $scope.Sample.SampleTypeNumber == 5)
-            {
+            } else if ($scope.Sample.SampleTypeNumber == 2 || $scope.Sample.SampleTypeNumber == 3 || $scope.Sample.SampleTypeNumber == 4 || $scope.Sample.SampleTypeNumber == 6 || $scope.Sample.SampleTypeNumber == 7 || $scope.Sample.SampleTypeNumber == 9 || $scope.Sample.SampleTypeNumber == 12 || $scope.Sample.SampleTypeNumber == 5) {
                 $scope.SetSubSampleInfo();
             }
             if (action == 'add') {
@@ -763,7 +757,7 @@
             var stn = parseInt(angular.element('#cboSampleType').val());
             $scope.ClearForm();
             $scope.Load(stn);
-        }        
+        }
     };
     $scope.CancelAction = function () {
         $scope.Load(1); // Change to load last sampletype in cache
@@ -834,10 +828,10 @@
     };
     $scope.SetDateReported = function () {
         $scope.Validate($scope.entryForm.txtBatchNumber, 'txtBatchNumber', 'Required format is [yyyymmdd]');
-        if ($scope.action == 'add' && !$scope.entryForm.txtBatchNumber.$invalid) {              
-                $scope.Sample.DateReported = $scope.Sample.BatchNumber.toString().substring(0, 4) + "-" + $scope.Sample.BatchNumber.toString().substring(4, 6) + "-" + $scope.Sample.BatchNumber.toString().substring(6, 8);
-                $scope.RemovePopover('txtBatchNumber')
-                angular.element('#txtBatchNumber').removeClass('has-error');            
+        if ($scope.action == 'add' && !$scope.entryForm.txtBatchNumber.$invalid) {
+            $scope.Sample.DateReported = $scope.Sample.BatchNumber.toString().substring(0, 4) + "-" + $scope.Sample.BatchNumber.toString().substring(4, 6) + "-" + $scope.Sample.BatchNumber.toString().substring(6, 8);
+            $scope.RemovePopover('txtBatchNumber')
+            angular.element('#txtBatchNumber').removeClass('has-error');
         }
     };
     $scope.SetDepth = function () {
@@ -919,23 +913,19 @@
         })
           .success(function (data) {
               if (data != null) {
-                  var stn = data.GenericInfo.Samples[0].SampleTypeNumber;
+                  console.log(data);
+                  $scope.SetGenericMasters(data.GenericInfo.Samples, data.GenericInfo.Accounts, data.GenericMasters.SampleTypes, data.GenericMasters.SampleColumns);
+                  $scope.SetGenericValues(data.GenericInfo.Samples[0], data.GenericInfo.Accounts[0], data.GenericInfo.Messages);
+                  var stn = $scope.Samples[0].SampleTypeNumber;
                   if (stn == 1 || stn == 14) {
-                      console.log(data.GenericInfo.Accounts[0]);
-                      $scope.SetMasters(stn, data.GenericMasters.SampleTypes, data.GenericMasters.SampleColumns, data.SoilMasters.CropTypes, data.SoilMasters.RecTypes, data.SoilMasters.PastCrops, null, null)
-                      $scope.SetFormValues(data.GenericInfo.Samples[0], data.GenericInfo.Accounts[0], data.SampleChains[0][0], data.SampleChains[0], data.TopSoils, null, null, data.GenericInfo.Messages);
+                      $scope.SetSoilMasters(data.SoilMasters.CropTypes, data.SoilMasters.RecTypes, data.SoilMasters.PastCrops)
+                      $scope.SetSoilValues(data.GenericInfo.Samples[0], data.GenericInfo.Accounts[0], data.SampleChains[0][0], data.SampleChains[0], data.TopSoils, data.Recommendations);
                       if (data.Recommendations != null && data.Recommendations.length != 0) {
                           $scope.SetRecForm(data.Recommendations[0]);
                       }
-                  } else if (stn == 2 || stn == 3 || stn == 4 || stn == 6 || stn == 7 || stn == 9 || stn == 12) {
-                      $scope.SetMasters(stn, data.GenericMasters.SampleTypes, data.GenericMasters.SampleColumns, null, null, null, data.SubSampleTypes, null)
-                      $scope.SetFormValues(data.GenericInfo.Samples[0], data.GenericInfo.Accounts[0], null, null, null, data.SubSampleInfos[0], data.SubSampleInfos, data.GenericInfo.Messages);
-                  } else if (stn == 5) {
-                      $scope.SetMasters(stn, data.GenericMasters.SampleTypes, data.GenericMasters.SampleColumns, null, null, null, data.SubSampleTypes, data.SubSubSampleTypes)
-                      $scope.SetFormValues(data.GenericInfo.Samples[0], data.GenericInfo.Accounts[0], null, null, null, data.SubSampleInfos[0], data.SubSampleInfos, data.GenericInfo.Messages);
-                  } else {
-                      $scope.SetMasters(stn, data.GenericMasters.SampleTypes, data.GenericMasters.SampleColumns, null, null, null, null, null)
-                      $scope.SetFormValues($scope.Samples[0], $scope.Accounts[0], null, null, null, null, null, data.GenericInfo.Messages);
+                  } else if (stn == 2 || stn == 3 || stn == 4 || stn == 5 || stn == 6 || stn == 7 || stn == 9 || stn == 12) {
+                      $scope.SetSubMasters(data.SubSampleTypes, data.SubSubSampleTypes)
+                      $scope.SetSubValues(data.SubSampleInfos[0], data.SubSampleInfos);
                   }
 
                   $scope.SetRecLayout();
@@ -951,19 +941,32 @@
         $scope.SetSoilSample();
         $http({
             method: 'POST',
-            url: '/SampleModels/AddSample', 
+            url: '/SampleModels/AddSample',
             data: { 'sampleView': $scope.Sample, 'soilSample': $scope.SoilSample, 'sampleRecs': $scope.SampleRecs, 'subSampleInfo': $scope.SubSampleInfo }
         })
           .success(function (data) {
               console.log("add was success");
               if (data != null) {
-                  $scope.SetFormValues(data);
+                  console.log(data);
+                  $scope.SetGenericMasters(data.GenericInfo.Samples, data.GenericInfo.Accounts, data.GenericMasters.SampleTypes, data.GenericMasters.SampleColumns);
+                  $scope.SetGenericValues(data.GenericInfo.Samples[0], data.GenericInfo.Accounts[0], data.GenericInfo.Messages);
+                  var stn = $scope.Samples[0].SampleTypeNumber;
+                  if (stn == 1 || stn == 14) {
+                      $scope.SetSoilMasters(data.SoilMasters.CropTypes, data.SoilMasters.RecTypes, data.SoilMasters.PastCrops)
+                      $scope.SetSoilValues(data.GenericInfo.Samples[0], data.GenericInfo.Accounts[0], data.SampleChains[0][0], data.SampleChains[0], data.TopSoils, data.Recommendations);
+                      if (data.Recommendations != null && data.Recommendations.length != 0) {
+                          $scope.SetRecForm(data.Recommendations[0]);
+                      }
+                  } else if (stn == 2 || stn == 3 || stn == 4 || stn == 5 || stn == 6 || stn == 7 || stn == 9 || stn == 12) {
+                      $scope.SetSubMasters(data.SubSampleTypes, data.SubSubSampleTypes)
+                      $scope.SetSubValues(data.SubSampleInfos[0], data.SubSampleInfos);
+                  }
               } else {
                   console.log("data not null");
                   $scope.Load($scope.Sample.SampleTypeNumber);
               }
           })
-          .error(function () { console.log("Error on AddSample")});
+          .error(function () { console.log("Error on AddSample") });
     };
     $scope.UpdateSample = function () {
         $scope.SetSoilSample();
@@ -974,7 +977,20 @@
             data: { 'sampleView': $scope.Sample, 'soilSample': $scope.SoilSample, 'sampleRecs': $scope.SampleRecs, 'subSampleInfo': $scope.SubSampleInfo }
         })
           .success(function (data) {
-              $scope.SetFormValues(data);
+              console.log(data);
+              $scope.SetGenericMasters(data.GenericInfo.Samples, data.GenericInfo.Accounts, data.GenericMasters.SampleTypes, data.GenericMasters.SampleColumns);
+              $scope.SetGenericValues(data.GenericInfo.Samples[0], data.GenericInfo.Accounts[0], data.GenericInfo.Messages);
+              var stn = $scope.Samples[0].SampleTypeNumber;
+              if (stn == 1 || stn == 14) {
+                  $scope.SetSoilMasters(data.SoilMasters.CropTypes, data.SoilMasters.RecTypes, data.SoilMasters.PastCrops)
+                  $scope.SetSoilValues(data.GenericInfo.Samples[0], data.GenericInfo.Accounts[0], data.SampleChains[0][0], data.SampleChains[0], data.TopSoils, data.Recommendations);
+                  if (data.Recommendations != null && data.Recommendations.length != 0) {
+                      $scope.SetRecForm(data.Recommendations[0]);
+                  }
+              } else if (stn == 2 || stn == 3 || stn == 4 || stn == 5 || stn == 6 || stn == 7 || stn == 9 || stn == 12) {
+                  $scope.SetSubMasters(data.SubSampleTypes, data.SubSubSampleTypes)
+                  $scope.SetSubValues(data.SubSampleInfos[0], data.SubSampleInfos);
+              }
           })
           .error(function () { });
     };
@@ -986,12 +1002,12 @@
         })
           .success(function (data) {
               $scope.Load($scope.Sample.SampleTypeNumber);
-              console.log("Sample Deleted success");
           })
           .error(function () { });
     };
     var y = 0;
     $scope.Next = function (ln) {
+        console.log(ln);
         $scope.disablePrev = false;
         var found = false;
         while (!found && y >= 0) {
@@ -1001,18 +1017,14 @@
             y--;
         }
         if (found && y >= 0) {
+            $scope.SetGenericValues($scope.Samples[y], $scope.Accounts[y], $scope.Messages);
             var stn = $scope.Samples[y].SampleTypeNumber;
             if (stn == 1 || stn == 14) {
-                $scope.SetFormValues($scope.Samples[y], $scope.Accounts[y], $scope.SampleChains[y], $scope.SampleChains, $scope.TopSoils, null, null, $scope.Messages);
-                if ($scope.Recommendations != null && $scope.Recommendations.length != 0) {
-                    $scope.SetRecForm($scope.Recommendations[y]);
-                }
-            } else if (stn == 2 || stn == 3 || stn == 4 || stn == 6 || stn == 7 || stn == 9 || stn == 12) {
-                $scope.SetFormValues($scope.Samples[y], $scope.Accounts[y], null, null, null, $scope.SubSampleInfos[y], $scope.SubSampleInfos, $scope.Messages);
-            } else if (stn == 5) {
-                $scope.SetFormValues($scope.Samples[y], $scope.Accounts[y], null, null, null, $scope.SubSampleInfos[y], $scope.SubSampleInfos, $scope.Messages);
-            } else {
-                $scope.SetFormValues($scope.Samples[y], $scope.Accounts[y], null, null, null, null, null, $scope.Messages);
+                $scope.SetTopSoils(y);
+                $scope.SetSampleChains(y);
+                $scope.SetRecommendations(y);
+            } else if (stn == 2 || stn == 3 || stn == 4 || stn == 5 || stn == 6 || stn == 7 || stn == 9 || stn == 12) {
+                $scope.SetSubValues($scope.SubSampleInfos[y], $scope.SubSampleInfos);
             }
         } else {
             $http({
@@ -1022,24 +1034,20 @@
             })
           .success(function (data) {
               console.log(data);
-              if (angular.isDefined(data)) {
-                  y = $scope.Samples.length - 1;
-                  var stn = data.GenericInfo.Samples[y].SampleTypeNumber;
+              if (angular.isDefined(data) && data != null && data != "") {
+                  y = data.GenericInfo.Samples.length - 1;
+                  $scope.SetGenericMasters(data.GenericInfo.Samples, data.GenericInfo.Accounts, $scope.SampleTypes, $scope.SampleColumns);
+                  $scope.SetGenericValues(data.GenericInfo.Samples[y], data.GenericInfo.Accounts[y], data.GenericInfo.Messages);
+                  var stn = $scope.Samples[y].SampleTypeNumber;
                   if (stn == 1 || stn == 14) {
-                      $scope.SetMasters(stn, data.GenericInfo.Samples, data.GenericInfo.Accounts, null, null, null, null, null, null, null)
-                      $scope.SetFormValues(data.GenericInfo.Samples[y], data.GenericInfo.Accounts[y], data.SampleChains[y][0], data.SampleChains[y], data.TopSoils, null, null, data.GenericInfo.Messages);
-                      if (data.Recommendations != null && data.Recommendations.length != 0) {
-                          $scope.SetRecForm(data.Recommendations[y]);
-                      }
-                  } else if (stn == 2 || stn == 3 || stn == 4 || stn == 6 || stn == 7 || stn == 9 || stn == 12) {
-                      $scope.SetMasters(stn, data.GenericInfo.Samples, data.GenericInfo.Accounts, null, null, null, null, null, null, null)
-                      $scope.SetFormValues(data.GenericInfo.Samples[y], data.GenericInfo.Accounts[y], null, null, null, data.SubSampleInfos[y], data.SubSampleInfos, data.GenericInfo.Messages);
-                  } else if (stn == 5) {
-                      $scope.SetMasters(stn, data.GenericInfo.Samples, data.GenericInfo.Accounts, null, null, null, null, null, null, null)
-                      $scope.SetFormValues(data.GenericInfo.Samples[y], data.GenericInfo.Accounts[y], null, null, null, data.SubSampleInfos[y], data.SubSampleInfos, data.GenericInfo.Messages);
-                  } else {
-                      $scope.SetMasters(stn, data.GenericInfo.Samples, data.GenericInfo.Accounts, null, null, null, null, null, null, null)
-                      $scope.SetFormValues(data.Samples[y], data.Accounts[y], null, null, null, null, null, data.Messages);
+                      $scope.TopSoilsList = data.TopSoils;
+                      $scope.SampleChainsList = data.SampleChains;
+                      $scope.RecommendationsList = data.Recommendations;
+                      $scope.SetTopSoils(y);
+                      $scope.SetSampleChains(y);
+                      $scope.SetRecommendations(y);
+                  } else if (stn == 2 || stn == 3 || stn == 4 || stn == 5 || stn == 6 || stn == 7 || stn == 9 || stn == 12) {
+                      $scope.SetSubValues(data.SubSampleInfos[y], data.SubSampleInfos);
                   }
               } else {
                   $scope.disableNext = true;
@@ -1049,10 +1057,9 @@
           .error(function () { });
         }
     };
-    $scope.Prev = function (ln) {        
+    $scope.Prev = function (ln) {
+        console.log(ln);
         $scope.disableNext = false;
-        console.log($scope.disableNext);
-        console.log($scope.disablePrev);
         var found = false;
         while (!found && y >= 0 && y < $scope.Samples.length) {
             console.log("!found, y: " + y);
@@ -1062,19 +1069,14 @@
             y++;
         }
         if (found && y < $scope.Samples.length) {
+            $scope.SetGenericValues($scope.Samples[y], $scope.Accounts[y], $scope.Messages);
             var stn = $scope.Samples[y].SampleTypeNumber;
             if (stn == 1 || stn == 14) {
-                console.log($scope.SampleChains);
-                $scope.SetFormValues($scope.Samples[y], $scope.Accounts[y], $scope.SampleChains[y], $scope.SampleChains, $scope.TopSoils, null, null, $scope.Messages);
-                if ($scope.Recommendations != null && $scope.Recommendations.length != 0) {
-                    $scope.SetRecForm($scope.Recommendations[y]);
-                }
-            } else if (stn == 2 || stn == 3 || stn == 4 || stn == 6 || stn == 7 || stn == 9 || stn == 12) {
-                $scope.SetFormValues($scope.Samples[y], $scope.Accounts[y], null, null, null, $scope.SubSampleInfos[y], $scope.SubSampleInfos, $scope.Messages);
-            } else if (stn == 5) {
-                $scope.SetFormValues($scope.Samples[y], $scope.Accounts[y], null, null, null, $scope.SubSampleInfos[y], $scope.SubSampleInfos, $scope.Messages);
-            } else {
-                $scope.SetFormValues($scope.Samples[y], $scope.Accounts[y], null, null, null, null, null, $scope.Messages);
+                $scope.SetTopSoils(y);
+                $scope.SetSampleChains(y);
+                $scope.SetRecommendations(y);
+            } else if (stn == 2 || stn == 3 || stn == 4 || stn == 5 || stn == 6 || stn == 7 || stn == 9 || stn == 12) {
+                $scope.SetSubValues($scope.SubSampleInfos[y], $scope.SubSampleInfos);
             }
         } else {
             $http({
@@ -1083,34 +1085,29 @@
                 data: { 'stn': $scope.Sample.SampleTypeNumber, 'bn': $scope.Sample.BatchNumber, 'ln': $scope.Sample.LabNumber }
             })
           .success(function (data) {
-              if (angular.isDefined(data)) {
+              console.log(data);
+              if (angular.isDefined(data) && data != null && data != "") {
                   y = 0
-                  var stn = data.GenericInfo.Samples[y].SampleTypeNumber;
+                  $scope.SetGenericMasters(data.GenericInfo.Samples, data.GenericInfo.Accounts, $scope.SampleTypes, $scope.SampleColumns);
+                  $scope.SetGenericValues(data.GenericInfo.Samples[y], data.GenericInfo.Accounts[y], data.GenericInfo.Messages);
+                  var stn = $scope.Samples[y].SampleTypeNumber;
                   if (stn == 1 || stn == 14) {
-                      $scope.SetMasters(stn, data.GenericInfo.Samples, data.GenericInfo.Accounts, null, null, null, null, null, null, null)
-                      $scope.SetFormValues(data.GenericInfo.Samples[y], data.GenericInfo.Accounts[y], data.SampleChains[y][0], data.SampleChains[y], data.TopSoils, null, null, data.GenericInfo.Messages);
-                      if (data.Recommendations != null && data.Recommendations.length != 0) {
-                          $scope.SetRecForm(data.Recommendations[y]);
-                      }
-                  } else if (stn == 2 || stn == 3 || stn == 4 || stn == 6 || stn == 7 || stn == 9 || stn == 12) {
-                      $scope.SetMasters(stn, data.GenericInfo.Samples, data.GenericInfo.Accounts, null, null, null, null, null, null, null)
-                      $scope.SetFormValues(data.GenericInfo.Samples[y], data.GenericInfo.Accounts[y], null, null, null, data.SubSampleInfos[y], data.SubSampleInfos, data.GenericInfo.Messages);
-                  } else if (stn == 5) {
-                      $scope.SetMasters(stn, data.GenericInfo.Samples, data.GenericInfo.Accounts, null, null, null, null, null, null, null)
-                      $scope.SetFormValues(data.GenericInfo.Samples[y], data.GenericInfo.Accounts[y], null, null, null, data.SubSampleInfos[y], data.SubSampleInfos, data.GenericInfo.Messages);
-                  } else {
-                      $scope.SetMasters(stn, data.GenericInfo.Samples, data.GenericInfo.Accounts, null, null, null, null, null, null, null)
-                      $scope.SetFormValues(data.Samples[y], data.Accounts[y], null, null, null, null, null, data.Messages);
+                      $scope.TopSoilsList = data.TopSoils;
+                      $scope.SampleChainsList = data.SampleChains;
+                      $scope.RecommendationsList = data.Recommendations;
+                      $scope.SetTopSoils(y);
+                      $scope.SetSampleChains(y);
+                      $scope.SetRecommendations(y);
+                  } else if (stn == 2 || stn == 3 || stn == 4 || stn == 5 || stn == 6 || stn == 7 || stn == 9 || stn == 12) {
+                      $scope.SetSubValues(data.SubSampleInfos[y], data.SubSampleInfos);
                   }
               } else {
                   $scope.disablePrev = true;
                   y = $scope.Samples.length - 1;
-              }              
+              }
           })
           .error(function () { });
         }
-        console.log($scope.disableNext);
-        console.log($scope.disablePrev);
     };
 
     //angular.element(document).keypress(function (e) {
@@ -1139,7 +1136,7 @@
     //    }
     //});
 })
- .directive('autoComplete', function () {
+.directive('autoComplete', function () {
      return {
          restrict: 'A',
          link: function (scope, element, attrs) {
@@ -1172,4 +1169,9 @@
              });
          }
      };
- });
+ })
+.filter('parseDate', function ($filter) {
+    return function (data) {
+        var date = new Date(parseInt(data.replace(/(^.*\()|([+-].*$)/g, ''))).toISOString().substring(0, 10);
+    }
+});

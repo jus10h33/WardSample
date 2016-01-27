@@ -61,7 +61,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label">Available</label>
-                                    <select id="cboLinkSoilAvailable" name="cboLinkSoilAvailable" class="form-control m-l-30" ng-disabled="disabled" ng-readonly="readonly" ng-model="SampleChain.Available" tabindex="23">
+                                    <select id="cboLinkSoilAvailable" name="cboLinkSoilAvailable" class="form-control m-l-30" ng-disabled="disabled" ng-readonly="readonly" ng-model="SampleChain.Available | number" tabindex="23">
                                         <option ng-repeat="ts in TopSoils" value="{{ts}}">{{ts}}</option>
                                     </select>
                                 </div>
