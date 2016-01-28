@@ -38,8 +38,6 @@ namespace SampleData.Models
                 "\nRecTypeNumber: " + RecTypeNumber +
                 "\nCropTypeNumber: " + CropTypeNumber +
                 "\nYieldGoal: " + YieldGoal;
-
-
         }
     }
 }

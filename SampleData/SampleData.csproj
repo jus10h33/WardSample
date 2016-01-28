@@ -183,7 +183,6 @@
     <Compile Include="Helpers\GenericMasters.cs" />
     <Compile Include="Helpers\JavaScriptConvert.cs" />
     <Compile Include="Helpers\PlantReturn.cs" />
-    <Compile Include="Helpers\Recommendations.cs" />
     <Compile Include="Helpers\ResultsFor.cs" />
     <Compile Include="Helpers\SampleInfoReturn.cs" />
     <Compile Include="Helpers\SampleModelsControllerBak.cs" />
@@ -337,6 +336,9 @@
     <Compile Include="ViewModels\InvoiceViewModel.cs" />
     <Compile Include="ViewModels\ReportViewModel.cs" />
     <Compile Include="ViewModels\SampleViewModel.cs" />
+    <Compile Include="ViewModels\SoilRecCropViewModel.cs" />
+    <Compile Include="ViewModels\SoilRecTypeViewModel.cs" />
+    <Compile Include="ViewModels\SoilRecViewModel.cs" />
     <Compile Include="WardDBContext.designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -391,6 +393,9 @@
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\bootstrap3-typeahead.min.js" />
+    <Content Include="Scripts\customDirectives.js" />
+    <Content Include="Scripts\customFilters.js" />
+    <Content Include="Scripts\customServices.js" />
     <Content Include="Scripts\jquery-1.11.3.js" />
     <Content Include="Scripts\jquery-1.11.3.min.js" />
     <Content Include="Scripts\jquery-1.11.3.min.map" />
@@ -402,12 +407,14 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modalCtrl.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
+    <Content Include="Scripts\ngMask.min.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\sample-browse.js" />
     <Content Include="Scripts\sample-entry.js" />
     <Content Include="Scripts\select2.full.js" />
     <Content Include="Scripts\select2.full.min.js" />
+    <Content Include="Scripts\wardApp.js" />
     <Content Include="Scripts\_references.js" />
     <Content Include="Content\partialviews\partialPlant.html" />
     <Content Include="Content\partialviews\partialSoil.html" />

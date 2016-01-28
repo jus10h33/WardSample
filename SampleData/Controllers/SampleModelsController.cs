@@ -41,6 +41,7 @@ namespace SampleData.Controllers
             if (sample != null)
             {
                 gInfo = GetGenericInfo(stn, sample);
+                Debug.Print("getting gen info");
             } 
             else
             {
@@ -54,9 +55,9 @@ namespace SampleData.Controllers
                 soilReturn.GenericMasters = GetGenericMasters(stn);
                 soilReturn.SoilMasters = GetSoilMasters(stn);
                 soilReturn.SampleChains = GetSampleChainsList(soilReturn.GenericInfo.Samples);
-                soilReturn.Recommendations = GetSampleRecommendations(soilReturn.GenericInfo.Samples);
+                //soilReturn.Recommendations = GetSampleRecommendations(soilReturn.GenericInfo.Samples);
                 soilReturn.TopSoils = GetTopSoils(soilReturn.SampleChains, soilReturn.GenericInfo.Samples);
-
+                Debug.Print(soilReturn.GenericInfo.Samples.First().LabNumber.ToString());
                 return soilReturn;
             }
             else if (stn == 2 || stn == 3 || stn == 4 || stn == 5 || stn == 6 || stn == 7 || stn == 9 || stn == 12)
@@ -335,67 +336,42 @@ namespace SampleData.Controllers
             
             return topSoilsList;
         }
-        private List<List<Recommendations>> GetSampleRecommendations(List<SampleViewModel> samples)
-        {
-            int stn = samples.First().SampleTypeNumber;
-            int bn = samples.First().BatchNumber;
-            int ln = samples.First().LabNumber;
+        //private List<List<SoilRecModels>> GetSampleRecommendations(List<SampleViewModel> samples)
+        //{
+        //    int stn = samples.First().SampleTypeNumber;
+        //    int bn = samples.First().BatchNumber;
+        //    int ln = samples.First().LabNumber;
 
-            List<List<Recommendations>> recommendationsList = new List<List<Recommendations>>();
+        //    List<List<SoilRecViewModel>> recommendationsList = new List<List<SoilRecModels>>();
 
-            foreach (SampleViewModel s in samples)
-            {
-                List<Recommendations> recommendations = new List<Recommendations>();
-                List<SoilRecModels> soilSampleRecs = GetSoilRecs(bn, ln);
-                foreach (SoilRecModels r in soilSampleRecs)
-                {
-                    Recommendations rec = new Recommendations();
-                    rec.BatchNumber = r.BatchNumber;
-                    rec.LabNumber = r.LabNumber;
-                    rec.Priority = r.Priority;
-                    rec.RecTypeNumber = r.RecTypeNumber;
-                    rec.CropTypeNumber = r.CropTypeNumber;
-                    rec.YieldGoal = r.YieldGoal;
-                    if (stn == 14)
-                    {
-                        rec.RecTypeName = "4 - Haney";
-                        rec.RecTypeNumber = 4;
-                    }
-                    else
-                    {
-                        var query1 = GetSoilRecTypes();
-                        rec.RecTypeName = rec.RecTypeNumber + " - " + (from x in query1
-                                                                       where x.RecTypeNumber == rec.RecTypeNumber
-                                                                       select x.RecTypeName).SingleOrDefault();
-                    }
-                    var query2 = GetSoilRecCrops();
-                    var src = (from y in query2
-                               where y.CropTypeNumber == rec.CropTypeNumber
-                               select y).SingleOrDefault();
+        //    foreach (SampleViewModel s in samples)
+        //    {
+        //        List<SoilRecViewModel> soilSampleRecs = GetSoilRecs(bn, ln);
+        //        foreach (SoilRecViewModel r in soilSampleRecs)
+        //        {
+        //            if (stn == 14)
+        //            {
+        //                r.RecTypeDisplay = "4 - Haney";
+        //                r.RecTypeNumber = 4;
+        //            }
+        //            else
+        //            {
 
-                    rec.CropTypeName = rec.CropTypeNumber + " - " + src.CropTypeName + ":" + src.Unit;
-                    recommendations.Add(rec);
-                }
-                recommendationsList.Add(recommendations);
-            }
-            foreach (List<Recommendations> recs in recommendationsList)
-            {
-                Debug.Print("---------------------------------");
-                foreach(Recommendations rec in recs)
-                {
-                    Debug.Print(rec.ToString());
-                }
-                Debug.Print("---------------------------------");
-            }
-            return recommendationsList;
-        }
-        public JsonResult FindAccount(int cn, int stn)
+        //            }
+
+        //        }
+        //        soilSampleRecs.Add(r);
+        //    }
+            
+        //    return recommendationsList;
+        //}
+        public JsonResult FindAccount(int an, int stn)
         {
             AccountModels account = new AccountModels();
             
-            if (AccountExist(cn))
+            if (AccountExist(an))
             {
-                account = GetAccount(cn);
+                account = GetAccount(an);
 
                 AccountViewModel accountView = new AccountViewModel();
                 accountView.Name = account.FirstName + " " + account.LastName;
@@ -403,7 +379,7 @@ namespace SampleData.Controllers
                 accountView.Address1 = account.Address1;
                 accountView.CityStZip = account.City + ", " + account.State + " " + account.Zip;
                 accountView.SampleEntryInformation = account.SampleEntryInformation;
-                accountView.Growers = GetGrowers(cn, stn);
+                accountView.Growers = GetGrowers(an, stn);
                 return Json(accountView, JsonRequestBehavior.AllowGet);                
             }
             else
@@ -722,9 +698,9 @@ namespace SampleData.Controllers
         }
         #endregion
         #region "Find Sample"
-        [HttpPost]
         public JsonResult FindSample(int sampleTypeNumber, int labNumber, int batchNumber = 0)
         {
+            Debug.Print("FindSample....");
             if (batchNumber == 0)
             {
                 if (Validator.isNumeric(sampleTypeNumber.ToString()) && Validator.isNumeric(labNumber.ToString()) && labNumber != 0)
@@ -761,6 +737,7 @@ namespace SampleData.Controllers
                                                select s).FirstOrDefault();
                         if (sample != null)
                         {
+                            Debug.Print(sample.LabNumber.ToString());
                             return Json(GetEntry(sample.SampleTypeNumber, sample), JsonRequestBehavior.AllowGet);
                         }
                     }
@@ -776,12 +753,12 @@ namespace SampleData.Controllers
         #endregion
         #region "Add Sample"
         [HttpPost]
-        public JsonResult AddSample(SampleViewModel sampleView, SampleChainModels soilSample, List<SoilRecModels> sampleRecs, SubSampleInfoModels subSampleInfo)
+        public JsonResult AddSample(SampleViewModel sampleView, SampleChainModels sampleChain, List<SoilRecModels> sampleRecs, SubSampleInfoModels subSampleInfo)
         {
             Debug.Print("Starting Add...");
             
             ValidateSample(sampleView);
-            ValidateSoilSample(soilSample);
+            ValidateSoilSample(sampleChain);
             ValidateSampleRecs(sampleRecs);
             if (!SampleExist(sampleView.SampleTypeNumber, sampleView.BatchNumber, sampleView.LabNumber) && sr.ValidSample)
             {
@@ -834,7 +811,7 @@ namespace SampleData.Controllers
                     if (newSample.SampleTypeNumber == 1 || newSample.SampleTypeNumber == 14)
                     {
                         // Add soilsample data and sampleRecs
-                        db.SampleChains.Add(soilSample);
+                        db.SampleChains.Add(sampleChain);
                         if (recsExist) //check if recs exist
                         {
                             foreach (SoilRecModels soilRec in sampleRecs)
@@ -868,7 +845,7 @@ namespace SampleData.Controllers
         #endregion
         #region "Update Sample"             
         [HttpPost]
-        public JsonResult UpdateSample(SampleViewModel sampleView, SampleChainModels soilSample, List<SoilRecModels> sampleRecs, SubSampleInfoModels subSampleInfo)
+        public JsonResult UpdateSample(SampleViewModel sampleView, SampleChainModels sampleChain, List<SoilRecModels> sampleRecs, SubSampleInfoModels subSampleInfo)
         {
             OtherReturn entry = new OtherReturn();
             InvoiceModels invoice = new InvoiceModels();
@@ -879,7 +856,7 @@ namespace SampleData.Controllers
             if (SampleExist(sampleView.SampleTypeNumber, sampleView.BatchNumber, sampleView.LabNumber))
             {
                 ValidateSample(sampleView);
-                ValidateSoilSample(soilSample);
+                ValidateSoilSample(sampleChain);
                 ValidateSampleRecs(sampleRecs);
                 if (sr.ValidSample)
                 {
@@ -917,20 +894,20 @@ namespace SampleData.Controllers
                         // Add soilsample data and sampleRecs
                         if (sample.SampleTypeNumber == 1 || sample.SampleTypeNumber == 14)
                         {
-                            SampleChainModels ssample = db.SampleChains.Find(sample.BatchNumber, sample.LabNumber);
-                            ssample.BatchNumber = soilSample.BatchNumber;
-                            ssample.LabNumber = soilSample.LabNumber;
-                            ssample.BeginningDepth = soilSample.BeginningDepth;
-                            ssample.EndingDepth = soilSample.EndingDepth;
-                            ssample.PastCropNumber = soilSample.PastCropNumber;
-                            ssample.LinkedSampleBatch = soilSample.LinkedSampleBatch;
-                            ssample.LinkedSampleLab = soilSample.LinkedSampleLab;
-                            ssample.TopSoil = soilSample.TopSoil;
-                            db.Entry(ssample).State = EntityState.Modified;
+                            SampleChainModels sChain = db.SampleChains.Find(sample.BatchNumber, sample.LabNumber);
+                            sChain.BatchNumber = sampleChain.BatchNumber;
+                            sChain.LabNumber = sampleChain.LabNumber;
+                            sChain.BeginningDepth = sampleChain.BeginningDepth;
+                            sChain.EndingDepth = sampleChain.EndingDepth;
+                            sChain.PastCropNumber = sampleChain.PastCropNumber;
+                            sChain.LinkedSampleBatch = sampleChain.LinkedSampleBatch;
+                            sChain.LinkedSampleLab = sampleChain.LinkedSampleLab;
+                            sChain.TopSoil = sampleChain.TopSoil;
+                            db.Entry(sChain).State = EntityState.Modified;
 
                             List<SoilRecModels> oldRecs = (from r in db.SoilRecs
-                                                                    where r.BatchNumber == sample.BatchNumber && r.LabNumber == sample.LabNumber
-                                                                    select r).ToList();
+                                                            where r.BatchNumber == sample.BatchNumber && r.LabNumber == sample.LabNumber
+                                                            select r).ToList();
                             if (oldRecs.Count > 0)
                             {
                                 foreach (SoilRecModels soilRec in oldRecs) // Delete old Recs
@@ -998,8 +975,8 @@ namespace SampleData.Controllers
                     }
                     if (sample.SampleTypeNumber == 1 || sample.SampleTypeNumber == 14)
                     {
-                        SampleChainModels soilSample = db.SampleChains.Find(batchNumber, labNumber); // Do I need to find it first
-                        db.SampleChains.Remove(soilSample);
+                        SampleChainModels sampleChain = db.SampleChains.Find(batchNumber, labNumber); // Do I need to find it first
+                        db.SampleChains.Remove(sampleChain);
                         List<SoilRecModels> sampleRecs = (from sr in db.SoilRecs
                                                                 where sr.BatchNumber == batchNumber && sr.LabNumber == labNumber
                                                                 select sr).ToList();
@@ -1089,7 +1066,7 @@ namespace SampleData.Controllers
                 SoilReturn soilReturn = new SoilReturn();
                 soilReturn.GenericInfo = gInfo;
                 soilReturn.SampleChains = GetSampleChainsList(soilReturn.GenericInfo.Samples);
-                soilReturn.Recommendations = GetSampleRecommendations(soilReturn.GenericInfo.Samples);
+                //soilReturn.Recommendations = GetSampleRecommendations(soilReturn.GenericInfo.Samples);
                 soilReturn.TopSoils = GetTopSoils(soilReturn.SampleChains, soilReturn.GenericInfo.Samples);
                 return soilReturn;
             }

@@ -58,7 +58,7 @@ label {
     opacity: 1;
 }
 .has-error {
-    border: 3px solid darkred !important;
+    border: 5px solid darkorange !important;
 }
 .error {
     color: red;
