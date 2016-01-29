@@ -12,9 +12,10 @@ using System.Diagnostics;
 using System.Text.RegularExpressions;
 
 namespace SampleData.Controllers
-{
+{    
     public class SampleModelsController : Controller
     {
+        private const int MAX_RECS = 30;
         private WardDBContext db = new WardDBContext();
         private SampleResult sr = new SampleResult();
 
@@ -122,14 +123,14 @@ namespace SampleData.Controllers
                 samples = (from s in db.Samples
                                               where s.SampleTypeNumber == stn
                                               orderby s.BatchNumber descending, s.LabNumber descending
-                                              select s).Take(30).ToList();
+                                              select s).Take(MAX_RECS).ToList();
             }
             else
             {
                 samples = (from s in db.Samples
                             where s.SampleTypeNumber == stn && s.BatchNumber >= sample.BatchNumber && s.LabNumber >= sample.LabNumber
-                            orderby s.BatchNumber descending, s.LabNumber descending
-                            select s).Take(30).ToList();
+                            orderby s.LabNumber, s.BatchNumber descending
+                           select s).Take(MAX_RECS).ToList();
             }
             return ConvertSamples(samples);
         }
@@ -703,16 +704,18 @@ namespace SampleData.Controllers
             Debug.Print("FindSample....");
             if (batchNumber == 0)
             {
+                Debug.Print("Batchnumber == 0");
                 if (Validator.isNumeric(sampleTypeNumber.ToString()) && Validator.isNumeric(labNumber.ToString()) && labNumber != 0)
                 {
                     try
                     {
                         SampleModels sample = (from s in db.Samples
-                                               where s.SampleTypeNumber == sampleTypeNumber && s.LabNumber >= labNumber
-                                               orderby s.LabNumber
+                                               where s.SampleTypeNumber == sampleTypeNumber && s.LabNumber <= labNumber
+                                               orderby s.BatchNumber descending, s.LabNumber descending
                                                select s).FirstOrDefault();
                         if (sample != null)
                         {
+                            Debug.Print(sample.LabNumber.ToString());
                             return Json(GetEntry(sample.SampleTypeNumber, sample), JsonRequestBehavior.AllowGet);
                         }
                     }
@@ -730,10 +733,9 @@ namespace SampleData.Controllers
                     Debug.Print("bn != 0");
                     try
                     {
-                        Debug.Print("inside try");
                         SampleModels sample = (from s in db.Samples
-                                               where s.SampleTypeNumber == sampleTypeNumber && s.BatchNumber >= batchNumber && s.LabNumber >= labNumber
-                                               orderby s.LabNumber
+                                               where s.SampleTypeNumber == sampleTypeNumber && s.BatchNumber <= batchNumber && s.LabNumber <= labNumber
+                                               orderby s.BatchNumber descending, s.LabNumber descending
                                                select s).FirstOrDefault();
                         if (sample != null)
                         {

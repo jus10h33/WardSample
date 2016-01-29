@@ -9,10 +9,10 @@ namespace SampleData
         public static void RegisterBundles(BundleCollection bundles)
         {
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
-                        "~/Scripts/jquery-{version}.js"));
+                        "~/Scripts/jquery/jquery-{version}.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
-                        "~/Scripts/jquery.validate*"));
+                        "~/Scripts/jquery/jquery.validate*"));
 
             // Use the development version of Modernizr to develop with and learn from. Then, when you're
             // ready for production, use the build tool at http://modernizr.com to pick only the tests you need.
@@ -20,29 +20,29 @@ namespace SampleData
                         "~/Scripts/modernizr-*"));                                                
 
             bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
-                      "~/Scripts/bootstrap.min.js",
-                      "~/Scripts/bootstrap-datepicker.min.js",
-                      "~/Scripts/bootstrap-editable.min.js",
-                      "~/Scripts/bootstrap3-typeahead.min.js",
+                      "~/Scripts/bootstrap/bootstrap.min.js",
+                      "~/Scripts/bootstrap/bootstrap-datepicker.min.js",
+                      "~/Scripts/bootstrap/bootstrap-editable.min.js",
+                      "~/Scripts/bootstrap/bootstrap3-typeahead.min.js",
                       "~/Scripts/select2.full.min.js",
                       "~/Scripts/respond.js"));            
 
             bundles.Add(new ScriptBundle("~/bundles/angular").Include(
-                      "~/Scripts/angular.min.js",
-                      "~/Scripts/angular-touch.min.js",
-                      "~/Scripts/angular-route.min.js",
-                      "~/Scripts/angular-sanitize.min.js",
-                      "~/Scripts/angular-resource.min.js",
-                      "~/Scripts/angular-mocks.js",
-                      "~/Scripts/angular-animate.min.js",
-                      "~/Scripts/ngMask.min.js",
-                      "~/Scripts/autofill-event.js"));
+                      "~/Scripts/angular/angular.min.js",
+                      "~/Scripts/angular/angular-touch.min.js",
+                      "~/Scripts/angular/angular-route.min.js",
+                      "~/Scripts/angular/angular-sanitize.min.js",
+                      "~/Scripts/angular/angular-resource.min.js",
+                      "~/Scripts/angular/angular-mocks.js",
+                      "~/Scripts/angular/angular-animate.min.js",
+                      "~/Scripts/angular/ngMask.min.js",
+                      "~/Scripts/angular/autofill-event.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/customAngular").Include(
-                      "~/Scripts/wardApp.js",
-                      "~/Scripts/customDirectives.js",
-                      "~/Scripts/customFilters.js",
-                      "~/Scripts/customServices.js"));
+                      "~/Scripts/mainApp.js",
+                      "~/Scripts/Directives/sampleDirectives.js",
+                      "~/Scripts/Filters/sampleFilters.js",
+                      "~/Scripts/Services/sampleServices.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/sample").Include(
                         "~/Scripts/sample-*"));
