@@ -1,4 +1,4 @@
-﻿<section id="right" class="col-sm-12 col-md-12 col-lg-5" ng-show="rightSide">
+﻿<section id="right" class="m-l-20 col-sm-12 col-md-12 col-lg-4" ng-show="rightSide">
     <div class="col-lg-12">
         <div class="panel panel-default">
             <span class="panel-heading">Sample Information</span>
@@ -6,30 +6,29 @@
                 <div id="soil" ng-show="soilView">
                     <div id="sampleRecsTop" class="col-lg-12">
                         <form id="frmSampleInfo" name="frmSampleInfo">
-                            <div class="col-lg-2">
+                            <div class="col-lg-8">
                                 <div class="form-group m-b-5">
                                     <label>Top Soil</label>
                                     <input type="checkbox" id="chkTopSoil" name="chkTopSoil" ng-readonly="readonly" ng-checked="{{chkTopSoil}}" ng-click="SetDepth()" ng-model="chkTopSoil" tabindex="16" />
-                                </div>
-                                <div id="linkToSoil" ng-show="linkToSoil">
-                                    <div class="form-group">
+                                    <span id="linkToSoil" ng-show="linkToSoil">
                                         <label>Link Soil</label>
                                         <input type="checkbox" id="chkLinkToSoil" ng-readonly="readonly" ng-checked="{{SampleChain.LinkedSampleBatch}}" ng-model="chkLinkToSoil" tabindex="17" />
+                                    </span>
+                                </div>
+
+                                <div id="depthCol" class="col-lg-10">
+                                    <label class="control-label"></label><span class="color-white m-l-30">Begin</span><span class="color-white m-l-55">End</span>
+                                    <div class="form-group">
+                                        <label class="control-label">Depth</label>
+                                        <input type="text" id="txtBeginDepth" name="txtBeginDepth" class="form-control" ng-disabled="disabled" ng-readonly="readonly" ng-model="SampleChain.BeginningDepth" ng-required="required" ng-pattern="regNumeric" ng-blur="Validate(frmSampleInfo.txtBeginDepth, 'txtBeginDepth', 'Must be numeric')" tabindex="18" />
+                                        <input type="text" id="txtEndDepth" name="txtEndDepth" class="form-control" ng-disabled="disabled" ng-readonly="readonly" ng-model="SampleChain.EndingDepth" ng-required="required" ng-pattern="regNumeric" ng-blur="Validate(frmSampleInfo.txtEndDepth, 'txtEndDepth', 'Must be numeric')" tabindex="19" />
                                     </div>
-                                </div>
-                            </div>
-                            <div id="depthCol" class="col-lg-6">
-                                <label class="control-label"></label><span class="color-white m-l-30">Begin</span><span class="color-white m-l-30">End</span>
-                                <div class="form-group">
-                                    <label class="control-label">Depth</label>
-                                    <input type="text" id="txtBeginDepth" name="txtBeginDepth" class="form-control" ng-disabled="disabled" ng-readonly="readonly" ng-model="SampleChain.BeginningDepth" ng-required="required" ng-pattern="regNumeric" ng-blur="Validate(frmSampleInfo.txtBeginDepth, 'txtBeginDepth', 'Must be numeric')" tabindex="18" />
-                                    <input type="text" id="txtEndDepth" name="txtEndDepth" class="form-control" ng-disabled="disabled" ng-readonly="readonly" ng-model="SampleChain.EndingDepth" ng-required="required" ng-pattern="regNumeric" ng-blur="Validate(frmSampleInfo.txtEndDepth, 'txtEndDepth', 'Must be numeric')" tabindex="19" />
-                                </div>
-                                <div class="form-group">
-                                    <label class="control-label col-lg-7">Past Crop</label>
-                                    <select id="cboPastCropNumber" class="form-control" ng-disabled="disabled" ng-readonly="readonly" ng-required="required" ng-model="SampleChain.PastCropNumber" tabindex="20">
-                                        <option ng-repeat="pc in PastCrops" value="{{pc.PastCropNumber}}">{{pc.PastCropName}}</option>
-                                    </select>
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-10">Past Crop</label>
+                                        <select id="cboPastCropNumber" class="form-control" ng-disabled="disabled" ng-readonly="readonly" ng-required="required" ng-model="SampleChain.PastCropNumber" tabindex="20">
+                                            <option ng-repeat="pc in PastCrops" value="{{pc.PastCropNumber}}">{{pc.PastCropName}}</option>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
                         </form>
@@ -41,7 +40,7 @@
                                             <tr><th>Lab</th><th>Depth</th></tr>
                                         </thead>
                                         <tbody>
-                                            <tr ng-repeat="ss in SampleChains"><!--<td class="edit text-right">{{ss.LabNumber}}</td><td class="edit">{{ss.BeginningDepth}}:{{ss.EndingDepth}}</td>--></tr>
+                                            <tr ng-repeat="ss in SampleChains"><td class="edit text-right">{{ss.LabNumber}}</td><td class="edit">{{ss.BeginningDepth}}:{{ss.EndingDepth}}</td></tr>
                                         </tbody>
                                     </table>
                                 </div>

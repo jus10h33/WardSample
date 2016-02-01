@@ -356,6 +356,7 @@
     <Content Include="Content\font-awesome.css" />
     <Content Include="Content\font-awesome.min.css" />
     <Content Include="Content\generics.css" />
+    <Content Include="Content\hotkeys.min.css" />
     <Content Include="Content\imgs\clear.png" />
     <Content Include="Content\imgs\loading.gif" />
     <Content Include="Content\partialviews\partialGeneric.html" />
@@ -387,6 +388,7 @@
     <Content Include="Scripts\angular\angular-touch.min.js" />
     <Content Include="Scripts\angular\angular.min.js" />
     <Content Include="Scripts\angular\autofill-event.js" />
+    <Content Include="Scripts\angular\hotkeys.min.js" />
     <Content Include="Scripts\bootstrap\bootstrap-datepicker.js" />
     <Content Include="Scripts\bootstrap\bootstrap-datepicker.min.js" />
     <Content Include="Scripts\bootstrap\bootstrap-editable.min.js" />
@@ -395,6 +397,7 @@
     <Content Include="Scripts\bootstrap\bootstrap3-typeahead.min.js" />
     <Content Include="Scripts\Directives\sampleDirectives.js" />
     <Content Include="Scripts\Filters\sampleFilters.js" />
+    <Content Include="Scripts\jquery\jquery.hotkeys.js" />
     <Content Include="Scripts\Services\sampleServices.js" />
     <Content Include="Scripts\jquery\jquery-1.11.3.js" />
     <Content Include="Scripts\jquery\jquery-1.11.3.min.js" />

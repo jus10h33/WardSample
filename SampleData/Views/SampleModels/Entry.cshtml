@@ -1,5 +1,5 @@
 ﻿<div class="m-t-20 m-b-20">
-    <h2 class="page-title inline-block m-t-0 m-b-0" style="position:relative;bottom:15px;">Samples</h2>
+    <h2 class="page-title inline-block m-t-0 m-b-0 p-l-10">Samples</h2>
     <div class="alert alert-danger inline-block m-l-5 m-b-0" style="width:84%;" role="alert" ng-show="Messages.length > 0" ng-cloak>
         <span ng-repeat="m in Messages">{{m}}</span>
         <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -7,7 +7,7 @@
 </div>
 <div ng-app="sampleEntryApp">
     <div class="main-content" ng-controller="defaultCtrl">
-        <section id="left" class="col-sm-12 col-md-12 col-lg-7">
+        <section id="left" class="m-l-20 col-sm-12 col-md-12 col-lg-6">
             <div class="col-lg-12">
                 <div class="panel panel-default m-b-20">
                     <span class="panel-heading">Sample Entry</span>
@@ -41,10 +41,10 @@
                                         <label class="control-label">Report Type #:</label>
                                         <input type="text" id="txtReportTypeNumber" name="txtReportTypeNumber" class="form-control" ng-required="required" ng-disabled="disabled" ng-readonly="readonly" ng-pattern="regNumeric" ng-model="Sample.ReportTypeNumber" ng-blur="GetReportName()" tabindex="5" />
                                         <!-- Button trigger modal -->
-                                        <i class="fa fa-white fa-2x fa-search" ng-disabled="disabled" data-toggle="modal" data-target="#testItemsModal" ng-click="GetTestItems()"></i>
+                                        <i id="reportModalIcon" class="fa fa-white fa-2x fa-search" ng-disabled="disabled" data-toggle="modal" data-target="#testItemsModal" ng-click="GetTestItems()"></i>
                                     </div>
                                     <div class="form-group">
-                                        <label class="control-label">Report Name</label>
+                                        <label class="control-label">Report Name:</label>
                                         <label id="lblReportName">{{Sample.ReportName}}</label>
                                     </div>
                                     <div class="form-group">
@@ -136,8 +136,8 @@
                             </form>
                             <div id="btn-container" class="m-t-15 clearfix">
                                 <input id="txtAction" class="hidden-lg hidden-md hidden-sm hidden-xs" ng-model="action" />
-                                <div id="btn-group-primary" class="col-xs-12 col-sm-12 col-md-12 col-lg-11" ng-show="readonly">
-                                    <button id="btnPrevSample" class="btn btn-warning btn-md" ng-disabled="disablePrev" ng-click="Prev(Sample.LabNumber)">Prev</button>
+                                <div id="btn-group-primary" class="col-xs-12 col-sm-12 col-md-12 col-lg-12" ng-show="readonly">
+                                    <button id="btnPrevSample" class="btn btn-warning btn-md" ng-disabled="disablePrev" accesskey="p" ng-click="Prev(Sample.LabNumber)">Prev</button>
                                     <button id="btnNextSample" class="btn btn-warning btn-md m-l-30" ng-disabled="disableNext" ng-click="Next(Sample.LabNumber)">Next</button>
                                     <button id="btnFindSample" class="btn btn-info btn-md m-l-30" ng-click="ToggleButtons('find')">Find</button>
                                     <button id="btnAddSample" class="btn btn-success btn-md m-l-30" ng-click="ToggleButtons('add')">Add</button>

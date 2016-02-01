@@ -9,7 +9,8 @@ namespace SampleData
         public static void RegisterBundles(BundleCollection bundles)
         {
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
-                        "~/Scripts/jquery/jquery-{version}.js"));
+                        "~/Scripts/jquery/jquery-{version}.js",
+                        "~/Scripts/jquery/jquery.hotkeys.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
                         "~/Scripts/jquery/jquery.validate*"));
@@ -35,6 +36,7 @@ namespace SampleData
                       "~/Scripts/angular/angular-resource.min.js",
                       "~/Scripts/angular/angular-mocks.js",
                       "~/Scripts/angular/angular-animate.min.js",
+                      "~/Scripts/angular/hotkeys.min.js",
                       "~/Scripts/angular/ngMask.min.js",
                       "~/Scripts/angular/autofill-event.js"));
 
@@ -54,6 +56,7 @@ namespace SampleData
                       "~/Content/bootstrap-datepicker3.min.css",
                       "~/Content/bootstrap-editable.css",
                       "~/Content/select2.min.css",
+                      "~/Content/hotkeys.min.css",
                       "~/Content/site.css"));
         }
     }

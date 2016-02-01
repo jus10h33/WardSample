@@ -6,8 +6,13 @@
             var data = scope[attrs["autoComplete"]];
             function checkAvailable(term) {
                 var length = term.length,
-                    chck = false,
                     term = term.toUpperCase();
+                for (var i = 0, z = data.length; i < z; i++) {
+                    var start = data[i].indexOf("-") + 2;
+                    if (data[i].substring(start, start + length).toUpperCase() === term || data[i].substring(0, length).toUpperCase() === term) {
+                        return true;
+                    }
+                }
                 return false;
             }
             element.on("keyup", function (event) {

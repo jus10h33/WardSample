@@ -42,7 +42,6 @@ namespace SampleData.Controllers
             if (sample != null)
             {
                 gInfo = GetGenericInfo(stn, sample);
-                Debug.Print("getting gen info");
             } 
             else
             {
@@ -56,8 +55,8 @@ namespace SampleData.Controllers
                 soilReturn.GenericMasters = GetGenericMasters(stn);
                 soilReturn.SoilMasters = GetSoilMasters(stn);
                 soilReturn.SampleChains = GetSampleChainsList(soilReturn.GenericInfo.Samples);
-                //soilReturn.Recommendations = GetSampleRecommendations(soilReturn.GenericInfo.Samples);
                 soilReturn.TopSoils = GetTopSoils(soilReturn.SampleChains, soilReturn.GenericInfo.Samples);
+                soilReturn.Recommendations = GetSampleRecommendations(soilReturn.GenericInfo.Samples);                
                 Debug.Print(soilReturn.GenericInfo.Samples.First().LabNumber.ToString());
                 return soilReturn;
             }
@@ -320,52 +319,91 @@ namespace SampleData.Controllers
         }
         private List<List<int>> GetTopSoils(List<List<SampleChainModels>> sChainsList, List<SampleViewModel> samples)
         {
-            List<List<int>> topSoilsList = new List<List<int>>();
-            int i = 0;
-            foreach (List<SampleChainModels> sChains in sChainsList)
+            try
             {
-                List<int> topSoils = new List<int>();
-                if (sChains.First().TopSoil == 0)
+                List<List<int>> topSoilsList = new List<List<int>>();
+                int i = 0;
+                foreach (List<SampleChainModels> sChains in sChainsList)
                 {
-                    topSoils = (from ss in db.SampleChains
-                                join sx in db.Samples on ss.LabNumber equals sx.LabNumber
-                                where sx.BatchNumber == sChains.First().BatchNumber && sx.AccountNumber == samples[i].AccountNumber && ss.TopSoil == 1
-                                select ss.LabNumber).ToList();
+                    List<int> topSoils = new List<int>();
+                    if (sChains.First().TopSoil == 0)
+                    {
+                        topSoils = (from ss in db.SampleChains
+                                    join sx in db.Samples on ss.LabNumber equals sx.LabNumber
+                                    where sx.BatchNumber == sChains.First().BatchNumber && sx.AccountNumber == samples[i].AccountNumber && ss.TopSoil == 1
+                                    select ss.LabNumber).ToList();
+                    }
+                    topSoilsList.Add(topSoils);
+                    i++;
                 }
-                i++;
+                foreach (List<int> tsl in topSoilsList)
+                {
+                    Debug.Print("---------------------------");
+                    foreach (int ts in tsl)
+                    {
+                        Debug.Print(ts.ToString());
+                    }
+                }
+                return topSoilsList;
+            }
+            catch (Exception e)
+            {
+                Debug.Print(e.Message);
+                return null;
             }
             
-            return topSoilsList;
         }
-        //private List<List<SoilRecModels>> GetSampleRecommendations(List<SampleViewModel> samples)
-        //{
-        //    int stn = samples.First().SampleTypeNumber;
-        //    int bn = samples.First().BatchNumber;
-        //    int ln = samples.First().LabNumber;
+        private List<List<SoilRecViewModel>> GetSampleRecommendations(List<SampleViewModel> samples)
+        {
+            int stn = samples.First().SampleTypeNumber;
 
-        //    List<List<SoilRecViewModel>> recommendationsList = new List<List<SoilRecModels>>();
+            List<List<SoilRecViewModel>> recommendationsList = new List<List<SoilRecViewModel>>();
 
-        //    foreach (SampleViewModel s in samples)
-        //    {
-        //        List<SoilRecViewModel> soilSampleRecs = GetSoilRecs(bn, ln);
-        //        foreach (SoilRecViewModel r in soilSampleRecs)
-        //        {
-        //            if (stn == 14)
-        //            {
-        //                r.RecTypeDisplay = "4 - Haney";
-        //                r.RecTypeNumber = 4;
-        //            }
-        //            else
-        //            {
+            foreach (SampleViewModel s in samples)
+            {
+                List<SoilRecModels> soilSampleRecs = GetSoilRecs(s.BatchNumber, s.LabNumber);
+                List<SoilRecViewModel> soilViews = new List<SoilRecViewModel>();
+                foreach (SoilRecModels r in soilSampleRecs)
+                {
+                    SoilRecViewModel rec = new SoilRecViewModel();
+                    rec.BatchNumber = r.BatchNumber;
+                    rec.LabNumber = r.LabNumber;
+                    rec.Priority = r.Priority;
+                    rec.RecTypeNumber = r.RecTypeNumber;
+                    rec.CropTypeNumber = r.CropTypeNumber;
+                    rec.YieldGoal = r.YieldGoal;
+                    if (stn == 14)
+                    {
+                        rec.RecTypeName = "4 - Haney";
+                        rec.RecTypeNumber = 4;
+                    }
+                    else
+                    {
+                        var query1 = GetSoilRecTypes();
+                        rec.RecTypeName = rec.RecTypeNumber + " - " + (from x in query1
+                                                                       where x.RecTypeNumber == rec.RecTypeNumber
+                                                                       select x.RecTypeName).SingleOrDefault();
+                    }
+                    var query2 = GetSoilRecCrops();
+                    var src = (from y in query2
+                               where y.CropTypeNumber == rec.CropTypeNumber
+                               select y).SingleOrDefault();
 
-        //            }
-
-        //        }
-        //        soilSampleRecs.Add(r);
-        //    }
-            
-        //    return recommendationsList;
-        //}
+                    rec.CropTypeName = rec.CropTypeNumber + " - " + src.CropTypeName + ":" + src.Unit;
+                    soilViews.Add(rec);
+                }
+                recommendationsList.Add(soilViews);
+            }
+            //foreach (List<SoilRecViewModel> svs in recommendationsList)
+            //{
+            //    Debug.Print("---------------------------");
+            //    foreach (SoilRecViewModel sv in svs)
+            //    {
+            //        Debug.Print(sv.ToString());
+            //    }
+            //}
+            return recommendationsList;
+        }
         public JsonResult FindAccount(int an, int stn)
         {
             AccountModels account = new AccountModels();
@@ -400,7 +438,7 @@ namespace SampleData.Controllers
                 {
                     ReportModels report = (from r in db.Reports
                                  where r.SampleTypeNumber == sampleTypeNumber && r.ReportTypeNumber == reportTypeNumber
-                                 select r).FirstOrDefault();
+                                 select r).SingleOrDefault();
                         return report.ReportName;
                 }
                 catch (Exception e)
@@ -408,11 +446,7 @@ namespace SampleData.Controllers
                     Debug.Print(e.ToString());
                 }
             }
-            else
-            {
-                Debug.Print("ReportTypeNumber is not numeric.");
-            }
-                return null;
+            return null;
         }
         public JsonResult GetGrower(int accountNumber, int sampleTypeNumber)
         {
@@ -464,6 +498,10 @@ namespace SampleData.Controllers
             if (Validator.isPresent(sample.SampleID4))
             {
                 sample.SampleID4 = sample.SampleID4.ToUpper();
+            }
+            if (Validator.isPresent(sample.SampleID5))
+            {
+                sample.SampleID5 = sample.SampleID5.ToUpper();
             }
             return sample;
         }
@@ -607,8 +645,8 @@ namespace SampleData.Controllers
             try
             {
                 string bnYear = bn.ToString().Substring(0, 4);
-                string bnMMDD = Regex.Replace(bn.ToString().Substring(4, 4), "[1-9]", "0");
-                int bnTmp = Convert.ToInt32(String.Concat(bnYear, bnMMDD));
+                int bnTmp = Convert.ToInt32(String.Concat(bnYear, 0000));
+                Debug.Print(bnTmp.ToString());
                 SampleModels sample = (from s in db.Samples
                                  where s.SampleTypeNumber == stn && s.BatchNumber > bnTmp && s.LabNumber == ln
                                        select s).FirstOrDefault();
@@ -759,10 +797,7 @@ namespace SampleData.Controllers
         {
             Debug.Print("Starting Add...");
             
-            ValidateSample(sampleView);
-            ValidateSoilSample(sampleChain);
-            ValidateSampleRecs(sampleRecs);
-            if (!SampleExist(sampleView.SampleTypeNumber, sampleView.BatchNumber, sampleView.LabNumber) && sr.ValidSample)
+            if (!SampleExist(sampleView.SampleTypeNumber, sampleView.BatchNumber, sampleView.LabNumber) && (ValidateSample(sampleView) && ValidateSampleChain(sampleChain) && ValidateSampleRecs(sampleRecs)))
             {
                 SampleModels newSample = new SampleModels();
                 newSample.SampleTypeNumber = sampleView.SampleTypeNumber;
@@ -841,6 +876,10 @@ namespace SampleData.Controllers
                 {
                     sr.Message.Add("Invalid invoice or modelstate");
                 }
+            }
+            else
+            {
+                sr.Message.Add("Sample Already exists");
             }                        
             return null;
         }
@@ -858,16 +897,12 @@ namespace SampleData.Controllers
             if (SampleExist(sampleView.SampleTypeNumber, sampleView.BatchNumber, sampleView.LabNumber))
             {
                 ValidateSample(sampleView);
-                ValidateSoilSample(sampleChain);
+                ValidateSampleChain(sampleChain);
                 ValidateSampleRecs(sampleRecs);
-                if (sr.ValidSample)
+                if (ValidateSample(sampleView) && ValidateSampleChain(sampleChain) && ValidateSampleRecs(sampleRecs))
                 {
-                    sample.AccountNumber = sampleView.AccountNumber;
                     sample.Grower = sampleView.Grower;
-                    sample.BatchNumber = sampleView.BatchNumber;
-                    sample.ReportTypeNumber = sampleView.ReportTypeNumber;
-                    sample.DateReceived = sampleView.DateReceived;
-                    sample.CostTypeNumber = sampleView.CostTypeNumber;
+                    sample.DateReceived = sampleView.DateReceived;                    
                     sample.SampleID1 = sampleView.SampleID1;
                     sample.SampleID2 = sampleView.SampleID2;
                     sample.SampleID3 = sampleView.SampleID3;
@@ -877,17 +912,22 @@ namespace SampleData.Controllers
                     // need to get new or existing invoice if batch or account numbers change
                     if (sampleView.BatchNumber != sample.BatchNumber || sampleView.AccountNumber != sample.AccountNumber)
                     {
+                        sample.AccountNumber = sampleView.AccountNumber;
+                        sample.BatchNumber = sampleView.BatchNumber;
                         invoice = CreateInvoice(sample);
                         db.Invoices.Add(invoice);
                         sample.InvoiceNumber = invoice.InvoiceNumber;
                         sample.DateReported = invoice.DateReported;
                     }
-
+                    
                     // Get new report cost if RTN or cost type changes
                     if (sampleView.ReportTypeNumber != sample.ReportTypeNumber || sampleView.CostTypeNumber != sample.CostTypeNumber)
                     {
-                        sample.ReportCost = GetReportCost(sampleView.SampleTypeNumber, sampleView.CostTypeNumber, sampleView.ReportTypeNumber);
+                        sample.ReportTypeNumber = sampleView.ReportTypeNumber;
+                        sample.CostTypeNumber = sampleView.CostTypeNumber;
+                        sample.ReportCost = GetReportCost(sample.SampleTypeNumber, sample.CostTypeNumber, sample.ReportTypeNumber);
                     }
+                    
                     if (ModelState.IsValid)
                     {
                         sample = ConvertToUpperCase(sample);
@@ -950,6 +990,10 @@ namespace SampleData.Controllers
                         sr.Message.Add("Invalid ModelState");
                     }                    
                 }
+            }
+            else
+            {
+                sr.Message.Add("Sample Already exists");
             }
             return Json(GetEntry(sampleView.SampleTypeNumber), JsonRequestBehavior.AllowGet);
         }
@@ -1107,7 +1151,7 @@ namespace SampleData.Controllers
         }
         #endregion
         #region "Validate Sample"
-        public void ValidateSample(SampleViewModel sample)
+        public bool ValidateSample(SampleViewModel sample)
         {
             sr.ValidSample = true;
 
@@ -1128,14 +1172,9 @@ namespace SampleData.Controllers
             // LabNumber
             if (!Validator.isNumeric(sample.LabNumber.ToString()))
             {
-                if (LabNumberExists(sample.SampleTypeNumber, sample.BatchNumber, sample.LabNumber))
-                {
-                    sr.ValidSample = false;
-                    sr.Message.Add("Lab Number already exists");
-                }
                 sr.ValidSample = false;
                 sr.Message.Add("Lab Number must be numeric");
-            }
+            }            
 
             // ReportTypeNumber            
             if (Validator.isNumeric(sample.ReportTypeNumber.ToString()))
@@ -1184,10 +1223,11 @@ namespace SampleData.Controllers
             }
 
             sr.Sample = sample;
+            return sr.ValidSample;
         }
         #endregion
-        #region "Validate SoilSample"
-        public void ValidateSoilSample(SampleChainModels sampleChain)
+        #region "Validate SampleChain"
+        public bool ValidateSampleChain(SampleChainModels sampleChain)
         {
             // PastCrop
             if (!Validator.isNumeric(sampleChain.PastCropNumber.ToString()))
@@ -1208,10 +1248,11 @@ namespace SampleData.Controllers
                 sr.ValidSample = false;
                 sr.Message.Add("Ending Depth must be numeric and greater than Beginning Depth");
             }
+            return sr.ValidSample;
         }
         #endregion
         #region "Validate SoilRecs"
-        public void ValidateSampleRecs(List<SoilRecModels> soilRecs)
+        public bool ValidateSampleRecs(List<SoilRecModels> soilRecs)
         {
             if (soilRecs != null)
             {
@@ -1270,6 +1311,7 @@ namespace SampleData.Controllers
                     }
                 }
             }
+            return sr.ValidSample;
         }
         #endregion
     }

@@ -72,6 +72,11 @@ div.popover {
 div.popover .popover-content {
     color: red !important;
 }
+div.main-content section.col-lg-7 {
+    /*width: 55%*/
+}
+
+
 /*Navbar*/
 .navbar-collapse {
   position: relative;
@@ -137,6 +142,7 @@ div.popover .popover-content {
 .sidebar-nav ul {
   list-style: none;
   padding-left: 0px;
+  margin-bottom: 0px;
 }
 .sidebar-nav li a .fa-caret-right {
   color: #666;
@@ -307,7 +313,7 @@ section.right {
     color: #fff;
 }
 .input-group {
-    width: 233px;
+    width: 196px;
     float: right;
     margin-right: 5px;
     bottom: 2px;
@@ -331,7 +337,7 @@ section.right {
 
 }
 #lblReportName {
-    width:230px;
+    width:196px;
     overflow-x: hidden;
     position: relative;
     top: 10px;
@@ -339,11 +345,16 @@ section.right {
 #txtReportTypeNumber {
     width: 50px;
 }
+div.form-group i#reportModalIcon {
+    position: relative;
+    top: 5px;
+    margin-left: 10px;
+}
 .vis-hidden {
     visibility: hidden;
 }
 #customerInfo {
-    width: 233px;
+    width: 196px;
     height: 132px;
 }
 #customerInfo i {

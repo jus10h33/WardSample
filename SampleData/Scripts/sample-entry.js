@@ -1,5 +1,5 @@
-﻿angular.module("sampleEntryApp", ["wardApp", "ngMask"])
-.controller("defaultCtrl", function ($scope, $http, Sample) { 
+﻿angular.module("sampleEntryApp", ["wardApp", "ngMask", "cfp.hotkeys"])
+.controller("defaultCtrl", function ($scope, $http, Sample, hotkeys) { 
 
     $scope.SetGenericMasters = function (samples, accounts, sampleTypes, sampleColumns) {
         $scope.Samples = samples;
@@ -32,9 +32,18 @@
     $scope.SetTopSoils = function (index) {
         $scope.TopSoils = $scope.TopSoilsList[index];
     };
-    $scope.SetSampleChains = function (index) {
+    $scope.SetSampleChains = function (index) {        
         $scope.SampleChains = $scope.SampleChainsList[index];
-        $scope.SampleChain = $scope.SampleChains[0];
+        if ($scope.SampleChains.length == 1) {
+            $scope.SampleChain = $scope.SampleChains[0];
+        } else if ($scope.SampleChains.length > 1) {
+            for (var i = 0; i < $scope.SampleChains.length - 1; i++) {
+                if ($scope.SampleChains[i].LabNumber == $scope.Sample.LabNumber) {
+                    $scope.SampleChain = $scope.SampleChains[i];
+                }
+            }
+        }
+        
         $scope.SampleChain.PastCropNumber = $scope.SampleChain.PastCropNumber.toString();
         $scope.SampleChain.Available = $scope.SampleChain.LabNumber.toString();
         if ($scope.SampleChain.TopSoil == 1) {
@@ -63,7 +72,15 @@
     $scope.SetRecommendations = function (index) {
         $scope.SampleRecs = [];
         if ($scope.RecommendationsList != null && $scope.RecommendationsList[index].length != 0) {
-            $scope.SetRecForm($scope.Recommendations[index]);
+            $scope.Recommendations = $scope.RecommendationsList[index];
+            if ($scope.Sample.SampleTypeNumber == 14) {
+                $scope.RecTypes = [];
+                for (var i = 0; i < $scope.Recommendations.length; i++) {
+                    var id = '#acoRecTypes' + i;
+                    $scope.Recommendations[i].RecTypeName = '4 - Haney';
+                    angular.element(id).attr('disabled', true);
+                }
+            }
         }
     };
     $scope.SetSubValues = function (subSampleInfo, subSampleInfos) { // if stn is Feed, NIR, Water, Manure, Slurry, Fertilizer, Resin, Plant  
@@ -126,28 +143,21 @@
                 break;
         }
     };
-    $scope.SetRecForm = function (recommendations) {
-        $scope.Recommendations = recommendations;
-        if ($scope.Sample.SampleTypeNumber == 14) {
-            $scope.RecTypes = [];
-            for (var i = 0; i < $scope.Recommendations.length; i++) {
-                var id = '#acoRecTypes' + i;
-                $scope.Recommendations[i].RecTypeName = '4 - Haney';
-                angular.element(id).attr('disabled', true);
-            }
-        }
-    }
     $scope.SetFormValues = function (data) {
         $scope.SetGenericMasters(data.GenericInfo.Samples, data.GenericInfo.Accounts, data.GenericMasters.SampleTypes, data.GenericMasters.SampleColumns);
         $scope.SetGenericValues(data.GenericInfo.Samples[0], data.GenericInfo.Accounts[0], data.GenericInfo.Messages);
         var stn = $scope.Samples[0].SampleTypeNumber;
         if (stn == 1 || stn == 14) {
             $scope.SetSoilMasters(data.SoilMasters.CropTypes, data.SoilMasters.RecTypes, data.SoilMasters.PastCrops)
-            $scope.TopSoilsList = data.TopSoils;
+            if (data.TopSoils != null) {
+                $scope.TopSoilsList = data.TopSoils;
+                $scope.SetTopSoils(0);
+            } else {
+                $scope.TopSoilsList = [];
+            }
+
             $scope.SampleChainsList = data.SampleChains;
-            $scope.RecommendationsList = data.Recommendations;
-            //console.log($scope.RecommendationsList);
-            $scope.SetTopSoils(0);
+            $scope.RecommendationsList = data.Recommendations;            
             $scope.SetSampleChains(0);
             $scope.SetRecommendations(0);
         } else if (stn == 2 || stn == 3 || stn == 4 || stn == 5 || stn == 6 || stn == 7 || stn == 9 || stn == 12) {
@@ -157,8 +167,8 @@
     }
     $scope.Load = function (stn) {
         Sample.load(stn).then(function (result) {
-            if (result != null) {
-                $scope.SetFormValues(result);
+            if (result.data != null) {
+                $scope.SetFormValues(result.data);
                 $scope.SetRecLayout();
                 $scope.action = "";
                 $scope.required = true;
@@ -522,7 +532,8 @@
         if ($scope.entryForm.txtReportTypeNumber.$valid) {
             $http.get('/SampleModels/GetReportName?sampleTypeNumber=' + $scope.Sample.SampleTypeNumber + '&reportTypeNumber=' + $scope.Sample.ReportTypeNumber)
              .success(function (data) {
-                 if (data != null) {
+                 console.log(data);
+                 if (data != "") {
                      $scope.entryForm.txtReportTypeNumber.$valid = true;
                      $scope.entryForm.txtReportTypeNumber.$invalid = false;
                      angular.element('#txtReportTypeNumber').removeClass('has-error');
@@ -534,6 +545,7 @@
                      $scope.DisplayPopover('txtReportTypeNumber', 'No Results');
                      angular.element('#txtReportTypeNumber').focus();
                      $scope.Sample.ReportTypeNumber = "";
+                     $scope.Sample.ReportName = "";
                  }
              })
           .error(function () {
@@ -774,54 +786,76 @@
         angular.element("#acoGrower").autocomplete({ source: [] });
         $scope.RemoveValidation();
     };
+    $scope.BeginFind = function () {
+        $scope.readonly = false;
+        $scope.ClearForm();
+        $scope.disabled = true;
+        $scope.action = 'find';
+        $scope.rightSide = false; // hide sample info and recommendations
+        angular.element('#txtBatchNumber').focus();
+    };
+    $scope.BeginAdd = function () {
+        $scope.readonly = false;
+        $scope.disabled = false;
+        $scope.disabledUpdate = false;
+        $scope.action = 'add';
+        var standard = 1;  // use to set cost type to 'Standard' by default
+        $scope.Sample.CostTypeNumber = standard.toString();
+        angular.element('#txtSampleID1').focus();
+        $scope.Sample.LabNumber++;
+        $scope.Sample.SampleID1 = "";
+        $scope.Sample.SampleID2 = "";
+        $scope.Sample.SampleID3 = "";
+        $scope.Sample.SampleID4 = "";
+        $scope.Sample.SampleID5 = "";
+        $scope.chkTopSoil = true;
+        $scope.SampleChain = {};
+        $scope.SampleChains = {};
+        $scope.SampleChain.BeginningDepth = 0;
+        $scope.Recommendations = [];
+        $scope.RemoveValidation();
+    };
+    $scope.BeginUpdate = function () {
+        $scope.readonly = false;
+        $scope.disabled = false;
+        $scope.disabledUpdate = true;
+        $scope.action = 'update';
+        angular.element('#txtSampleID1').focus();
+        $scope.RemoveValidation();
+    };
+    $scope.BeginDelete = function () {
+        $scope.readonly = false;
+        console.log('inside Delete');
+        $scope.disabled = true;
+        $scope.action = 'delete';
+        angular.element('#btnCommit').focus();
+        $scope.RemoveValidation();
+    };
+    $scope.BeginNext = function () {
+        $scope.readonly = false;
+        $scope.ClearForm();
+        $scope.readonly = true;
+    };
+    $scope.BeginPrev = function () {
+        $scope.readonly = false;
+        $scope.ClearForm();
+        $scope.readonly = true;
+    };
     $scope.ToggleButtons = function (action) {
-        console.log("toggling buttons....");
         $scope.readonly = false;
         if (action == 'prev') {
-            $scope.ClearForm();
-            $scope.readonly = true;
-        } else if (action == 'find') {
-            console.log("inside find");
-            $scope.ClearForm();
-            $scope.disabled = true;
-            $scope.action = 'find';
-            $scope.rightSide = false; // hide sample info and recommendations
-            angular.element('#txtBatchNumber').focus();
+            $scope.BeginPrev();
+        } else if (action == 'find') {            
+            $scope.BeginFind();
         } else if (action == 'add') {
-            $scope.disabled = false;
-            $scope.disabledUpdate = false;
-            $scope.action = 'add';
-            var standard = 1;  // use to set cost type to 'Standard' by default
-            $scope.Sample.CostTypeNumber = standard.toString();
-            angular.element('#txtSampleID1').focus();
-            $scope.Sample.LabNumber++;
-            $scope.Sample.SampleID1 = "";
-            $scope.Sample.SampleID2 = "";
-            $scope.Sample.SampleID3 = "";
-            $scope.Sample.SampleID4 = "";
-            $scope.Sample.SampleID5 = "";
-            $scope.chkTopSoil = true;
-            $scope.SampleChain = {};
-            $scope.SampleChains = {};
-            $scope.SampleChain.BeginningDepth = 0;
-            $scope.Recommendations = [];
-            $scope.RemoveValidation();
+            $scope.BeginAdd();
         } else if (action == 'update') {
-            $scope.disabled = false;
-            $scope.disabledUpdate = true;
-            $scope.action = 'update';
-            angular.element('#txtSampleID1').focus();
-            $scope.RemoveValidation();
+            $scope.BeginUpdate();
         } else if (action == 'delete') {
-            $scope.disabled = true;
-            $scope.action = 'delete';
-            angular.element('#btnCommit').focus();
-            $scope.RemoveValidation();
+            $scope.BeginDelete();
         } else if (action == 'next') {
-            $scope.ClearForm();
-            $scope.readonly = true;
+            $scope.BeginNext();
         }
-        console.log(action);
     };
     $scope.SetDateReported = function () {
         $scope.Validate($scope.entryForm.txtBatchNumber, 'txtBatchNumber', 'Required format is [yyyymmdd]');
@@ -905,8 +939,8 @@
     $scope.FindSample = function () {
         Sample.find($scope.Sample.SampleTypeNumber, $scope.Sample.LabNumber, $scope.Sample.BatchNumber).then(function (result) {
             console.log(result);
-            if (result != null) {
-                $scope.SetFormValues(result);
+            if (result.data != null) {
+                $scope.SetFormValues(result.data);
                 $scope.SetRecLayout();
                 $scope.ResetForm();
             } else {
@@ -917,11 +951,9 @@
     $scope.AddSample = function () {
         $scope.SetSampleChainValues();
         Sample.add($scope.Sample, $scope.SampleChain, $scope.SampleRecs, $scope.SubSampleInfo).then(function (result) {
-            if (result != null) {
-                console.log(result);
-                $scope.SetFormValues(result);
+            if (result.data != null) {
+                $scope.SetFormValues(result.data);
             } else {
-                console.log("data not null");
                 $scope.Load($scope.Sample.SampleTypeNumber);
             }
             $scope.ResetForm();
@@ -930,8 +962,9 @@
     $scope.UpdateSample = function () {
         $scope.SetSampleChainValues();
         Sample.update($scope.Sample, $scope.SampleChain, $scope.SampleRecs, $scope.SubSampleInfo).then(function (result) {
-            if (result != null) {
-                $scope.SetFormValues(result);
+            console.log(result);
+            if (result.data != null) {
+                $scope.SetFormValues(result.data);
             } else {
                 $scope.Load($scope.Sample.SampleTypeNumber);
             }
@@ -1048,30 +1081,46 @@
           .error(function () { });
         }
     };
-
-    //angular.element(document).keypress(function (e) {
-    //    console.log($scope.action);
-    //    if ($scope.action == 'add' || $scope.action == 'find' || $scope.action == 'update' || $scope.action == 'delete') {
-    //        if (e.which == 13 || e.keyCode == 13) {            
-    //            //$scope.SubmitForm($scope.action);
-    //            alert('You pressed enter!');
-    //        } else if ($.ui.keyCode.ESCAPE) {
-    //            $scope.CancelAction();
-    //        }
-    //    } else if (angular.isUndefined($scope.action) || $scope.action == "") {
-    //        console.log("keycode: " + e.keyCode + ", which: " +e.which);
-    //        if (e.which == 102 || e.keyCode == 102) { // f
-    //            console.log("find sample");
-    //            $scope.ToggleButtons('find');
-    //        } else if (e.which == 97 || e.keyCode == 97) { // a
-    //            $scope.ToggleButtons('add');
-    //        } else if (e.which == 117 || e.keyCode == 117) { // u
-    //            $scope.ToggleButtons('update');
-    //        } else if (e.which == 110 || e.keyCode == 110) { // n
-    //            $scope.ToggleButtons('next');
-    //        } else if (e.which == 112 || e.keyCode == 112) { // p
-    //            $scope.ToggleButtons('prev');
-    //        }
-    //    }
-    //});
+   
+    hotkeys.bindTo($scope)
+    .add({
+        combo: 'p',
+        description: 'Previous',
+        callback: function () { $scope.Prev($scope.Sample.LabNumber); }
+    })
+    .add({
+        combo: 'n',
+        description: 'Next',
+        callback: function () { $scope.Next($scope.Sample.LabNumber); }
+    })
+    .add({
+        combo: 'f',
+        description: 'Find',
+        callback: function () { $scope.BeginFind(); }
+    })
+    .add({
+        combo: 'a',
+        description: 'Add',
+        callback: function () { $scope.BeginAdd(); }
+    })
+    .add({
+        combo: 'u',
+        description: 'Update',
+        callback: function () { $scope.BeginUpdate(); }
+    })
+    .add({
+        combo: 'd',
+        description: 'Delete',
+        callback: function () { $scope.BeginDelete(); }
+    })
+    .add({
+        combo: 'enter',
+        description: 'Commit',
+        callback: function () { $scope.SubmitForm($scope.action); }
+    })
+    .add({
+        combo: 'esc',
+        description: 'Cancel',
+        callback: function () { $scope.CancelAction(); }
+    });
 });

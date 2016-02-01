@@ -11,20 +11,21 @@ namespace SampleData.ViewModels
         public int LabNumber { get; set; }
         public int Priority { get; set; }
         public int RecTypeNumber { get; set; }
+        public string RecTypeName { get; set; }
         public int CropTypeNumber { get; set; }
+        public string CropTypeName { get; set; }
         public double YieldGoal { get; set; }
-        public string RecTypeDisplay { get; set; }
-        public string CropTypeDisplay { get; set; }
+
         public override string ToString()
         {
             return "BatchNumber: " + BatchNumber +
                 "\nLabNumber: " + LabNumber +
                 "\nPriority: " + Priority +
                 "\nRecTypeNumber: " + RecTypeNumber +
+                "\nRecTypeName: " + RecTypeName +
                 "\nCropTypeNumber: " + CropTypeNumber +
-                "\nYieldGoal: " + YieldGoal +
-                "\nRecTypeDisplay: " + RecTypeDisplay +
-                "\nCropTypeDisplay: " + CropTypeDisplay;
+                "\nCropTypeName: " + CropTypeName +
+                "\nYieldGoal: " + YieldGoal;
         }
     }
 }
