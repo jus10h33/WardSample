@@ -55,7 +55,7 @@ namespace SampleData.Controllers
                 soilReturn.GenericMasters = GetGenericMasters(stn);
                 soilReturn.SoilMasters = GetSoilMasters(stn);
                 soilReturn.SampleChains = GetSampleChainsList(soilReturn.GenericInfo.Samples);
-                soilReturn.TopSoils = GetTopSoils(soilReturn.SampleChains, soilReturn.GenericInfo.Samples);
+                //soilReturn.TopSoils = GetTopSoils(soilReturn.SampleChains, soilReturn.GenericInfo.Samples);
                 soilReturn.Recommendations = GetSampleRecommendations(soilReturn.GenericInfo.Samples);                
                 Debug.Print(soilReturn.GenericInfo.Samples.First().LabNumber.ToString());
                 return soilReturn;
@@ -326,11 +326,16 @@ namespace SampleData.Controllers
                 foreach (List<SampleChainModels> sChains in sChainsList)
                 {
                     List<int> topSoils = new List<int>();
-                    if (sChains.First().TopSoil == 0)
+                    if (sChains[i].TopSoil == 0)
                     {
+                        Debug.Print("---------------");
+                        Debug.Print(samples[i].BatchNumber.ToString());
+                        Debug.Print(samples[i].AccountNumber.ToString());
+                        Debug.Print(sChains[i].BatchNumber.ToString());
+                        Debug.Print("---------------");
                         topSoils = (from ss in db.SampleChains
                                     join sx in db.Samples on ss.LabNumber equals sx.LabNumber
-                                    where sx.BatchNumber == sChains.First().BatchNumber && sx.AccountNumber == samples[i].AccountNumber && ss.TopSoil == 1
+                                    where sx.BatchNumber == samples[i].BatchNumber && sx.AccountNumber == samples[i].AccountNumber && ss.TopSoil == 1
                                     select ss.LabNumber).ToList();
                     }
                     topSoilsList.Add(topSoils);
@@ -437,9 +442,12 @@ namespace SampleData.Controllers
                 try
                 {
                     ReportModels report = (from r in db.Reports
-                                 where r.SampleTypeNumber == sampleTypeNumber && r.ReportTypeNumber == reportTypeNumber
-                                 select r).SingleOrDefault();
+                                           where r.SampleTypeNumber == sampleTypeNumber && r.ReportTypeNumber == reportTypeNumber
+                                           select r).SingleOrDefault();
+                    if (report != null)
+                    {
                         return report.ReportName;
+                    }
                 }
                 catch (Exception e)
                 {
@@ -461,14 +469,15 @@ namespace SampleData.Controllers
         {
             return  db.SampleTypes.ToList();
         }
-        public JsonResult GetTestItems(int sampleTypeNumber)
+        public JsonResult GetReportItems(int sampleTypeNumber)
         {
-            List<TestItemModels> testItems = (from ti in db.TestItems
-                    where ti.SampleTypeNumber == sampleTypeNumber
-                    orderby ti.TestItemName
-                    select ti).ToList();
+            Debug.Print("GetReportItems");
+            List<ReportItemModels> reportItems = (from ri in db.ReportItems
+                                                where ri.SampleTypeNumber == sampleTypeNumber
+                                                orderby ri.ReportItemName
+                                                select ri).ToList();
 
-            return Json(testItems, JsonRequestBehavior.AllowGet);
+            return Json(reportItems, JsonRequestBehavior.AllowGet);
         }
         private bool SampleExist(int stn, int bn, int ln)
         {
@@ -1007,7 +1016,6 @@ namespace SampleData.Controllers
             {
                 SampleModels sample = db.Samples.Find(sampleTypeNumber, batchNumber, labNumber);
                 
-
                 if (sample != null)
                 {
                     db.Samples.Remove(sample);
@@ -1021,7 +1029,7 @@ namespace SampleData.Controllers
                     }
                     if (sample.SampleTypeNumber == 1 || sample.SampleTypeNumber == 14)
                     {
-                        SampleChainModels sampleChain = db.SampleChains.Find(batchNumber, labNumber); // Do I need to find it first
+                        SampleChainModels sampleChain = db.SampleChains.Find(batchNumber, labNumber);
                         db.SampleChains.Remove(sampleChain);
                         List<SoilRecModels> sampleRecs = (from sr in db.SoilRecs
                                                                 where sr.BatchNumber == batchNumber && sr.LabNumber == labNumber
@@ -1079,7 +1087,7 @@ namespace SampleData.Controllers
         public JsonResult GetPrev(int stn, int bn, int ln)
         {
             IEnumerable<SampleModels> x = (from s in db.Samples
-                     where s.SampleTypeNumber == stn && s.BatchNumber <= bn && s.LabNumber < ln
+                     where s.SampleTypeNumber == stn && (s.BatchNumber <= bn && s.LabNumber < ln) || (s.BatchNumber < bn)
                      orderby s.BatchNumber descending, s.LabNumber descending
                      select s).Take(30).ToList();
 

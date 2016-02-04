@@ -1,5 +1,5 @@
 ﻿angular.module("sampleEntryApp", ["wardApp", "ngMask", "cfp.hotkeys"])
-.controller("defaultCtrl", function ($scope, $http, Sample, hotkeys) { 
+.controller("defaultCtrl", function ($scope, $http, Sample, Account, Report, hotkeys) { 
 
     $scope.SetGenericMasters = function (samples, accounts, sampleTypes, sampleColumns) {
         $scope.Samples = samples;
@@ -165,6 +165,22 @@
             $scope.SetSubValues(data.SubSampleInfos[0], data.SubSampleInfos);
         }
     }
+    $scope.SetHoldValues = function () {
+        $scope.holdSample = {};
+        angular.copy($scope.Sample, $scope.holdSample);
+        var stn = $scope.Sample.SampleTypeNumber;
+        if (stn == 1 || stn == 14) {
+            $scope.holdSampleChain = {};
+            angular.copy($scope.SampleChain, $scope.holdSampleChain);
+            if (angular.isDefined($scope.Recommendations) && $scope.Recommendations.length > 0) {
+                $scope.holdRecommendations = {};
+                angular.copy($scope.Recommendations, $scope.holdRecommendations);
+            }            
+        } else if (stn == 2 || stn == 3 || stn == 4 || stn == 5 || stn == 6 || stn == 7 || stn == 9 || stn == 12) {
+            $scope.holdSubSampleInfo = {};
+            angular.copy($scope.SubSampleInfo, $scope.holdSubSampleInfo);
+        }
+    };
     $scope.Load = function (stn) {
         Sample.load(stn).then(function (result) {
             if (result.data != null) {
@@ -505,54 +521,49 @@
 
     $scope.FindAccount = function () {
         if ($scope.entryForm.txtAccountNumber.$valid) {
-            var account = Account.find($scope.Sample.AccountNumber, $scope.Sample.SampleTypeNumber);
-            if (account != null) {
-                $scope.Account.Name = account.Name;
-                $scope.Account.Company = account.Company;
-                $scope.Account.Address1 = account.Address1;
-                $scope.Account.CityStZip = account.CityStZip;
-                $scope.Account.SampleEntryInformation = account.SampleEntryInformation;
-                $scope.Account.Growers = account.Growers;
-                angular.element("#acoGrower").autocomplete({ source: $scope.Account.Growers, minLength: 0, delay: 0 }).focus(function () { $(this).autocomplete("search"); });
-                $scope.RemovePopover('txtAccountNumber');
-            } else {
-                $scope.Account = {};
-                $scope.Sample.Grower = "";
-                angular.element("#acoGrower").autocomplete({ source: [] });
-                $scope.Account.Name = "Account Not Found";
-                $scope.RemovePopover('txtAccountNumber');
-                $scope.DisplayPopover('txtAccountNumber', 'Account does NOT exist');
-                angular.element('#txtAccountNumber').focus();
-            }
+            Account.find($scope.Sample.AccountNumber, $scope.Sample.SampleTypeNumber).then(function (result) {
+                if (result.data != null) {
+                    $scope.Account.Name = result.data.Name;
+                    $scope.Account.Company = result.data.Company;
+                    $scope.Account.Address1 = result.data.Address1;
+                    $scope.Account.CityStZip = result.data.CityStZip;
+                    $scope.Account.SampleEntryInformation = result.data.SampleEntryInformation;
+                    $scope.Account.Growers = result.data.Growers;
+                    angular.element("#acoGrower").autocomplete({ source: $scope.Account.Growers, minLength: 0, delay: 0 }).focus(function () { $(this).autocomplete("search"); });
+                    $scope.RemovePopover('txtAccountNumber');
+                } else {
+                    $scope.Account = {};
+                    $scope.Sample.Grower = "";
+                    angular.element("#acoGrower").autocomplete({ source: [] });
+                    $scope.Account.Name = "Account Not Found";
+                    $scope.RemovePopover('txtAccountNumber');
+                    $scope.DisplayPopover('txtAccountNumber', 'Account does NOT exist');
+                    angular.element('#txtAccountNumber').focus();
+                }
+            });
         } else {
             $scope.Validate($scope.entryForm.txtAccountNumber, 'txtAccountNumber', 'Must be numeric');
         }
     };
     $scope.GetReportName = function () {
         if ($scope.entryForm.txtReportTypeNumber.$valid) {
-            $http.get('/SampleModels/GetReportName?sampleTypeNumber=' + $scope.Sample.SampleTypeNumber + '&reportTypeNumber=' + $scope.Sample.ReportTypeNumber)
-             .success(function (data) {
-                 console.log(data);
-                 if (data != "") {
-                     $scope.entryForm.txtReportTypeNumber.$valid = true;
-                     $scope.entryForm.txtReportTypeNumber.$invalid = false;
-                     angular.element('#txtReportTypeNumber').removeClass('has-error');
-                     $scope.RemovePopover('txtReportTypeNumber');
-                     $scope.Sample.ReportName = data;
-                 } else {
-                     $scope.entryForm.txtReportTypeNumber.$valid = false;
-                     $scope.entryForm.txtReportTypeNumber.$invalid = true;
-                     $scope.DisplayPopover('txtReportTypeNumber', 'No Results');
-                     angular.element('#txtReportTypeNumber').focus();
-                     $scope.Sample.ReportTypeNumber = "";
-                     $scope.Sample.ReportName = "";
-                 }
-             })
-          .error(function () {
-              $scope.Sample.ReportName = "Error";
-              $scope.entryForm.txtReportTypeNumber.$valid = false;
-              $scope.entryForm.txtReportTypeNumber.$invalid = true;
-          })
+            Report.reportName($scope.Sample.SampleTypeNumber, $scope.Sample.ReportTypeNumber).then(function (result) {
+                console.log(data);
+                if (data != "") {
+                    $scope.entryForm.txtReportTypeNumber.$valid = true;
+                    $scope.entryForm.txtReportTypeNumber.$invalid = false;
+                    angular.element('#txtReportTypeNumber').removeClass('has-error');
+                    $scope.RemovePopover('txtReportTypeNumber');
+                    $scope.Sample.ReportName = data;
+                } else {
+                    $scope.entryForm.txtReportTypeNumber.$valid = false;
+                    $scope.entryForm.txtReportTypeNumber.$invalid = true;
+                    $scope.DisplayPopover('txtReportTypeNumber', 'No Results');
+                    angular.element('#txtReportTypeNumber').focus();
+                    $scope.Sample.ReportTypeNumber = "";
+                    $scope.Sample.ReportName = "";
+                }
+            });
         } else {
             $scope.DisplayPopover('txtReportTypeNumber', 'Must be numeric');
             angular.element('#txtReportTypeNumber').addClass('has-error');
@@ -560,52 +571,32 @@
             $scope.Sample.ReportName = "";
         }
     };
-    $scope.GetTestItems = function () {
-        $http.get('/SampleModels/GetTestItems?sampleTypeNumber=' + $scope.Sample.SampleTypeNumber)
-          .success(function (data) {
-              if (data != null) {
-                  console.log(data);
-                  $scope.TestItems = data;
-              } else {
-                  alert("Error - data null");
-              }
-          })
-          .error(function () {
-              alert("DB Error");
-          });
+    $scope.GetReportItems = function () {
+        if ($scope.entryForm.cboSampleType.$valid) {
+            Report.reportItems($scope.Sample.SampleTypeNumber).then(function (result) {
+                if (result.data != null) {
+                    $scope.ReportItems = result.data;
+                    $scope.reportShown = false;
+                }
+                else 
+                {
+                    ////////////////////////////////////////////////////////////////////////////////////
+                }
+            });
+        }
     };
     $scope.GetReportList = function () {
         console.log($scope.ItemsSelected);
-        $http.get('/SampleModels/GetReportList?stn=' + $scope.Sample.SampleTypeNumber + '&rins=' + $scope.ItemsSelected)
-          .success(function (data) {
-              if (data != null) {
-                  console.log(data);
-                  if (data != null) {
-                      $scope.Reports = data;
-                      $scope.reportShown = true;
-                  }
-              } else {
-                  alert("Error - data null");
-              }
-          })
-          .error(function () {
-              alert("DB Error");
-          });
-
-    };
-    $scope.GetSubSubSampleTypes = function () {
-        $http.get('/SampleModels/GetSubSubSampleTypes?stn=' + $scope.Sample.SampleTypeNumber + '&sstn=' + $scope.SubSampleType.SubSampleTypeNumber)
-          .success(function (data) {
-              if (data != null) {
-                  console.log("SubSubSampleTypes: " + data);
-                  $scope.SubSubSampleTypes = data;
-              } else {
-                  alert("Error - data null");
-              }
-          })
-          .error(function () {
-              alert("DB Error");
-          });
+        if (angular.isDefined($scope.ItemsSelected) && $scope.ItemsSelected.count > 0) {
+            Report.reportList($scope.Sample.SampleTypeNumber, $scope.ItemsSelected).then(function (result) {
+                if (result.data != null) {
+                    $scope.Reports = results.data;
+                    $scope.reportShown = true;
+                } else {
+                    ///////////////////////////////////////////////////////////////////////////////////
+                }
+            });
+        } /////////////////////////////////////////////////////////////////////////////////////////
     };
 
     /*------------------Formatting -------------------*/
@@ -761,6 +752,7 @@
         }
     };
     $scope.ResetForm = function () {
+        $scope.RemoveValidation();
         $scope.action = "";
         $scope.required = true;
         $scope.readonly = true;
@@ -771,9 +763,39 @@
         $scope.Messages = [];
     };
     $scope.CancelAction = function () {
-        $scope.Load(1); // Change to load last sampletype in cache
-        $scope.ResetForm();
-        $scope.RemoveValidation();
+        console.log("CancelAction called");
+        if ($scope.action == 'add' || $scope.action == 'update') {
+            if (!angular.equals($scope.Sample, $scope.holdSample) || (angular.isDefined($scope.holdSampleChain) && !angular.equals($scope.SampleChain, $scope.holdSampleChain)) || (angular.isDefined($scope.Recommendtations) && !angular.equals($scope.Recommendations, $scope.holdRecommendations)) || (angular.isDefined($scope.holdSubSampleInfo) && !angular.equals($scope.SubSampleInfo, $scope.holdSubSampleInfo)))
+            {
+                //console.log($scope.Sample);
+                //console.log($scope.holdSample);
+
+                //console.log($scope.SampleChain);
+                //console.log($scope.holdSampleChain);
+
+                //console.log($scope.Recommendations);
+                //console.log($scope.holdRecommendations);
+
+                //console.log($scope.SubSampleInfo);
+                //console.log($scope.holdSubSampleInfo);
+                $('#discardChangesModal').modal('show');
+            } else {
+                $scope.ResetForm();
+                $scope.Load(1); // Change to load last sampletype in cache            
+            }
+        } else {
+            console.log("lkasdfl;kjasd;ofgkihasofigahsdopigf");
+            $scope.ResetForm();
+            $scope.Load(1); // Change to load last sampletype in cache            
+        }                
+    };
+    $scope.DiscardChanges = function (response) {
+        if (response == 'yes') {
+            $scope.action = "";
+            $scope.Load(1); // Change to load last sampletype in cache
+            $scope.RemoveValidation();
+            $scope.ResetForm();
+        }
     };
     $scope.ClearForm = function () {
         var stn = $scope.Sample.SampleTypeNumber;
@@ -795,6 +817,7 @@
         angular.element('#txtBatchNumber').focus();
     };
     $scope.BeginAdd = function () {
+        
         $scope.readonly = false;
         $scope.disabled = false;
         $scope.disabledUpdate = false;
@@ -813,9 +836,11 @@
         $scope.SampleChains = {};
         $scope.SampleChain.BeginningDepth = 0;
         $scope.Recommendations = [];
+        $scope.SetHoldValues();
         $scope.RemoveValidation();
     };
     $scope.BeginUpdate = function () {
+        $scope.SetHoldValues();
         $scope.readonly = false;
         $scope.disabled = false;
         $scope.disabledUpdate = true;
@@ -858,9 +883,17 @@
         }
     };
     $scope.SetDateReported = function () {
-        $scope.Validate($scope.entryForm.txtBatchNumber, 'txtBatchNumber', 'Required format is [yyyymmdd]');
-        if ($scope.action == 'add' && !$scope.entryForm.txtBatchNumber.$invalid) {
-            $scope.Sample.DateReported = $scope.Sample.BatchNumber.toString().substring(0, 4) + "-" + $scope.Sample.BatchNumber.toString().substring(4, 6) + "-" + $scope.Sample.BatchNumber.toString().substring(6, 8);
+        if ($scope.action != 'find' || ($scope.action == 'find' && angular.element('#txtBatchNumber').val() != "")) {
+            console.log("true");
+            console.log($scope.action);
+            console.log("|" + $scope.Sample.BatchNumber + "|")
+            $scope.Validate($scope.entryForm.txtBatchNumber, 'txtBatchNumber', 'Required format is [yyyymmdd]');
+            if ($scope.action == 'add' && !$scope.entryForm.txtBatchNumber.$invalid) {
+                $scope.Sample.DateReported = $scope.Sample.BatchNumber.toString().substring(0, 4) + "-" + $scope.Sample.BatchNumber.toString().substring(4, 6) + "-" + $scope.Sample.BatchNumber.toString().substring(6, 8);
+                $scope.RemovePopover('txtBatchNumber')
+                angular.element('#txtBatchNumber').removeClass('has-error');
+            }
+        } else {
             $scope.RemovePopover('txtBatchNumber')
             angular.element('#txtBatchNumber').removeClass('has-error');
         }
@@ -874,26 +907,19 @@
             angular.element('#txtBeginDepth').focus();
         }
     };
-    $scope.SetBtnVisibility = function (btn, action) {
-        var btnID = '#' + btn;
-        if (action == 'hide') {
-            angular.element(btnID).addClass("v-hidden");
-        } else {
-            angular.element(btnID).removeClass("v-hidden");
-        }
-    };
-    $scope.AddItemToList = function (testItemNumber) {
-        console.log("TestItemNumber: " + testItemNumber);
+    $scope.AddItemToList = function (reportItemNumber) {
+        console.log("TestItemNumber: " + reportItemNumber);
         var found = false;
         var i = 0
-        while (!found && i < $scope.TestItems.length) {
-            if ($scope.ItemsSelected[i] == testItemNumber) {
+        $scope.ItemsSelected = [];
+        while (!found && i < $scope.ReportItems.length) {
+            if ($scope.ItemsSelected[i] == reportItemNumber) {
                 found = true;
             }
             i++;
         }
         if (!found) { // add
-            $scope.ItemsSelected.push(testItemNumber);
+            $scope.ItemsSelected.push(reportItemNumber);
         } else { // remove
             $scope.ItemsSelected.splice(i - 1, 1);
         }
@@ -932,7 +958,7 @@
             $scope.SubSampleInfo.SubSampleTypeNumber = angular.element('#cboPlantType').val();
             $scope.SubSampleInfo.SubSampleTypeNumber = angular.element('#cboPlant').val();
         }
-    };
+    };    
 
     /* -------------- Find, Add, Update, Delete ------------------*/
 
@@ -949,7 +975,8 @@
         });                                    
     };
     $scope.AddSample = function () {
-        $scope.SetSampleChainValues();
+        $scope.SetSampleChainValues();        
+
         Sample.add($scope.Sample, $scope.SampleChain, $scope.SampleRecs, $scope.SubSampleInfo).then(function (result) {
             if (result.data != null) {
                 $scope.SetFormValues(result.data);
@@ -961,6 +988,7 @@
     };
     $scope.UpdateSample = function () {
         $scope.SetSampleChainValues();
+
         Sample.update($scope.Sample, $scope.SampleChain, $scope.SampleRecs, $scope.SubSampleInfo).then(function (result) {
             console.log(result);
             if (result.data != null) {
@@ -972,10 +1000,14 @@
         });        
     };
     $scope.DeleteSample = function () {
-        Sample.remove($scope.Sample.SampleTypeNumber, $scope.Sample.BatchNumber, $scope.Sample.LabNumber);
-        ////////////////////////////////////////////////////////////////
-        $scope.ResetForm();
-        $scope.Load($scope.Sample.SampleTypeNumber);        
+        Sample.remove($scope.Sample.SampleTypeNumber, $scope.Sample.BatchNumber, $scope.Sample.LabNumber).then(function (result) {
+            if (result.data != null) {                
+                $scope.SetFormValues(result.data);
+            } else {
+                $scope.Load($scope.Sample.SampleTypeNumber);
+            }
+            $scope.ResetForm();
+        });  
     };
     var y = 0;
     $scope.Next = function (ln) {
@@ -999,34 +1031,27 @@
                 $scope.SetSubValues($scope.SubSampleInfos[y], $scope.SubSampleInfos);
             }
         } else {
-            $http({
-                method: 'POST',
-                url: '/SampleModels/GetNext',
-                data: { 'stn': $scope.Sample.SampleTypeNumber, 'bn': $scope.Sample.BatchNumber, 'ln': $scope.Sample.LabNumber }
-            })
-          .success(function (data) {
-              console.log(data);
-              if (angular.isDefined(data) && data != null && data != "") {
-                  y = data.GenericInfo.Samples.length - 1;
-                  $scope.SetGenericMasters(data.GenericInfo.Samples, data.GenericInfo.Accounts, $scope.SampleTypes, $scope.SampleColumns);
-                  $scope.SetGenericValues(data.GenericInfo.Samples[y], data.GenericInfo.Accounts[y], data.GenericInfo.Messages);
-                  var stn = $scope.Samples[y].SampleTypeNumber;
-                  if (stn == 1 || stn == 14) {
-                      $scope.TopSoilsList = data.TopSoils;
-                      $scope.SampleChainsList = data.SampleChains;
-                      $scope.RecommendationsList = data.Recommendations;
-                      $scope.SetTopSoils(y);
-                      $scope.SetSampleChains(y);
-                      $scope.SetRecommendations(y);
-                  } else if (stn == 2 || stn == 3 || stn == 4 || stn == 5 || stn == 6 || stn == 7 || stn == 9 || stn == 12) {
-                      $scope.SetSubValues(data.SubSampleInfos[y], data.SubSampleInfos);
-                  }
-              } else {
-                  $scope.disableNext = true;
-                  y = 0;
-              }
-          })
-          .error(function () { });
+            Sample.next($scope.Sample.SampleTypeNumber, $scope.Sample.BatchNumber, $scope.Sample.LabNumber).then(function(result) {
+                if (angular.isDefined(result.data) && result.data != null && result.data != "") {
+                    y = result.data.GenericInfo.Samples.length - 1;
+                    $scope.SetGenericMasters(result.data.GenericInfo.Samples, result.data.GenericInfo.Accounts, $scope.SampleTypes, $scope.SampleColumns);
+                    $scope.SetGenericValues(result.data.GenericInfo.Samples[y], result.data.GenericInfo.Accounts[y], result.data.GenericInfo.Messages);
+                    var stn = $scope.Samples[y].SampleTypeNumber;
+                    if (stn == 1 || stn == 14) {
+                        $scope.TopSoilsList = result.data.TopSoils;
+                        $scope.SampleChainsList = result.data.SampleChains;
+                        $scope.RecommendationsList = result.data.Recommendations;
+                        $scope.SetTopSoils(y);
+                        $scope.SetSampleChains(y);
+                        $scope.SetRecommendations(y);
+                    } else if (stn == 2 || stn == 3 || stn == 4 || stn == 5 || stn == 6 || stn == 7 || stn == 9 || stn == 12) {
+                        $scope.SetSubValues(result.data.SubSampleInfos[y], result.data.SubSampleInfos);
+                    }
+                } else {
+                    $scope.disableNext = true;
+                    y = 0;
+                }
+            });
         }
     };
     $scope.Prev = function (ln) {
@@ -1034,7 +1059,6 @@
         $scope.disableNext = false;
         var found = false;
         while (!found && y >= 0 && y < $scope.Samples.length) {
-            console.log("!found, y: " + y);
             if ($scope.Samples[y].LabNumber == ln) {
                 found = true;
             }
@@ -1051,34 +1075,27 @@
                 $scope.SetSubValues($scope.SubSampleInfos[y], $scope.SubSampleInfos);
             }
         } else {
-            $http({
-                method: 'POST',
-                url: '/SampleModels/GetPrev',
-                data: { 'stn': $scope.Sample.SampleTypeNumber, 'bn': $scope.Sample.BatchNumber, 'ln': $scope.Sample.LabNumber }
-            })
-          .success(function (data) {
-              console.log(data);
-              if (angular.isDefined(data) && data != null && data != "") {
-                  y = 0
-                  $scope.SetGenericMasters(data.GenericInfo.Samples, data.GenericInfo.Accounts, $scope.SampleTypes, $scope.SampleColumns);
-                  $scope.SetGenericValues(data.GenericInfo.Samples[y], data.GenericInfo.Accounts[y], data.GenericInfo.Messages);
-                  var stn = $scope.Samples[y].SampleTypeNumber;
-                  if (stn == 1 || stn == 14) {
-                      $scope.TopSoilsList = data.TopSoils;
-                      $scope.SampleChainsList = data.SampleChains;
-                      $scope.RecommendationsList = data.Recommendations;
-                      $scope.SetTopSoils(y);
-                      $scope.SetSampleChains(y);
-                      $scope.SetRecommendations(y);
-                  } else if (stn == 2 || stn == 3 || stn == 4 || stn == 5 || stn == 6 || stn == 7 || stn == 9 || stn == 12) {
-                      $scope.SetSubValues(data.SubSampleInfos[y], data.SubSampleInfos);
-                  }
-              } else {
-                  $scope.disablePrev = true;
-                  y = $scope.Samples.length - 1;
-              }
-          })
-          .error(function () { });
+            Sample.prev($scope.Sample.SampleTypeNumber, $scope.Sample.BatchNumber, $scope.Sample.LabNumber).then(function (result) {
+                if (angular.isDefined(result.data) && result.data != null && result.data != "") {
+                    y = 0
+                    $scope.SetGenericMasters(result.data.GenericInfo.Samples, result.data.GenericInfo.Accounts, $scope.SampleTypes, $scope.SampleColumns);
+                    $scope.SetGenericValues(result.data.GenericInfo.Samples[y], result.data.GenericInfo.Accounts[y], result.data.GenericInfo.Messages);
+                    var stn = $scope.Samples[y].SampleTypeNumber;
+                    if (stn == 1 || stn == 14) {
+                        $scope.TopSoilsList = result.data.TopSoils;
+                        $scope.SampleChainsList = result.data.SampleChains;
+                        $scope.RecommendationsList = result.data.Recommendations;
+                        $scope.SetTopSoils(y);
+                        $scope.SetSampleChains(y);
+                        $scope.SetRecommendations(y);
+                    } else if (stn == 2 || stn == 3 || stn == 4 || stn == 5 || stn == 6 || stn == 7 || stn == 9 || stn == 12) {
+                        $scope.SetSubValues(result.data.SubSampleInfos[y], result.data.SubSampleInfos);
+                    }
+                } else {
+                    $scope.disablePrev = true;
+                    y = $scope.Samples.length - 1;
+                }
+            });
         }
     };
    
@@ -1124,3 +1141,26 @@
         callback: function () { $scope.CancelAction(); }
     });
 });
+//(function ($) {
+
+//    $.fn.clickHold = function (callback, completeCallback) {
+
+//        var intervalTimer;
+//        var active;
+
+//        return this.mousedown(function () {
+//            active = true;
+//            callback();
+//            intervalTimer = setInterval(function () { callback(); }, 100);
+//        }).bind('mouseup mouseout', function () {
+//            if (active) {
+//                active = false;
+//                clearInterval(intervalTimer);
+
+//                if (typeof completeCallback !== 'undefined') {
+//                    completeCallback();
+//                }
+//            }
+//        });
+//    }
+//}) (jQuery);

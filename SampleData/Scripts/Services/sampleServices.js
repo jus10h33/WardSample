@@ -27,6 +27,40 @@
                 url: '/SampleModels/DeleteSample',
                 data: { 'sampleTypeNumber': stn, 'batchNumber': bn, 'labNumber': ln }
             });
+        },
+        next: function (stn, bn, ln) {
+            return $http({
+                method: 'POST',
+                url: '/SampleModels/GetNext',
+                data: { 'stn': stn, 'bn': bn, 'ln': ln }
+            });
+        },
+        prev: function (stn, bn, ln) {
+            return $http({
+                method: 'POST',
+                url: '/SampleModels/GetPrev',
+                data: { 'stn': stn, 'bn': bn, 'ln': ln }
+            });
+        }
+    }
+})
+.factory("Account", function ($http) {
+    return {
+        find: function (an, stn) {
+            return $http.get("/SampleModels/Load?an=" + an + "&stn=" + stn);
+        }
+    }
+})
+.factory("Report", function ($http) {
+    return {
+        reportName: function (stn, rtn) {
+            return $http.get('/SampleModels/GetReportName?sampleTypeNumber=' + stn + '&reportTypeNumber=' + rtn);
+        },
+        reportItems: function (stn) {
+            return $http.get('/SampleModels/GetReportItems?sampleTypeNumber=' + stn);
+        },
+        reportList: function (stn, rins) {
+            return $http.get('/SampleModels/GetReportList?stn=' + stn + '&rins=' + rins);
         }
     }
 });

@@ -41,7 +41,7 @@
                                         <label class="control-label">Report Type #:</label>
                                         <input type="text" id="txtReportTypeNumber" name="txtReportTypeNumber" class="form-control" ng-required="required" ng-disabled="disabled" ng-readonly="readonly" ng-pattern="regNumeric" ng-model="Sample.ReportTypeNumber" ng-blur="GetReportName()" tabindex="5" />
                                         <!-- Button trigger modal -->
-                                        <i id="reportModalIcon" class="fa fa-white fa-2x fa-search" ng-disabled="disabled" data-toggle="modal" data-target="#testItemsModal" ng-click="GetTestItems()"></i>
+                                        <i id="reportModalIcon" class="fa fa-white fa-2x fa-search" ng-disabled="disabled" ng-readonly="readonly" data-toggle="modal" data-target="#reportItemsModal" ng-click="GetReportItems()"></i>
                                     </div>
                                     <div class="form-group">
                                         <label class="control-label">Report Name:</label>
@@ -153,7 +153,7 @@
                         </div>
                     </div>
                 </div>
-                <div id="testItemsModal" class="modal fade" tabindex="-1" role="dialog">
+                <div id="reportItemsModal" class="modal fade" tabindex="-1" role="dialog">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -161,20 +161,20 @@
                                 <h5 class="modal-title">Search By Test Content</h5>
                             </div>
                             <div class="modal-body">
-                                <h4>Test Items</h4>
+                                <h4>Report Items</h4>
                                 <div class="clearfix">
-                                    <div class="d-block" ng-repeat="ti in TestItems">
+                                    <div class="d-block" ng-repeat="ri in ReportItems">
                                         <div class="cols-5 pull-left">
-                                            <input type="checkbox" id="ti.TestItemNumber" name="ti.TestItemNumber" value="ti.TestItemNumber" ng-click="AddItemToList(ti.TestItemNumber)" />
-                                            <label>{{ti.TestItemName}}</label>
+                                            <input type="checkbox" id="ri.ReportItemNumber" name="ri.ReportItemNumber" value="ri.ReportItemNumber" ng-click="AddItemToList(ri.ReportItemNumber)" />
+                                            <label>{{ri.ReportItemName}}</label>
                                         </div>
                                     </div>
                                 </div>
                                 <div ng-show="reportShown">
-                                    <h4>Tests:</h4>
+                                    <h4>Reports:</h4>
                                     <table>
                                         <thead>
-                                            <tr><th>Test #</th><th>Test Name</th></tr>
+                                            <tr><th>Report #</th><th>Report Name</th></tr>
                                         </thead>
                                         <tbody>
                                             <tr ng-repeat="r in Reports">
@@ -197,5 +197,6 @@
             </div>
         </section>
         <ng-include src="'../Content/partialviews/partialSoil.html'"></ng-include>
+        <ng-include src="'../Content/partialviews/discardChanges.html'"></ng-include>
     </div>
 </div>

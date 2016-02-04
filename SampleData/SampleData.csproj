@@ -359,6 +359,7 @@
     <Content Include="Content\hotkeys.min.css" />
     <Content Include="Content\imgs\clear.png" />
     <Content Include="Content\imgs\loading.gif" />
+    <Content Include="Content\partialviews\discardChanges.html" />
     <Content Include="Content\partialviews\partialGeneric.html" />
     <Content Include="Content\select2.css" />
     <Content Include="Content\select2.min.css" />
