@@ -290,33 +290,33 @@
         }
 
         // Validate Sample Recs
-        //$scope.frmSampleRecs = [];
-        //if ($scope.frmSampleRecs.$invalid) {
-        //    for (var i = 0; i < $scope.SampleRecs.length; i++) {
-        //        var recID = '#acoRecTypes' + i;
-        //        var cropID = '#acoCropTypes' + i;
-        //        var yieldID = '#txtYieldGoal' + i;
+        $scope.frmSampleRecs = [];
+        if ($scope.frmSampleRecs.$invalid) {
+            for (var i = 0; i < $scope.SampleRecs.length; i++) {
+                var recID = '#acoRecTypes' + i;
+                var cropID = '#acoCropTypes' + i;
+                var yieldID = '#txtYieldGoal' + i;
 
-        //        if (angular.element(recID).val() != "") {
-        //            angular.element(recID).addClass('has-error');
-        //            recID = 'acoRecTypes' + i;
-        //            $scope.DisplayPopover(recID, "Required field");
-        //        }
-        //        if (angular.element(cropID).val() != "") {
-        //            angular.element(cropID).addClass('has-error');
-        //            cropID = 'acoCropTypes' + i;
-        //            $scope.DisplayPopover(cropID, "Required field");                    
-        //        }
-        //        if (!isNaN(angular.element(yieldID).val())) {
-        //            angular.element(yieldID).addClass('has-error');
-        //            yieldID = 'txtYieldGoal' + i;
-        //            $scope.DisplayPopover(yieldID, "Must be numeric");                    
-        //        }
-        //    }
-        //    valid = false;
-        //} else {
-        //    valid = true;
-        //}
+                if (angular.element(recID).val() != "") {
+                    angular.element(recID).addClass('has-error');
+                    recID = 'acoRecTypes' + i;
+                    $scope.DisplayPopover(recID, "Required field");
+                }
+                if (angular.element(cropID).val() != "") {
+                    angular.element(cropID).addClass('has-error');
+                    cropID = 'acoCropTypes' + i;
+                    $scope.DisplayPopover(cropID, "Required field");                    
+                }
+                if (!isNaN(angular.element(yieldID).val())) {
+                    angular.element(yieldID).addClass('has-error');
+                    yieldID = 'txtYieldGoal' + i;
+                    $scope.DisplayPopover(yieldID, "Must be numeric");                    
+                }
+            }
+            valid = false;
+        } else {
+            valid = true;
+        }
         if (valid) {
             $scope.RemoveValidation();
         } else {
@@ -465,7 +465,7 @@
                 }
             }
         } else {
-            // no value entered error
+            isValid = false;
         }
         if (isValid) {
             angular.element(recID).val(recValue);
@@ -490,11 +490,14 @@
         $scope.ValidateSampleChain();
         var recLength = $scope.Recommendations.length;
         var valid = true;
-        for (var i = 0; i < recLength; i++) {
+        console.log(recLength);
+        while (i < recLength && valid) {
             valid = $scope.ValidateTypes(i, 'Rec');
             valid = $scope.ValidateTypes(i, 'Crop');
             valid = $scope.ValidateYieldGoal(i);
+            i++;
         }
+
         if (valid && recLength > 1) { // check for duplicates
             var index = recLength - 1;
             var recs = $scope.Recommendations;
@@ -664,7 +667,6 @@
             };
             $scope.SampleRecs.push(newRec);
             idx++;
-
         }
         if ($scope.SampleRecs.length == 1 && $scope.SampleRecs[0].RecTypeNumber == 0) {
             $scope.SampleRecs = [];
@@ -725,9 +727,9 @@
         }
         if ($scope.ValidateForm()) {
             if ($scope.Sample.SampleTypeNumber == 1 || $scope.Sample.SampleTypeNumber == 14) {
-                //if ($scope.ValidateRecs()) {
-                //    $scope.SampleRecs = $scope.ConvertRecs();
-                //}
+                if ($scope.ValidateRecs()) {
+                    $scope.sampleRecs = $scope.ConvertRecs();
+                }
             } else if ($scope.Sample.SampleTypeNumber == 2 || $scope.Sample.SampleTypeNumber == 3 || $scope.Sample.SampleTypeNumber == 4 || $scope.Sample.SampleTypeNumber == 6 || $scope.Sample.SampleTypeNumber == 7 || $scope.Sample.SampleTypeNumber == 9 || $scope.Sample.SampleTypeNumber == 12 || $scope.Sample.SampleTypeNumber == 5) {
                 $scope.SetSubSampleInfo();
             }
@@ -761,23 +763,15 @@
         $scope.reportShown = false;
         $scope.disableNext = true;
         $scope.Messages = [];
+        if (angular.isDefined($scope.ItemsSelected)) {
+            ItemsSelected = [];
+        }
     };
     $scope.CancelAction = function () {
         console.log("CancelAction called");
         if ($scope.action == 'add' || $scope.action == 'update') {
             if (!angular.equals($scope.Sample, $scope.holdSample) || (angular.isDefined($scope.holdSampleChain) && !angular.equals($scope.SampleChain, $scope.holdSampleChain)) || (angular.isDefined($scope.Recommendtations) && !angular.equals($scope.Recommendations, $scope.holdRecommendations)) || (angular.isDefined($scope.holdSubSampleInfo) && !angular.equals($scope.SubSampleInfo, $scope.holdSubSampleInfo)))
             {
-                //console.log($scope.Sample);
-                //console.log($scope.holdSample);
-
-                //console.log($scope.SampleChain);
-                //console.log($scope.holdSampleChain);
-
-                //console.log($scope.Recommendations);
-                //console.log($scope.holdRecommendations);
-
-                //console.log($scope.SubSampleInfo);
-                //console.log($scope.holdSubSampleInfo);
                 $('#discardChangesModal').modal('show');
             } else {
                 $scope.ResetForm();
@@ -795,6 +789,8 @@
             $scope.Load(1); // Change to load last sampletype in cache
             $scope.RemoveValidation();
             $scope.ResetForm();
+        } else {
+            $scope.ItemsSelected = [];
         }
     };
     $scope.ClearForm = function () {
@@ -1140,7 +1136,8 @@
         description: 'Cancel',
         callback: function () { $scope.CancelAction(); }
     });
-});
+})
+
 //(function ($) {
 
 //    $.fn.clickHold = function (callback, completeCallback) {

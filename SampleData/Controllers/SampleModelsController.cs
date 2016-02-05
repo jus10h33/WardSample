@@ -94,78 +94,114 @@ namespace SampleData.Controllers
         }
         private SampleModels GetSample(int stn, int bn = 0, int ln = 0)
         {
-            if (bn == 0 && ln == 0)
+            try
             {
-                return (from s in db.Samples
-                        where s.SampleTypeNumber == stn
-                        orderby s.BatchNumber descending, s.LabNumber descending
-                        select s).FirstOrDefault();
+                if (bn == 0 && ln == 0)
+                {
+                    return (from s in db.Samples
+                            where s.SampleTypeNumber == stn
+                            orderby s.BatchNumber descending, s.LabNumber descending
+                            select s).FirstOrDefault();
+                }
+                else if (ln != 0)
+                {
+                    return (from s in db.Samples
+                            where s.SampleTypeNumber == stn && s.LabNumber >= ln
+                            select s).SingleOrDefault();
+                }
+                else
+                {
+                    return (from s in db.Samples
+                            where s.SampleTypeNumber == stn && s.BatchNumber == bn && s.LabNumber == ln
+                            select s).SingleOrDefault();
+                }
             }
-            else if ( ln != 0)
+            catch (Exception e)
             {
-                return (from s in db.Samples
-                        where s.SampleTypeNumber == stn && s.LabNumber >= ln
-                        select s).SingleOrDefault();
-            }
-            else
-            {
-                return (from s in db.Samples
-                        where s.SampleTypeNumber == stn && s.BatchNumber == bn && s.LabNumber == ln
-                        select s).SingleOrDefault();
-            }
+                sr.Message.Add(e.Source);
+                Debug.Print(e.StackTrace);
+                return null;
+            }            
         }
         private List<SampleViewModel> GetSamples(int stn, SampleModels sample = null)
         {
-            List<SampleModels> samples = new List<SampleModels>();
-            if (sample == null)
+            try
             {
-                samples = (from s in db.Samples
-                                              where s.SampleTypeNumber == stn
-                                              orderby s.BatchNumber descending, s.LabNumber descending
-                                              select s).Take(MAX_RECS).ToList();
+                List<SampleModels> samples = new List<SampleModels>();
+                if (sample == null)
+                {
+                    samples = (from s in db.Samples
+                               where s.SampleTypeNumber == stn
+                               orderby s.BatchNumber descending, s.LabNumber descending
+                               select s).Take(MAX_RECS).ToList();
+                }
+                else
+                {
+                    samples = (from s in db.Samples
+                               where s.SampleTypeNumber == stn && s.BatchNumber >= sample.BatchNumber && s.LabNumber >= sample.LabNumber
+                               orderby s.LabNumber, s.BatchNumber descending
+                               select s).Take(MAX_RECS).ToList();
+                }
+                return ConvertSamples(samples);
             }
-            else
+            catch (Exception e)
             {
-                samples = (from s in db.Samples
-                            where s.SampleTypeNumber == stn && s.BatchNumber >= sample.BatchNumber && s.LabNumber >= sample.LabNumber
-                            orderby s.LabNumber, s.BatchNumber descending
-                           select s).Take(MAX_RECS).ToList();
-            }
-            return ConvertSamples(samples);
+                sr.Message.Add(e.Source);
+                Debug.Print(e.StackTrace);
+                return null;
+            }            
         }
         private List<SampleViewModel> ConvertSamples(List<SampleModels> samples)
         {
-            List<SampleViewModel> sampleViews = new List<SampleViewModel>();
-            foreach (SampleModels s in samples)
+            try
             {
-                SampleViewModel sample = CreateSampleView(s);
-                InvoiceModels invoice = GetInvoice(sample.AccountNumber, sample.BatchNumber, sample.SampleTypeNumber);
-                if (invoice != null)
+                List<SampleViewModel> sampleViews = new List<SampleViewModel>();
+                foreach (SampleModels s in samples)
                 {
-                    sample.InvoiceNumber = invoice.InvoiceNumber;
-                    sample.DateReported = invoice.DateReported;
-                }
+                    SampleViewModel sample = CreateSampleView(s);
+                    InvoiceModels invoice = GetInvoice(sample.AccountNumber, sample.BatchNumber, sample.SampleTypeNumber);
+                    if (invoice != null)
+                    {
+                        sample.InvoiceNumber = invoice.InvoiceNumber;
+                        sample.DateReported = invoice.DateReported;
+                    }
 
-                ReportModels report = GetReport(sample.SampleTypeNumber, sample.ReportTypeNumber);
-                if (report != null)
-                {
-                    sample.ReportTypeNumber = report.ReportTypeNumber;
-                    sample.ReportCost = GetReportCost(sample.SampleTypeNumber, sample.CostTypeNumber, sample.ReportTypeNumber);
-                    sample.ReportName = GetReportName(sample.SampleTypeNumber, sample.ReportTypeNumber);
+                    ReportModels report = GetReport(sample.SampleTypeNumber, sample.ReportTypeNumber);
+                    if (report != null)
+                    {
+                        sample.ReportTypeNumber = report.ReportTypeNumber;
+                        sample.ReportCost = GetReportCost(sample.SampleTypeNumber, sample.CostTypeNumber, sample.ReportTypeNumber);
+                        sample.ReportName = GetReportName(sample.SampleTypeNumber, sample.ReportTypeNumber);
+                    }
+                    sampleViews.Add(sample);
                 }
-                sampleViews.Add(sample);
+                return sampleViews;
             }
-            return sampleViews;
+            catch (Exception e)
+            {
+                sr.Message.Add(e.Source);
+                Debug.Print(e.StackTrace);
+                return null;
+            }            
         }
         private List<AccountViewModel> GetAccounts(List<SampleViewModel> samples)
         {
-            List<AccountViewModel> accountViews = new List<AccountViewModel>();
-            foreach (SampleViewModel s in samples)
+            try
             {
-                AccountViewModel account = CreateAccountView(s.AccountNumber, s.SampleTypeNumber);
-                accountViews.Add(account);
+                List<AccountViewModel> accountViews = new List<AccountViewModel>();
+                foreach (SampleViewModel s in samples)
+                {
+                    AccountViewModel account = CreateAccountView(s.AccountNumber, s.SampleTypeNumber);
+                    accountViews.Add(account);
+                }
+                return accountViews;
             }
-            return accountViews;
+            catch (Exception e)
+            {
+                sr.Message.Add(e.Source);
+                Debug.Print(e.StackTrace);
+                return null;
+            }            
         }
         private SampleViewModel CreateSampleView(SampleModels sample)
         {
@@ -190,8 +226,8 @@ namespace SampleData.Controllers
         }
         private AccountViewModel CreateAccountView(int an, int stn)
         {
-            //try
-            //{
+            try
+            {
                 AccountViewModel avm = new AccountViewModel();
                 AccountModels am = (from a in db.Accounts
                                     where a.AccountNumber == an
@@ -203,12 +239,14 @@ namespace SampleData.Controllers
                 avm.SampleEntryInformation = am.SampleEntryInformation;
                 avm.Growers = GetGrowers(an, stn);
                 return avm;
-            //}
-            //catch (Exception e)
-            //{
-            //    sr.Message.Add(e.Message);
-            //    return null;
-            //}
+            }
+            catch (Exception e)
+            {
+                sr.Message.Add(e.Source);
+                Debug.Print(e.StackTrace);
+                return null;
+            }
+            
         }
         private GenericInfo GetGenericInfo(int stn, SampleModels sample = null)
         {
@@ -266,56 +304,94 @@ namespace SampleData.Controllers
         }
         private SampleChainModels GetSampleChain(int bn, int ln)
         {
-            SampleChainModels sChain = new SampleChainModels();
-            sChain = (from ss in db.SampleChains
-                    where (ss.BatchNumber == bn && ss.LabNumber == ln)
-                    orderby ss.BeginningDepth ascending
-                    select ss).FirstOrDefault();
-            return sChain;
+            try
+            {
+                SampleChainModels sChain = new SampleChainModels();
+                sChain = (from ss in db.SampleChains
+                          where (ss.BatchNumber == bn && ss.LabNumber == ln)
+                          orderby ss.BeginningDepth ascending
+                          select ss).FirstOrDefault();
+                return sChain;
+            }
+            catch (Exception e)
+            {
+                sr.Message.Add(e.Source);
+                Debug.Print(e.StackTrace);
+                return null;
+            }
+            
         }
         private List<SoilRecTypeModels> GetSoilRecTypes()
         {
-            return (from y in db.SoilRecTypes
-                    where y.RecTypeName != "HANEY"
-                    orderby y.RecTypeNumber
-                    select y).ToList();
+            try
+            {
+                return (from y in db.SoilRecTypes
+                        where y.RecTypeName != "HANEY"
+                        orderby y.RecTypeNumber
+                        select y).ToList();
+            }
+            catch (Exception e)
+            {
+                sr.Message.Add(e.Source);
+                Debug.Print(e.StackTrace);
+                return null;
+            }
+            
         }
         private List<SoilRecCropModels> GetSoilRecCrops()
         {
-            return (from x in db.SoilRecCrops
-                    orderby x.CropTypeNumber
-                    select x).ToList();
+            try
+            {
+                return (from x in db.SoilRecCrops
+                        orderby x.CropTypeNumber
+                        select x).ToList();
+            }
+            catch (Exception e)
+            {
+                sr.Message.Add(e.Source);
+                Debug.Print(e.StackTrace);
+                return null;
+            }            
         }
         private List<List<SampleChainModels>> GetSampleChainsList(List<SampleViewModel> samples)
         {
-            List<List<SampleChainModels>> sampleChainsList = new List<List<SampleChainModels>>();
-            foreach (SampleViewModel s in samples)
+            try
             {
-                List<SampleChainModels> sChains = new List<SampleChainModels>();
-                SampleChainModels sChain = new SampleChainModels();
-                sChain = GetSampleChain(s.BatchNumber, s.LabNumber);
-
-                // Check in sample is linked - if so, get linked samples
-                if (sChain != null)
+                List<List<SampleChainModels>> sampleChainsList = new List<List<SampleChainModels>>();
+                foreach (SampleViewModel s in samples)
                 {
-                    if (sChain.LinkedSampleLab == 0)
+                    List<SampleChainModels> sChains = new List<SampleChainModels>();
+                    SampleChainModels sChain = new SampleChainModels();
+                    sChain = GetSampleChain(s.BatchNumber, s.LabNumber);
+
+                    // Check in sample is linked - if so, get linked samples
+                    if (sChain != null)
                     {
-                        sChains = (from ss in db.SampleChains
-                                   where (ss.BatchNumber == s.BatchNumber && ss.LabNumber == s.LabNumber || (ss.LinkedSampleBatch == s.BatchNumber && ss.LinkedSampleLab == s.LabNumber))
-                                   orderby ss.BeginningDepth ascending
-                                   select ss).ToList();
+                        if (sChain.LinkedSampleLab == 0)
+                        {
+                            sChains = (from ss in db.SampleChains
+                                       where (ss.BatchNumber == s.BatchNumber && ss.LabNumber == s.LabNumber || (ss.LinkedSampleBatch == s.BatchNumber && ss.LinkedSampleLab == s.LabNumber))
+                                       orderby ss.BeginningDepth ascending
+                                       select ss).ToList();
+                        }
+                        else
+                        {
+                            sChains = (from ss in db.SampleChains
+                                       where (ss.BatchNumber == sChain.LinkedSampleBatch && ss.LabNumber == sChain.LinkedSampleLab) || (ss.LinkedSampleBatch == sChain.LinkedSampleBatch && ss.LinkedSampleLab == sChain.LinkedSampleLab)
+                                       orderby ss.BeginningDepth ascending
+                                       select ss).ToList();
+                        }
+                        sampleChainsList.Add(sChains);
                     }
-                    else
-                    {
-                        sChains = (from ss in db.SampleChains
-                                   where (ss.BatchNumber == sChain.LinkedSampleBatch && ss.LabNumber == sChain.LinkedSampleLab) || (ss.LinkedSampleBatch == sChain.LinkedSampleBatch && ss.LinkedSampleLab == sChain.LinkedSampleLab)
-                                   orderby ss.BeginningDepth ascending
-                                   select ss).ToList();
-                    }
-                    sampleChainsList.Add(sChains);                    
                 }
+                return sampleChainsList;
             }
-            return sampleChainsList;
+            catch (Exception e)
+            {
+                sr.Message.Add(e.Source);
+                Debug.Print(e.StackTrace);
+                return null;
+            }            
         }
         private List<List<int>> GetTopSoils(List<List<SampleChainModels>> sChainsList, List<SampleViewModel> samples)
         {
@@ -326,7 +402,7 @@ namespace SampleData.Controllers
                 foreach (List<SampleChainModels> sChains in sChainsList)
                 {
                     List<int> topSoils = new List<int>();
-                    if (sChains[i].TopSoil == 0)
+                    if (sChains.First().TopSoil == 0)
                     {
                         Debug.Print("---------------");
                         Debug.Print(samples[i].BatchNumber.ToString());
@@ -353,7 +429,8 @@ namespace SampleData.Controllers
             }
             catch (Exception e)
             {
-                Debug.Print(e.Message);
+                sr.Message.Add(e.Source);
+                Debug.Print(e.StackTrace);
                 return null;
             }
             
@@ -416,20 +493,19 @@ namespace SampleData.Controllers
             if (AccountExist(an))
             {
                 account = GetAccount(an);
-
-                AccountViewModel accountView = new AccountViewModel();
-                accountView.Name = account.FirstName + " " + account.LastName;
-                accountView.Company = account.Company;
-                accountView.Address1 = account.Address1;
-                accountView.CityStZip = account.City + ", " + account.State + " " + account.Zip;
-                accountView.SampleEntryInformation = account.SampleEntryInformation;
-                accountView.Growers = GetGrowers(an, stn);
-                return Json(accountView, JsonRequestBehavior.AllowGet);                
+                if (account != null)
+                {
+                    AccountViewModel accountView = new AccountViewModel();
+                    accountView.Name = account.FirstName + " " + account.LastName;
+                    accountView.Company = account.Company;
+                    accountView.Address1 = account.Address1;
+                    accountView.CityStZip = account.City + ", " + account.State + " " + account.Zip;
+                    accountView.SampleEntryInformation = account.SampleEntryInformation;
+                    accountView.Growers = GetGrowers(an, stn);
+                    return Json(accountView, JsonRequestBehavior.AllowGet);
+                }                               
             }
-            else
-            {
-                return Json(null, JsonRequestBehavior.AllowGet);
-            }
+            return Json(null, JsonRequestBehavior.AllowGet);
         }        
         public JsonResult GetColumns(int stn)
         {       
@@ -467,33 +543,69 @@ namespace SampleData.Controllers
         }
         public List<SampleTypeModels> GetSampleTypes()
         {
-            return  db.SampleTypes.ToList();
+            try
+            {
+                return db.SampleTypes.ToList();
+            }
+            catch (Exception e)
+            {
+                sr.Message.Add(e.Source);
+                Debug.Print(e.StackTrace);
+                return null;
+            }            
         }
         public JsonResult GetReportItems(int sampleTypeNumber)
         {
-            Debug.Print("GetReportItems");
-            List<ReportItemModels> reportItems = (from ri in db.ReportItems
-                                                where ri.SampleTypeNumber == sampleTypeNumber
-                                                orderby ri.ReportItemName
-                                                select ri).ToList();
+            try
+            {
+                List<ReportItemModels> reportItems = (from ri in db.ReportItems
+                                                      where ri.SampleTypeNumber == sampleTypeNumber
+                                                      orderby ri.ReportItemName
+                                                      select ri).ToList();
 
-            return Json(reportItems, JsonRequestBehavior.AllowGet);
+                return Json(reportItems, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                sr.Message.Add(e.Source);
+                Debug.Print(e.StackTrace);
+                return null;
+            }
+            
         }
         private bool SampleExist(int stn, int bn, int ln)
         {
-            SampleModels s = db.Samples.Find(stn, bn, ln);
-            if (s != null)
+            try
             {
-                return true;
+                SampleModels s = db.Samples.Find(stn, bn, ln);
+                if (s != null)
+                {
+                    return true;
+                }
+                return false;
             }
-            return false;
+            catch (Exception e)
+            {
+                sr.Message.Add(e.Source);
+                Debug.Print(e.StackTrace);
+                return false;
+            }            
         }
         private List<SoilRecModels> GetSoilRecs(int bn, int ln)
         {
-            return (from ssr in db.SoilRecs
-             where ssr.BatchNumber == bn && ssr.LabNumber == ln
-             orderby ssr.Priority
-             select ssr).ToList();
+            try
+            {
+                return (from ssr in db.SoilRecs
+                        where ssr.BatchNumber == bn && ssr.LabNumber == ln
+                        orderby ssr.Priority
+                        select ssr).ToList();
+            }
+            catch (Exception e)
+            {
+                sr.Message.Add(e.Source);
+                Debug.Print(e.StackTrace);
+                return null;
+            }            
         }
         private SampleModels ConvertToUpperCase(SampleModels sample)
         {
@@ -516,18 +628,36 @@ namespace SampleData.Controllers
         }
         private List<SampleColumns> GetSampleColumns(int stn)
         {
-            return (from sc in db.SampleColumns
-                    where sc.SampleTypeNumber == stn
-                    orderby sc.ColumnOrder
-                    select sc).ToList();
+            try
+            {
+                return (from sc in db.SampleColumns
+                        where sc.SampleTypeNumber == stn
+                        orderby sc.ColumnOrder
+                        select sc).ToList();
+            }
+            catch (Exception e)
+            {
+                sr.Message.Add(e.Source);
+                Debug.Print(e.StackTrace);
+                return null;
+            }            
         }
         private ReportModels GetReport(int stn, int rtn)
         {
-            ReportModels report = new ReportModels();
-            report = (from r in db.Reports
-                    where r.SampleTypeNumber == stn & r.ReportTypeNumber == rtn
-                    select r).FirstOrDefault();
-            return report;
+            try
+            {
+                ReportModels report = new ReportModels();
+                report = (from r in db.Reports
+                          where r.SampleTypeNumber == stn & r.ReportTypeNumber == rtn
+                          select r).FirstOrDefault();
+                return report;
+            }
+            catch (Exception e)
+            {
+                sr.Message.Add(e.Source);
+                Debug.Print(e.StackTrace);
+                return null;
+            }            
         }
         private double GetReportCost(int stn, int ctn, int rtn)
         {
@@ -542,24 +672,30 @@ namespace SampleData.Controllers
         }
         private bool ReportTypeExist(int stn, int rtn)
         {
-            try
-            {
                 ReportModels report = GetReport(stn, rtn);
+            if (report != null)
                 return true;
-            }
-            catch (Exception)
-            {
+            else
                 return false;
-            }
         }
         public List<string> GetGrowers(int cn, int stn)
         {
-            return (from g in db.Samples
-                    where g.AccountNumber == cn && g.SampleTypeNumber == stn
-                    select g.Grower).Distinct().ToList();
+            try
+            {
+                return (from g in db.Samples
+                        where g.AccountNumber == cn && g.SampleTypeNumber == stn
+                        select g.Grower).Distinct().ToList();
+            }
+            catch (Exception e)
+            {
+                sr.Message.Add(e.Source);
+                Debug.Print(e.StackTrace);
+                return null;
+            }
+            
         }
         private InvoiceModels GetInvoice(int inv)
-        {      
+        {
             try
             {
                 InvoiceModels invoice = (from i in db.Invoices
@@ -569,9 +705,10 @@ namespace SampleData.Controllers
             }
             catch (Exception e)
             {
-                Debug.Print(e.ToString());
+                sr.Message.Add(e.Source);
+                Debug.Print(e.StackTrace);
                 return null;
-            }
+            }            
         }
         private List<InvoiceViewModel> GetInvoices(List<SampleViewModel> samples)
         {
@@ -594,15 +731,16 @@ namespace SampleData.Controllers
             try
             {
                 InvoiceModels invoice = (from inv in db.Invoices
-                           where inv.BatchNumber == bn && inv.AccountNumber == cn && inv.SampleTypeNumber == stn
-                           select inv).FirstOrDefault();
+                                         where inv.BatchNumber == bn && inv.AccountNumber == cn && inv.SampleTypeNumber == stn
+                                         select inv).FirstOrDefault();
                 return invoice;
             }
             catch (Exception e)
             {
-                Debug.Print(e.ToString());
+                sr.Message.Add(e.Source);
+                Debug.Print(e.StackTrace);
                 return null;
-            }            
+            }                    
         }
         private InvoiceModels CreateInvoice(SampleModels sample)
         {
@@ -617,18 +755,21 @@ namespace SampleData.Controllers
                 newInvoice.BatchNumber = sample.BatchNumber;
                 newInvoice.AccountNumber = sample.AccountNumber;
                 newInvoice.DateReported = new DateTime(Convert.ToInt32(sample.BatchNumber.ToString().Substring(0, 4)), Convert.ToInt32(sample.BatchNumber.ToString().Substring(4, 2)), Convert.ToInt32(sample.BatchNumber.ToString().Substring(6, 2)));
-                AccountModels account = db.Accounts.Find(sample.AccountNumber);
-                newInvoice.AccountDiscount = account.Discount;
                 newInvoice.Comments = "0";
                 newInvoice.Locked = 0;
                 newInvoice.PostageCost = 0.0;
-                return newInvoice;                
+
+                AccountModels account = db.Accounts.Find(sample.AccountNumber);
+                newInvoice.AccountDiscount = account.Discount;
+                
+                return newInvoice;
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                Debug.Print("Error occurred getting max invoice.  " + ex.ToString());
+                sr.Message.Add(e.Source);
+                Debug.Print(e.StackTrace);
                 return null;
-            }
+            }                         
         }
         private int GetLabNumber(int stn, int bn)
         {
@@ -645,9 +786,10 @@ namespace SampleData.Controllers
             }
             catch (Exception e)
             {
-                Debug.Print("GetLabNumber error:  " + e.Message);
+                sr.Message.Add(e.Source);
+                Debug.Print(e.StackTrace);
                 return 0;
-            }
+            }            
         }
         private bool LabNumberExists(int stn, int bn, int ln)
         {
@@ -657,21 +799,35 @@ namespace SampleData.Controllers
                 int bnTmp = Convert.ToInt32(String.Concat(bnYear, 0000));
                 Debug.Print(bnTmp.ToString());
                 SampleModels sample = (from s in db.Samples
-                                 where s.SampleTypeNumber == stn && s.BatchNumber > bnTmp && s.LabNumber == ln
-                                       select s).FirstOrDefault();
-                return true;
+                                       where s.SampleTypeNumber == stn && s.BatchNumber > bnTmp && s.LabNumber == ln
+                                       select s).SingleOrDefault();
+                if (sample != null)
+                    return true;
+                else
+                    return false;
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                sr.Message.Add(e.Source);
+                Debug.Print(e.StackTrace);
                 return false;
             }
+                      
         }
         private AccountModels GetAccount(int an)
         {
-            AccountModels c = (from acc in db.Accounts
-                                where acc.AccountNumber == an
-                                select acc).SingleOrDefault();     
-            return c;
+            try
+            {
+                return (from acc in db.Accounts
+                        where acc.AccountNumber == an
+                        select acc).SingleOrDefault();
+            }
+            catch (Exception e)
+            {
+                sr.Message.Add(e.Source);
+                Debug.Print(e.StackTrace);
+                return null;
+            }                 
         }
         private bool AccountExist(int an)
         {
@@ -683,7 +839,16 @@ namespace SampleData.Controllers
         }
         private List<PastCropModels> GetPastCrops()
         {
-           return db.PastCrops.ToList();
+            try
+            {
+                return db.PastCrops.ToList();
+            }
+            catch (Exception e)
+            {
+                sr.Message.Add(e.Source);
+                Debug.Print(e.StackTrace);
+                return null;
+            }            
         }
         public JsonResult GetReportList(int stn, string[] rins)
         {
@@ -692,53 +857,85 @@ namespace SampleData.Controllers
             {
                 Debug.Print("ReportItemNumber: " + x);
             }
-            //List<ReportModels> reports = (from r in db.Reports
-            //                              where r.SampleTypeNumber = stn && r.ReportTypeNumber ==
-            //                              select r).ToList();
-            //return Json(reports, JsonRequestBehavior.AllowGet);
-            return null;
+            try
+            {
+                //List<ReportModels> reports = (from r in db.Reports
+                //                              where r.SampleTypeNumber = stn && r.ReportTypeNumber ==
+                //                              select r).ToList();
+                //return Json(reports, JsonRequestBehavior.AllowGet);
+                return null;
+            }
+            catch (Exception e)
+            {
+                sr.Message.Add(e.Source);
+                Debug.Print(e.StackTrace);
+                return null;
+            }                        
         }
         private SubSampleInfoModels GetSubSampleInfo(int stn, int bn, int ln)
         {
-            return (from ssi in db.SubSampleInfo
-                    where ssi.SampleTypeNumber == stn && ssi.BatchNumber == bn && ssi.LabNumber == ln 
-                    select ssi).SingleOrDefault();
+            try
+            {
+                return (from ssi in db.SubSampleInfo
+                        where ssi.SampleTypeNumber == stn && ssi.BatchNumber == bn && ssi.LabNumber == ln
+                        select ssi).SingleOrDefault();
+            }
+            catch (Exception e)
+            {
+                sr.Message.Add(e.Source);
+                Debug.Print(e.StackTrace);
+                return null;
+            }            
         }
         private List<SubSampleInfoModels> GetSubSampleInfos(List<SampleViewModel> samples)
         {
-            List<SubSampleInfoModels> subSampleInfoModels = new List<SubSampleInfoModels>();
-            foreach (var s in samples)
+            try
             {
-                var x = (from ssi in db.SubSampleInfo
-                         where ssi.SampleTypeNumber == s.SampleTypeNumber && ssi.BatchNumber == s.BatchNumber && ssi.LabNumber == s.LabNumber
-                         select ssi).SingleOrDefault();
-                Debug.Print("GetSubSampleInfos");
-                Debug.Print(x.SubSampleTypeNumber.ToString());
-                subSampleInfoModels.Add(x);
+                List<SubSampleInfoModels> subSampleInfoModels = new List<SubSampleInfoModels>();
+                foreach (var s in samples)
+                {
+                    var x = (from ssi in db.SubSampleInfo
+                             where ssi.SampleTypeNumber == s.SampleTypeNumber && ssi.BatchNumber == s.BatchNumber && ssi.LabNumber == s.LabNumber
+                             select ssi).SingleOrDefault();
+                    subSampleInfoModels.Add(x);
+                }
+                return subSampleInfoModels;
             }
-            return subSampleInfoModels;
+            catch (Exception e)
+            {
+                sr.Message.Add(e.Source);
+                Debug.Print(e.StackTrace);
+                return null;
+            }            
         }
         private List<SubSampleTypeModels> GetSubSampleTypes(int stn)
         {
-            return (from sst in db.SubSampleTypes
-                    where sst.SampleTypeNumber == stn
-                    select sst).ToList();
+            try
+            {
+                return (from sst in db.SubSampleTypes
+                        where sst.SampleTypeNumber == stn
+                        select sst).ToList();
+            }
+            catch (Exception e)
+            {
+                sr.Message.Add(e.Source);
+                Debug.Print(e.StackTrace);
+                return null;
+            }            
         }
         public List<List<SubSubSampleTypeModels>> GetSubSubSampleTypes(int stn)
         {
-            List<List<SubSubSampleTypeModels>> subSubSampleTypesList = new List<List<SubSubSampleTypeModels>>();
-            
-            //List<SubSampleTypeModels> subSampleTypes = (from sst in db.SubSampleTypes
-            //                                            where sst.SampleTypeNumber == stn
-            //                                            select sst).ToList();
-            //foreach (List<SubSampleTypeModels> subs in subSampleTypes)
-            //{
-            //    List<SubSubSampleTypeModels> subSubSampleTypes = (from ssst in db.SubSubSampleTypes
-            //                                                    where subs.First().SubSampleTypeNumber == ssst.SubSampleTypeNumber
-            //                                                    select ssst).ToList();
-            //    subSubSampleTypesList.Add(subSubSampleTypes);
-            //}
+            try
+            {
+                List<List<SubSubSampleTypeModels>> subSubSampleTypesList = new List<List<SubSubSampleTypeModels>>();
                 return subSubSampleTypesList;
+            }
+            catch (Exception e)
+            {
+                sr.Message.Add(e.Source);
+                Debug.Print(e.StackTrace);
+                return null;
+            }            
         }
         private List<string> GetMessages()
         {
@@ -761,10 +958,9 @@ namespace SampleData.Controllers
                                                orderby s.BatchNumber descending, s.LabNumber descending
                                                select s).FirstOrDefault();
                         if (sample != null)
-                        {
-                            Debug.Print(sample.LabNumber.ToString());
                             return Json(GetEntry(sample.SampleTypeNumber, sample), JsonRequestBehavior.AllowGet);
-                        }
+                        sr.Message.Add("Sample Does Not Exist");
+                        return null;
                     }
                     catch (Exception e)
                     {
@@ -785,10 +981,9 @@ namespace SampleData.Controllers
                                                orderby s.BatchNumber descending, s.LabNumber descending
                                                select s).FirstOrDefault();
                         if (sample != null)
-                        {
-                            Debug.Print(sample.LabNumber.ToString());
                             return Json(GetEntry(sample.SampleTypeNumber, sample), JsonRequestBehavior.AllowGet);
-                        }
+                        sr.Message.Add("Sample Does Not Exist");
+                        return null;
                     }
                     catch (Exception e)
                     {
