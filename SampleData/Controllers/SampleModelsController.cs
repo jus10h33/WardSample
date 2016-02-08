@@ -55,7 +55,7 @@ namespace SampleData.Controllers
                 soilReturn.GenericMasters = GetGenericMasters(stn);
                 soilReturn.SoilMasters = GetSoilMasters(stn);
                 soilReturn.SampleChains = GetSampleChainsList(soilReturn.GenericInfo.Samples);
-                //soilReturn.TopSoils = GetTopSoils(soilReturn.SampleChains, soilReturn.GenericInfo.Samples);
+                soilReturn.TopSoils = GetTopSoils(soilReturn.SampleChains, soilReturn.GenericInfo.Samples);
                 soilReturn.Recommendations = GetSampleRecommendations(soilReturn.GenericInfo.Samples);                
                 Debug.Print(soilReturn.GenericInfo.Samples.First().LabNumber.ToString());
                 return soilReturn;
@@ -401,29 +401,32 @@ namespace SampleData.Controllers
                 int i = 0;
                 foreach (List<SampleChainModels> sChains in sChainsList)
                 {
+                    Debug.Print(samples[i].LabNumber.ToString());
                     List<int> topSoils = new List<int>();
-                    if (sChains.First().TopSoil == 0)
+                    var xyz = (from xx in sChains
+                               where xx.BatchNumber == samples[i].BatchNumber && xx.LabNumber == samples[i].LabNumber
+                               select xx).SingleOrDefault();
+                    if (xyz.TopSoil == 0)
                     {
-                        Debug.Print("---------------");
-                        Debug.Print(samples[i].BatchNumber.ToString());
-                        Debug.Print(samples[i].AccountNumber.ToString());
-                        Debug.Print(sChains[i].BatchNumber.ToString());
-                        Debug.Print("---------------");
+                        var bn = samples[i].BatchNumber;
+                        var an = samples[i].AccountNumber;
                         topSoils = (from ss in db.SampleChains
                                     join sx in db.Samples on ss.LabNumber equals sx.LabNumber
-                                    where sx.BatchNumber == samples[i].BatchNumber && sx.AccountNumber == samples[i].AccountNumber && ss.TopSoil == 1
+                                    where sx.BatchNumber == bn && sx.AccountNumber == an && ss.TopSoil == 1
                                     select ss.LabNumber).ToList();
                     }
                     topSoilsList.Add(topSoils);
                     i++;
                 }
+                var u = 0;
                 foreach (List<int> tsl in topSoilsList)
                 {
-                    Debug.Print("---------------------------");
+                    Debug.Print("------------ " + u + " ---------------");
                     foreach (int ts in tsl)
                     {
                         Debug.Print(ts.ToString());
                     }
+                    u++;
                 }
                 return topSoilsList;
             }

@@ -359,8 +359,7 @@
     <Content Include="Content\hotkeys.min.css" />
     <Content Include="Content\imgs\clear.png" />
     <Content Include="Content\imgs\loading.gif" />
-    <Content Include="Content\partialviews\discardChanges.html" />
-    <Content Include="Content\partialviews\partialGeneric.html" />
+    <Content Include="Content\templates\partials\discardChanges.html" />
     <Content Include="Content\select2.css" />
     <Content Include="Content\select2.min.css" />
     <Content Include="css\font-awesome.css" />
@@ -387,15 +386,18 @@
     <Content Include="Scripts\angular\angular-route.min.js" />
     <Content Include="Scripts\angular\angular-sanitize.min.js" />
     <Content Include="Scripts\angular\angular-touch.min.js" />
+    <Content Include="Scripts\angular\angular-ui-router.min.js" />
     <Content Include="Scripts\angular\angular.min.js" />
     <Content Include="Scripts\angular\autofill-event.js" />
     <Content Include="Scripts\angular\hotkeys.min.js" />
+    <Content Include="Scripts\app.js" />
     <Content Include="Scripts\bootstrap\bootstrap-datepicker.js" />
     <Content Include="Scripts\bootstrap\bootstrap-datepicker.min.js" />
     <Content Include="Scripts\bootstrap\bootstrap-editable.min.js" />
     <Content Include="Scripts\bootstrap\bootstrap.js" />
     <Content Include="Scripts\bootstrap\bootstrap.min.js" />
     <Content Include="Scripts\bootstrap\bootstrap3-typeahead.min.js" />
+    <Content Include="Scripts\Controllers\sampleControllers.js" />
     <Content Include="Scripts\Directives\sampleDirectives.js" />
     <Content Include="Scripts\Filters\sampleFilters.js" />
     <Content Include="Scripts\jquery\jquery.hotkeys.js" />
@@ -419,10 +421,10 @@
     <Content Include="Scripts\bootstrap\select2.full.js" />
     <Content Include="Scripts\bootstrap\select2.full.min.js" />
     <Content Include="Scripts\mainApp.js" />
+    <Content Include="Scripts\underscore.js" />
     <Content Include="Scripts\_references.js" />
-    <Content Include="Content\partialviews\partialPlant.html" />
-    <Content Include="Content\partialviews\partialSoil.html" />
-    <Content Include="Content\partialviews\partialNotes.html" />
+    <Content Include="Content\templates\partials\sampleInfo.html" />
+    <Content Include="Content\templates\partials\notes.html" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -460,27 +462,9 @@
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\SampleModels\Entry.cshtml" />
-    <Content Include="Views\SampleModels\Create.cshtml" />
-    <Content Include="Views\SampleModels\Delete.cshtml" />
-    <Content Include="Views\SampleModels\Details.cshtml" />
-    <Content Include="Views\SampleModels\Edit.cshtml" />
-    <Content Include="Views\SampleModels\Index.cshtml" />
-    <Content Include="Views\CustomerModels\Create.cshtml" />
-    <Content Include="Views\CustomerModels\Delete.cshtml" />
-    <Content Include="Views\CustomerModels\Details.cshtml" />
-    <Content Include="Views\CustomerModels\Edit.cshtml" />
     <Content Include="Views\CustomerModels\Index.cshtml" />
-    <Content Include="Views\InvoiceModels\Create.cshtml" />
-    <Content Include="Views\InvoiceModels\Delete.cshtml" />
-    <Content Include="Views\InvoiceModels\Details.cshtml" />
-    <Content Include="Views\InvoiceModels\Edit.cshtml" />
     <Content Include="Views\InvoiceModels\Index.cshtml" />
-    <Content Include="Views\SampleTypeModels\Create.cshtml" />
-    <Content Include="Views\SampleTypeModels\Delete.cshtml" />
-    <Content Include="Views\SampleTypeModels\Details.cshtml" />
-    <Content Include="Views\SampleTypeModels\Edit.cshtml" />
     <Content Include="Views\SampleTypeModels\Index.cshtml" />
-    <Content Include="Views\SampleModels\Browse.cshtml" />
     <Content Include="WardDBContext.dbml">
       <Generator>MSLinqToSQLGenerator</Generator>
       <LastGenOutput>WardDBContext.designer.cs</LastGenOutput>

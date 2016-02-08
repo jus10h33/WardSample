@@ -1,6 +1,6 @@
-﻿angular.module("sampleEntryApp", ["wardApp", "ngMask", "cfp.hotkeys"])
-.controller("defaultCtrl", function ($scope, $http, Sample, Account, Report, hotkeys) { 
-
+﻿angular.module("sampleEntryApp", ["wardApp", "ngMask", "cfp.hotkeys", "ui.router"])
+.controller("defaultCtrl", function ($scope, $http, Sample, Account, Report, hotkeys, $state, $stateParams) {
+    
     $scope.SetGenericMasters = function (samples, accounts, sampleTypes, sampleColumns) {
         $scope.Samples = samples;
         $scope.Accounts = accounts;
@@ -30,7 +30,9 @@
         $scope.Messages = messages;
     };
     $scope.SetTopSoils = function (index) {
-        $scope.TopSoils = $scope.TopSoilsList[index];
+        if ($scope.TopSoilsList != null) {
+            $scope.TopSoils = $scope.TopSoilsList[index];
+        }        
     };
     $scope.SetSampleChains = function (index) {        
         $scope.SampleChains = $scope.SampleChainsList[index];
@@ -102,7 +104,7 @@
                 $scope.plantView = false;
                 $scope.otherView = false;
                 break;
-            //Biological
+                //Biological
             case "14":
                 $scope.rightSide = true;
                 $scope.SampleChainLink = true;
@@ -111,14 +113,14 @@
                 $scope.plantView = false;
                 $scope.otherView = false;
                 break;
-            //Plant
+                //Plant
             case "5":
                 $scope.rightSide = true;
                 $scope.soilView = false;
                 $scope.plantView = true;
                 $scope.otherView = false;
                 break;
-            //Feed, NIR, Water, Manure, Slurry, Fertilizer, Resin 
+                //Feed, NIR, Water, Manure, Slurry, Fertilizer, Resin 
             case "2":
             case "3":
             case "4":
@@ -131,7 +133,7 @@
                 $scope.plantView = false;
                 $scope.otherView = true;
                 break;
-            //Potato, Herbicide, Wasterwater, Other
+                //Potato, Herbicide, Wasterwater, Other
             case "10":
             case "11":
             case "8":
@@ -926,7 +928,7 @@
         $('#testItemsModal').modal('hide')
         $scope.reportShown = false;
     };
-
+    
     /* -------------------- Setting values -----------------------*/
 
     $scope.SetSampleChain = function () {
@@ -1081,9 +1083,9 @@
                         $scope.TopSoilsList = result.data.TopSoils;
                         $scope.SampleChainsList = result.data.SampleChains;
                         $scope.RecommendationsList = result.data.Recommendations;
-                        $scope.SetTopSoils(y);
-                        $scope.SetSampleChains(y);
                         $scope.SetRecommendations(y);
+                        $scope.SetTopSoils(y);
+                        $scope.SetSampleChains(y);                        
                     } else if (stn == 2 || stn == 3 || stn == 4 || stn == 5 || stn == 6 || stn == 7 || stn == 9 || stn == 12) {
                         $scope.SetSubValues(result.data.SubSampleInfos[y], result.data.SubSampleInfos);
                     }
@@ -1137,27 +1139,39 @@
         callback: function () { $scope.CancelAction(); }
     });
 })
+.controller("findSampleCtlr", function ($scope, $state, $stateParams) { 
+    console.log("Justin Heist");
+})
+.config(function ($stateProvider, $urlRouterProvider) {
 
-//(function ($) {
+    $urlRouterProvider.otherwise('/');
 
-//    $.fn.clickHold = function (callback, completeCallback) {
-
-//        var intervalTimer;
-//        var active;
-
-//        return this.mousedown(function () {
-//            active = true;
-//            callback();
-//            intervalTimer = setInterval(function () { callback(); }, 100);
-//        }).bind('mouseup mouseout', function () {
-//            if (active) {
-//                active = false;
-//                clearInterval(intervalTimer);
-
-//                if (typeof completeCallback !== 'undefined') {
-//                    completeCallback();
-//                }
-//            }
-//        });
-//    }
-//}) (jQuery);
+    $stateProvider
+    .state('sampleEntry', {
+        url: '/',
+        views: {
+            'sampleInfo': {
+                templateUrl: 'Content/templates/partials/sampleInfo.html'
+            },
+            'notes': {
+                templateUrl: 'Content/templates/partials/notes.html'
+            },
+            'discardChanges': {
+                templateUrl: 'Content/templates/partials/discardChanges.html'
+            }
+        }
+    })
+    .state('sampleEntry.find', {
+        url: 'find/:id',
+        views: {
+            //'sampleInfo@': {
+            //    'sampleInfo': {
+            //        templateUrl: 'Content/templates/partials/sampleInfo.html'
+            //    }
+            //}
+        },
+        controller: function ($scope, $stateParams) {
+            $scope.id = $stateParams.id;
+        }
+    });
+});

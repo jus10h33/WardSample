@@ -18,7 +18,8 @@ namespace SampleData
             // Use the development version of Modernizr to develop with and learn from. Then, when you're
             // ready for production, use the build tool at http://modernizr.com to pick only the tests you need.
             bundles.Add(new ScriptBundle("~/bundles/modernizr").Include(
-                        "~/Scripts/modernizr-*"));                                                
+                        "~/Scripts/modernizr-*",
+                        "~/Scripts/underscore.js"));                                                
 
             bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
                       "~/Scripts/bootstrap/bootstrap.min.js",
@@ -32,6 +33,7 @@ namespace SampleData
                       "~/Scripts/angular/angular.min.js",
                       "~/Scripts/angular/angular-touch.min.js",
                       "~/Scripts/angular/angular-route.min.js",
+                      "~/Scripts/angular/angular-ui-router.min.js",
                       "~/Scripts/angular/angular-sanitize.min.js",
                       "~/Scripts/angular/angular-resource.min.js",
                       "~/Scripts/angular/angular-mocks.js",
@@ -42,6 +44,7 @@ namespace SampleData
 
             bundles.Add(new ScriptBundle("~/bundles/customAngular").Include(
                       "~/Scripts/mainApp.js",
+                      "~/Scripts/app.js",
                       "~/Scripts/Directives/sampleDirectives.js",
                       "~/Scripts/Filters/sampleFilters.js",
                       "~/Scripts/Services/sampleServices.js"));

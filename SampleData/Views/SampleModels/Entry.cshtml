@@ -193,10 +193,10 @@
                         </div><!-- /.modal-content -->
                     </div><!-- /.modal-dialog -->
                 </div><!-- /.modal -->
-                <ng-include src="'../Content/partialviews/partialNotes.html'"></ng-include>
+                <div ui-view="notes"></div>
             </div>
         </section>
-        <ng-include src="'../Content/partialviews/partialSoil.html'"></ng-include>
-        <ng-include src="'../Content/partialviews/discardChanges.html'"></ng-include>
+        <div ui-view="sampleInfo"</div>
+        <div ui-view="discardChanges"></div>
     </div>
 </div>
