@@ -73,7 +73,7 @@
     };
     $scope.SetRecommendations = function (index) {
         $scope.SampleRecs = [];
-        if ($scope.RecommendationsList != null && $scope.RecommendationsList[index].length != 0) {
+        if ($scope.RecommendationsList != null) {
             $scope.Recommendations = $scope.RecommendationsList[index];
             if ($scope.Sample.SampleTypeNumber == 14) {
                 $scope.RecTypes = [];
@@ -780,7 +780,6 @@
                 $scope.Load(1); // Change to load last sampletype in cache            
             }
         } else {
-            console.log("lkasdfl;kjasd;ofgkihasofigahsdopigf");
             $scope.ResetForm();
             $scope.Load(1); // Change to load last sampletype in cache            
         }                
@@ -1009,92 +1008,96 @@
     };
     var y = 0;
     $scope.Next = function (ln) {
-        console.log(ln);
-        $scope.disablePrev = false;
-        var found = false;
-        while (!found && y >= 0) {
-            if ($scope.Samples[y].LabNumber == ln) {
-                found = true;
-            }
-            y--;
-        }
-        if (found && y >= 0) {
-            $scope.SetGenericValues($scope.Samples[y], $scope.Accounts[y], $scope.Messages);
-            var stn = $scope.Samples[y].SampleTypeNumber;
-            if (stn == 1 || stn == 14) {
-                $scope.SetTopSoils(y);
-                $scope.SetSampleChains(y);
-                $scope.SetRecommendations(y);
-            } else if (stn == 2 || stn == 3 || stn == 4 || stn == 5 || stn == 6 || stn == 7 || stn == 9 || stn == 12) {
-                $scope.SetSubValues($scope.SubSampleInfos[y], $scope.SubSampleInfos);
-            }
-        } else {
-            Sample.next($scope.Sample.SampleTypeNumber, $scope.Sample.BatchNumber, $scope.Sample.LabNumber).then(function(result) {
-                if (angular.isDefined(result.data) && result.data != null && result.data != "") {
-                    y = result.data.GenericInfo.Samples.length - 1;
-                    $scope.SetGenericMasters(result.data.GenericInfo.Samples, result.data.GenericInfo.Accounts, $scope.SampleTypes, $scope.SampleColumns);
-                    $scope.SetGenericValues(result.data.GenericInfo.Samples[y], result.data.GenericInfo.Accounts[y], result.data.GenericInfo.Messages);
-                    var stn = $scope.Samples[y].SampleTypeNumber;
-                    if (stn == 1 || stn == 14) {
-                        $scope.TopSoilsList = result.data.TopSoils;
-                        $scope.SampleChainsList = result.data.SampleChains;
-                        $scope.RecommendationsList = result.data.Recommendations;
-                        $scope.SetTopSoils(y);
-                        $scope.SetSampleChains(y);
-                        $scope.SetRecommendations(y);
-                    } else if (stn == 2 || stn == 3 || stn == 4 || stn == 5 || stn == 6 || stn == 7 || stn == 9 || stn == 12) {
-                        $scope.SetSubValues(result.data.SubSampleInfos[y], result.data.SubSampleInfos);
-                    }
-                } else {
-                    $scope.disableNext = true;
-                    y = 0;
+        if (!$scope.disableNext) {
+            console.log(ln);
+            $scope.disablePrev = false;
+            var found = false;
+            while (!found && y >= 0) {
+                if ($scope.Samples[y].LabNumber == ln) {
+                    found = true;
                 }
-            });
-        }
+                y--;
+            }
+            if (found && y >= 0) {
+                $scope.SetGenericValues($scope.Samples[y], $scope.Accounts[y], $scope.Messages);
+                var stn = $scope.Samples[y].SampleTypeNumber;
+                if (stn == 1 || stn == 14) {
+                    $scope.SetTopSoils(y);
+                    $scope.SetSampleChains(y);
+                    $scope.SetRecommendations(y);
+                } else if (stn == 2 || stn == 3 || stn == 4 || stn == 5 || stn == 6 || stn == 7 || stn == 9 || stn == 12) {
+                    $scope.SetSubValues($scope.SubSampleInfos[y], $scope.SubSampleInfos);
+                }
+            } else {
+                Sample.next($scope.Sample.SampleTypeNumber, $scope.Sample.BatchNumber, $scope.Sample.LabNumber).then(function (result) {
+                    if (angular.isDefined(result.data) && result.data != null && result.data != "") {
+                        y = result.data.GenericInfo.Samples.length - 1;
+                        $scope.SetGenericMasters(result.data.GenericInfo.Samples, result.data.GenericInfo.Accounts, $scope.SampleTypes, $scope.SampleColumns);
+                        $scope.SetGenericValues(result.data.GenericInfo.Samples[y], result.data.GenericInfo.Accounts[y], result.data.GenericInfo.Messages);
+                        var stn = $scope.Samples[y].SampleTypeNumber;
+                        if (stn == 1 || stn == 14) {
+                            $scope.TopSoilsList = result.data.TopSoils;
+                            $scope.SampleChainsList = result.data.SampleChains;
+                            $scope.RecommendationsList = result.data.Recommendations;
+                            $scope.SetTopSoils(y);
+                            $scope.SetSampleChains(y);
+                            $scope.SetRecommendations(y);
+                        } else if (stn == 2 || stn == 3 || stn == 4 || stn == 5 || stn == 6 || stn == 7 || stn == 9 || stn == 12) {
+                            $scope.SetSubValues(result.data.SubSampleInfos[y], result.data.SubSampleInfos);
+                        }
+                    } else {
+                        $scope.disableNext = true;
+                        y = 0;
+                    }
+                });
+            }
+        }        
     };
     $scope.Prev = function (ln) {
-        console.log(ln);
-        $scope.disableNext = false;
-        var found = false;
-        while (!found && y >= 0 && y < $scope.Samples.length) {
-            if ($scope.Samples[y].LabNumber == ln) {
-                found = true;
-            }
-            y++;
-        }
-        if (found && y < $scope.Samples.length) {
-            $scope.SetGenericValues($scope.Samples[y], $scope.Accounts[y], $scope.Messages);
-            var stn = $scope.Samples[y].SampleTypeNumber;
-            if (stn == 1 || stn == 14) {
-                $scope.SetTopSoils(y);
-                $scope.SetSampleChains(y);
-                $scope.SetRecommendations(y);
-            } else if (stn == 2 || stn == 3 || stn == 4 || stn == 5 || stn == 6 || stn == 7 || stn == 9 || stn == 12) {
-                $scope.SetSubValues($scope.SubSampleInfos[y], $scope.SubSampleInfos);
-            }
-        } else {
-            Sample.prev($scope.Sample.SampleTypeNumber, $scope.Sample.BatchNumber, $scope.Sample.LabNumber).then(function (result) {
-                if (angular.isDefined(result.data) && result.data != null && result.data != "") {
-                    y = 0
-                    $scope.SetGenericMasters(result.data.GenericInfo.Samples, result.data.GenericInfo.Accounts, $scope.SampleTypes, $scope.SampleColumns);
-                    $scope.SetGenericValues(result.data.GenericInfo.Samples[y], result.data.GenericInfo.Accounts[y], result.data.GenericInfo.Messages);
-                    var stn = $scope.Samples[y].SampleTypeNumber;
-                    if (stn == 1 || stn == 14) {
-                        $scope.TopSoilsList = result.data.TopSoils;
-                        $scope.SampleChainsList = result.data.SampleChains;
-                        $scope.RecommendationsList = result.data.Recommendations;
-                        $scope.SetRecommendations(y);
-                        $scope.SetTopSoils(y);
-                        $scope.SetSampleChains(y);                        
-                    } else if (stn == 2 || stn == 3 || stn == 4 || stn == 5 || stn == 6 || stn == 7 || stn == 9 || stn == 12) {
-                        $scope.SetSubValues(result.data.SubSampleInfos[y], result.data.SubSampleInfos);
-                    }
-                } else {
-                    $scope.disablePrev = true;
-                    y = $scope.Samples.length - 1;
+        if (!$scope.disablePrev) {
+            console.log(ln);
+            $scope.disableNext = false;
+            var found = false;
+            while (!found && y >= 0 && y < $scope.Samples.length) {
+                if ($scope.Samples[y].LabNumber == ln) {
+                    found = true;
                 }
-            });
-        }
+                y++;
+            }
+            if (found && y < $scope.Samples.length) {
+                $scope.SetGenericValues($scope.Samples[y], $scope.Accounts[y], $scope.Messages);
+                var stn = $scope.Samples[y].SampleTypeNumber;
+                if (stn == 1 || stn == 14) {
+                    $scope.SetTopSoils(y);
+                    $scope.SetSampleChains(y);
+                    $scope.SetRecommendations(y);
+                } else if (stn == 2 || stn == 3 || stn == 4 || stn == 5 || stn == 6 || stn == 7 || stn == 9 || stn == 12) {
+                    $scope.SetSubValues($scope.SubSampleInfos[y], $scope.SubSampleInfos);
+                }
+            } else {
+                Sample.prev($scope.Sample.SampleTypeNumber, $scope.Sample.BatchNumber, $scope.Sample.LabNumber).then(function (result) {
+                    if (angular.isDefined(result.data) && result.data != null && result.data != "") {
+                        y = 0
+                        $scope.SetGenericMasters(result.data.GenericInfo.Samples, result.data.GenericInfo.Accounts, $scope.SampleTypes, $scope.SampleColumns);
+                        $scope.SetGenericValues(result.data.GenericInfo.Samples[y], result.data.GenericInfo.Accounts[y], result.data.GenericInfo.Messages);
+                        var stn = $scope.Samples[y].SampleTypeNumber;
+                        if (stn == 1 || stn == 14) {
+                            $scope.TopSoilsList = result.data.TopSoils;
+                            $scope.SampleChainsList = result.data.SampleChains;
+                            $scope.RecommendationsList = result.data.Recommendations;
+                            $scope.SetRecommendations(y);
+                            $scope.SetTopSoils(y);
+                            $scope.SetSampleChains(y);
+                        } else if (stn == 2 || stn == 3 || stn == 4 || stn == 5 || stn == 6 || stn == 7 || stn == 9 || stn == 12) {
+                            $scope.SetSubValues(result.data.SubSampleInfos[y], result.data.SubSampleInfos);
+                        }
+                    } else {
+                        $scope.disablePrev = true;
+                        y = $scope.Samples.length - 1;
+                    }
+                });
+            }
+        }        
     };
    
     hotkeys.bindTo($scope)
@@ -1139,11 +1142,23 @@
         callback: function () { $scope.CancelAction(); }
     });
 })
-.controller("findSampleCtlr", function ($scope, $state, $stateParams) { 
-    console.log("Justin Heist");
+.controller("findSampleCtlr", function ($scope, Sample, $stateParams) { 
+    var stn = $stateParams.stn;
+    var bn = $stateParams.bn;
+    var ln = $stateParams.ln;
+    Sample.find(1, ln, bn).then(function (result) {
+        console.log(result);
+        if (result.data != null) {
+            $scope.SetFormValues(result.data);
+            $scope.SetRecLayout();
+            $scope.ResetForm();
+        } else {
+            angular.element("#txtLabNumber").focus();
+        }
+    });
 })
 .config(function ($stateProvider, $urlRouterProvider) {
-
+    
     $urlRouterProvider.otherwise('/');
 
     $stateProvider
@@ -1159,19 +1174,70 @@
             'discardChanges': {
                 templateUrl: 'Content/templates/partials/discardChanges.html'
             }
-        }
+        },
+        controller: 'defaultSampleCtlr'
     })
     .state('sampleEntry.find', {
-        url: 'find/:id',
+        url: 'find',
         views: {
-            //'sampleInfo@': {
-            //    'sampleInfo': {
-            //        templateUrl: 'Content/templates/partials/sampleInfo.html'
-            //    }
-            //}
-        },
-        controller: function ($scope, $stateParams) {
-            $scope.id = $stateParams.id;
+            'sampleInfo@': {
+                template: '<h1>find</h1>',
+                controller: ''
+            }
+        }
+    })
+    .state('sampleEntry.find.sample', {
+        url: '/:stn/:bn/:ln',
+        views: {
+            'entry@': {
+                template: '<h1>find sample</h1>',
+                controller: 'findSampleCtlr'
+            }
+        }
+    })
+    .state('sampleEntry.next', {
+        url: 'next/:stn/:bn/:ln',
+        views: {
+            'entry@': {
+                template: '<h1>next</h1>',
+                controller: 'nextSampleCtlr'
+            }
+        }
+    })
+    .state('sampleEntry.prev', {
+        url: 'prev/:stn/:bn/:ln',
+        views: {
+            'entry@': {
+                template: '<h1>prev</h1>',
+                controller: 'prevSampleCtlr'
+            }
+        }
+    })
+    .state('sampleEntry.add', {
+        url: 'add',
+        views: {
+            'entry@': {
+                template: '<h1>add</h1>',
+                controller: 'addSampleCtlr'
+            }
+        }
+    })
+    .state('sampleEntry.update', {
+        url: 'update',
+        views: {
+            'entry@': {
+                template: '<h1>update</h1>',
+                controller: 'updateSampleCtlr'
+            }
+        }
+    })
+    .state('sampleEntry.delete', {
+        url: 'delete/:stn/:bn/:ln',
+        views: {
+            'entry@': {
+                template: '<h1>delete</h1>',
+                controller: 'deleteSampleCtlr'
+            }
         }
     });
 });

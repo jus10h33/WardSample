@@ -418,16 +418,6 @@ namespace SampleData.Controllers
                     topSoilsList.Add(topSoils);
                     i++;
                 }
-                var u = 0;
-                foreach (List<int> tsl in topSoilsList)
-                {
-                    Debug.Print("------------ " + u + " ---------------");
-                    foreach (int ts in tsl)
-                    {
-                        Debug.Print(ts.ToString());
-                    }
-                    u++;
-                }
                 return topSoilsList;
             }
             catch (Exception e)
@@ -983,6 +973,7 @@ namespace SampleData.Controllers
                                                where s.SampleTypeNumber == sampleTypeNumber && s.BatchNumber <= batchNumber && s.LabNumber <= labNumber
                                                orderby s.BatchNumber descending, s.LabNumber descending
                                                select s).FirstOrDefault();
+                        Debug.Print(sample.LabNumber.ToString());
                         if (sample != null)
                             return Json(GetEntry(sample.SampleTypeNumber, sample), JsonRequestBehavior.AllowGet);
                         sr.Message.Add("Sample Does Not Exist");
