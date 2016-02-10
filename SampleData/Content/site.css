@@ -591,7 +591,7 @@ a.panel-heading:hover,
     clear: both;
     height: 34px;
 }
-#btn-group-primary > button, #btn-group-secondary > button {
+#btn-group-primary > a, #btn-group-secondary > a {
     width: 13%;
 }
 #btn-group-primary button {

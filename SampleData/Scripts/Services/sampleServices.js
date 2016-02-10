@@ -1,4 +1,4 @@
-﻿angular.module("wardApp")
+﻿angular.module("mainApp")
 .factory("Sample", function ($http) {
     return {
         load: function (stn) {

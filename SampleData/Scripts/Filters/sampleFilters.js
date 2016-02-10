@@ -1,4 +1,4 @@
-﻿angular.module("wardApp")
+﻿angular.module("mainApp")
     .filter("parseDate", function () {
         return function (value) {
             console.log(value);

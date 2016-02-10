@@ -1,5 +1,7 @@
-﻿angular.module("wardApp")
-.directive('autoComplete', function () {
+﻿angular.module("mainApp")
+.directive('autoComplete', 'autoComplete');
+
+function autoComplete() {
     return {
         restrict: 'A',
         link: function (scope, element, attrs) {
@@ -30,5 +32,5 @@
                 angular.element(this).autocomplete("search");
             });
         }
-    };
-})
+    }
+};

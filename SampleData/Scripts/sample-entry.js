@@ -1,4 +1,4 @@
-﻿angular.module("sampleEntryApp", ["wardApp", "ngMask", "cfp.hotkeys", "ui.router"])
+﻿angular.module("sampleEntryApp", ["mainApp", "ngMask", "cfp.hotkeys", "ui.router"])
 .controller("defaultCtrl", function ($scope, $http, Sample, Account, Report, hotkeys, $state, $stateParams) {
     
     $scope.SetGenericMasters = function (samples, accounts, sampleTypes, sampleColumns) {
@@ -1099,145 +1099,48 @@
             }
         }        
     };
-   
-    hotkeys.bindTo($scope)
-    .add({
-        combo: 'p',
-        description: 'Previous',
-        callback: function () { $scope.Prev($scope.Sample.LabNumber); }
-    })
-    .add({
-        combo: 'n',
-        description: 'Next',
-        callback: function () { $scope.Next($scope.Sample.LabNumber); }
-    })
-    .add({
-        combo: 'f',
-        description: 'Find',
-        callback: function () { $scope.BeginFind(); }
-    })
-    .add({
-        combo: 'a',
-        description: 'Add',
-        callback: function () { $scope.BeginAdd(); }
-    })
-    .add({
-        combo: 'u',
-        description: 'Update',
-        callback: function () { $scope.BeginUpdate(); }
-    })
-    .add({
-        combo: 'd',
-        description: 'Delete',
-        callback: function () { $scope.BeginDelete(); }
-    })
-    .add({
-        combo: 'enter',
-        description: 'Commit',
-        callback: function () { $scope.SubmitForm($scope.action); }
-    })
-    .add({
-        combo: 'esc',
-        description: 'Cancel',
-        callback: function () { $scope.CancelAction(); }
-    });
+       
 })
-.controller("findSampleCtlr", function ($scope, Sample, $stateParams) { 
-    var stn = $stateParams.stn;
-    var bn = $stateParams.bn;
-    var ln = $stateParams.ln;
-    Sample.find(1, ln, bn).then(function (result) {
-        console.log(result);
-        if (result.data != null) {
-            $scope.SetFormValues(result.data);
-            $scope.SetRecLayout();
-            $scope.ResetForm();
-        } else {
-            angular.element("#txtLabNumber").focus();
-        }
-    });
-})
-.config(function ($stateProvider, $urlRouterProvider) {
-    
-    $urlRouterProvider.otherwise('/');
 
-    $stateProvider
-    .state('sampleEntry', {
-        url: '/',
-        views: {
-            'sampleInfo': {
-                templateUrl: 'Content/templates/partials/sampleInfo.html'
-            },
-            'notes': {
-                templateUrl: 'Content/templates/partials/notes.html'
-            },
-            'discardChanges': {
-                templateUrl: 'Content/templates/partials/discardChanges.html'
-            }
-        },
-        controller: 'defaultSampleCtlr'
-    })
-    .state('sampleEntry.find', {
-        url: 'find',
-        views: {
-            'sampleInfo@': {
-                template: '<h1>find</h1>',
-                controller: ''
-            }
-        }
-    })
-    .state('sampleEntry.find.sample', {
-        url: '/:stn/:bn/:ln',
-        views: {
-            'entry@': {
-                template: '<h1>find sample</h1>',
-                controller: 'findSampleCtlr'
-            }
-        }
-    })
-    .state('sampleEntry.next', {
-        url: 'next/:stn/:bn/:ln',
-        views: {
-            'entry@': {
-                template: '<h1>next</h1>',
-                controller: 'nextSampleCtlr'
-            }
-        }
-    })
-    .state('sampleEntry.prev', {
-        url: 'prev/:stn/:bn/:ln',
-        views: {
-            'entry@': {
-                template: '<h1>prev</h1>',
-                controller: 'prevSampleCtlr'
-            }
-        }
-    })
-    .state('sampleEntry.add', {
-        url: 'add',
-        views: {
-            'entry@': {
-                template: '<h1>add</h1>',
-                controller: 'addSampleCtlr'
-            }
-        }
-    })
-    .state('sampleEntry.update', {
-        url: 'update',
-        views: {
-            'entry@': {
-                template: '<h1>update</h1>',
-                controller: 'updateSampleCtlr'
-            }
-        }
-    })
-    .state('sampleEntry.delete', {
-        url: 'delete/:stn/:bn/:ln',
-        views: {
-            'entry@': {
-                template: '<h1>delete</h1>',
-                controller: 'deleteSampleCtlr'
-            }
-        }
-    });
-});
+
+//hotkeys.bindTo($scope)
+//    .add({
+//        combo: 'p',
+//        description: 'Previous',
+//        callback: function () { $scope.Prev($scope.Sample.LabNumber); }
+//    })
+//    .add({
+//        combo: 'n',
+//        description: 'Next',
+//        callback: function () { $scope.Next($scope.Sample.LabNumber); }
+//    })
+//    .add({
+//        combo: 'f',
+//        description: 'Find',
+//        callback: function () { $scope.BeginFind(); }
+//    })
+//    .add({
+//        combo: 'a',
+//        description: 'Add',
+//        callback: function () { $scope.BeginAdd(); }
+//    })
+//    .add({
+//        combo: 'u',
+//        description: 'Update',
+//        callback: function () { $scope.BeginUpdate(); }
+//    })
+//    .add({
+//        combo: 'd',
+//        description: 'Delete',
+//        callback: function () { $scope.BeginDelete(); }
+//    })
+//    .add({
+//        combo: 'enter',
+//        description: 'Commit',
+//        callback: function () { $scope.SubmitForm($scope.action); }
+//    })
+//    .add({
+//        combo: 'esc',
+//        description: 'Cancel',
+//        callback: function () { $scope.CancelAction(); }
+//    });
