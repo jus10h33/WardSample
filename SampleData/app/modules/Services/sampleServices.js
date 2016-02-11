@@ -4,7 +4,7 @@
         load: function (stn) {
             return $http.get("/SampleModels/Load?sampleTypeNumber=" + stn);
         },
-        find: function (stn, ln, bn) {
+        find: function (stn, bn, ln) {
             return $http.get('/SampleModels/FindSample?sampleTypeNumber=' + stn + '&labNumber=' + ln + '&batchNumber=' + bn);
         },
         add: function (sample, sampleChain, sampleRecs, subSampleInfo) {

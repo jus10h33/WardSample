@@ -9,58 +9,58 @@ namespace SampleData
         public static void RegisterBundles(BundleCollection bundles)
         {
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
-                        "~/Scripts/jquery/jquery-{version}.js",
-                        "~/Scripts/jquery/jquery.hotkeys.js"));
+                        "~/app/components/jquery/jquery-{version}.js",
+                        "~/app/components/jquery/jquery.hotkeys.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
-                        "~/Scripts/jquery/jquery.validate*"));
+                        "~/app/components/jquery/jquery.validate*"));
 
             // Use the development version of Modernizr to develop with and learn from. Then, when you're
             // ready for production, use the build tool at http://modernizr.com to pick only the tests you need.
-            bundles.Add(new ScriptBundle("~/bundles/modernizr").Include(
+            bundles.Add(new ScriptBundle("~/bundles/general").Include(
                         "~/Scripts/modernizr-*",
-                        "~/Scripts/underscore.js"));                                                
+                        "~/Scripts/underscore.js",
+                        "~/Scripts/respond.js"));                                               
 
             bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
-                      "~/Scripts/bootstrap/bootstrap.min.js",
-                      "~/Scripts/bootstrap/bootstrap-datepicker.min.js",
-                      "~/Scripts/bootstrap/bootstrap-editable.min.js",
-                      "~/Scripts/bootstrap/bootstrap3-typeahead.min.js",
-                      "~/Scripts/select2.full.min.js",
-                      "~/Scripts/respond.js"));            
+                      "~/app/components/bootstrap/bootstrap.min.js",
+                      "~/app/components/bootstrap/bootstrap-datepicker.min.js",
+                      "~/app/components/select2.full.min.js"));
+
 
             bundles.Add(new ScriptBundle("~/bundles/angular").Include(
-                      "~/Scripts/angular/angular.min.js",
-                      "~/Scripts/angular/angular-touch.min.js",
-                      "~/Scripts/angular/angular-route.min.js",
-                      "~/Scripts/angular/angular-ui-router.min.js",
-                      "~/Scripts/angular/angular-sanitize.min.js",
-                      "~/Scripts/angular/angular-resource.min.js",
-                      "~/Scripts/angular/angular-mocks.js",
-                      "~/Scripts/angular/angular-animate.min.js",
-                      "~/Scripts/angular/hotkeys.min.js",
-                      "~/Scripts/angular/ngMask.min.js",
-                      "~/Scripts/angular/autofill-event.js"));
+                      "~/app/components/angular/angular.min.js",
+                      "~/app/components/angular/angular-touch.min.js",
+                      "~/app/components/angular/angular-route.min.js",
+                      "~/app/components/angular/angular-ui-router.min.js",
+                      "~/app/components/angular/angular-sanitize.min.js",
+                      "~/app/components/angular/angular-resource.min.js",
+                      "~/app/components/angular/angular-mocks.js",
+                      "~/app/components/angular/angular-animate.min.js",
+                      "~/app/components/angular/hotkeys.min.js",
+                      "~/app/components/angular/ngMask.min.js",
+                      "~/app/components/angular/autofill-event.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/customAngular").Include(
-                      "~/Scripts/mainApp.js",
-                      "~/Scripts/app.js",
-                      "~/Scripts/Directives/sampleDirectives.js",
-                      "~/Scripts/Filters/sampleFilters.js",
-                      "~/Scripts/Services/sampleServices.js"));
+                      "~/app/app.js",
+                      "~/app/modules/Directives/sampleDirectives.js",
+                      "~/app/modules/Filters/sampleFilters.js",
+                      "~/app/modules/Services/sampleServices.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/sample").Include(
-                        "~/Scripts/sample-*"));
+                        "~/Scripts/sample-*",
+                        "~/app/modules/sample/sample.js",
+                        "~/app/modules/sample/entry/sampleEntry.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
-                      "~/Content/bootstrap.min.css",
-                      "~/Content/font-awesome.min.css",
-                      "~/Content/generics.css",
-                      "~/Content/bootstrap-datepicker3.min.css",
-                      "~/Content/bootstrap-editable.css",
-                      "~/Content/select2.min.css",
-                      "~/Content/hotkeys.min.css",
-                      "~/Content/site.css"));
+                      "~/app/assets/css/bootstrap.min.css",
+                      "~/app/assets/css/font-awesome.min.css",
+                      "~/app/assets/css/generics.css",
+                      "~/app/assets/css/bootstrap-datepicker3.min.css",
+                      "~/app/assets/css/bootstrap-editable.css",
+                      "~/app/assets/css/select2.min.css",
+                      "~/app/assets/css/hotkeys.min.css",
+                      "~/app/assets/css/site.css"));
         }
     }
 }
