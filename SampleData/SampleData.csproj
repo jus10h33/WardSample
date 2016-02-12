@@ -348,6 +348,8 @@
   <ItemGroup>
     <Content Include="app\app.js" />
     <Content Include="app\index.html" />
+    <Content Include="app\modules\sample\entry\chain.html" />
+    <Content Include="app\modules\sample\entry\info.html" />
     <Content Include="app\modules\sample\entry\sampleEntry.js" />
     <Content Include="app\assets\css\bootstrap-datepicker3.css" />
     <Content Include="app\assets\css\bootstrap-datepicker3.min.css" />
@@ -363,6 +365,7 @@
     <Content Include="app\assets\img\clear.png" />
     <Content Include="app\assets\img\loading.gif" />
     <Content Include="app\modules\sample\sample.js" />
+    <Content Include="app\modules\sample\sampleFind.js" />
     <Content Include="Content\templates\partials\discardChanges.html" />
     <Content Include="app\assets\css\select2.css" />
     <Content Include="app\assets\css\select2.min.css" />

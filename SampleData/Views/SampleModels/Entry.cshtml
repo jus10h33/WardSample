@@ -5,7 +5,7 @@
         <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
     </div>
 </div>
-<div ng-app="sampleEntry">
+<div>
     <div class="main-content">
         <section id="left" class="m-l-20 col-sm-12 col-md-12 col-lg-6">
             <div class="col-lg-12">
@@ -152,51 +152,11 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                <div id="reportItemsModal" class="modal fade" tabindex="-1" role="dialog">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                <h5 class="modal-title">Search By Test Content</h5>
-                            </div>
-                            <div class="modal-body">
-                                <h4>Report Items</h4>
-                                <div class="clearfix">
-                                    <div class="d-block" ng-repeat="ri in ReportItems">
-                                        <div class="cols-5 pull-left">
-                                            <input type="checkbox" id="ri.ReportItemNumber" name="ri.ReportItemNumber" value="ri.ReportItemNumber" ng-click="AddItemToList(ri.ReportItemNumber)" />
-                                            <label>{{ri.ReportItemName}}</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div ng-show="reportShown">
-                                    <h4>Reports:</h4>
-                                    <table>
-                                        <thead>
-                                            <tr><th>Report #</th><th>Report Name</th></tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr ng-repeat="r in Reports">
-                                                <td><input type="radio" id="r.ReportName" name="reports" value="r.ReportTypeNumber" />{{r.ReportName}}</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-success" ng-show="reportShown" ng-click="SelectReport()">Select</button>
-                                <button type="button" class="btn btn-info" ng-click="GetReportList('exact')">Exact Search</button>
-                                <button type="button" class="btn btn-info" ng-click="GetReportList('includes')">Includes Search</button>
-                                <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="DiscardChanges('no')">Cancel</button>
-                            </div>
-                        </div><!-- /.modal-content -->
-                    </div><!-- /.modal-dialog -->
-                </div><!-- /.modal -->
-                @*<div ui-view="notes"></div>*@
+                </div>                
+                <ng-include src="Content/templates/partials/partialNotes.html"></ng-include>
             </div>
         </section>
-        <div ui-view="sampleInfo"></div>
-        <div ui-view="discardChanges"></div>
+        <ng-include src="Content/templates/partials/partialSoil.html"></ng-include>                
     </div>
+    <ng-include src="Content/templates/partials/discardChanges.html"></ng-include>
 </div>
