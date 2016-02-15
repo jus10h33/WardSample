@@ -11,107 +11,107 @@ using SampleData.Models;
 
 namespace SampleData.Controllers
 {
-    public class SampleTypeModelsController : Controller
+    public class InvoiceController : Controller
     {
         private WardDBContext db = new WardDBContext();
 
-        // GET: SampleTypeModels
+        // GET: InvoiceModels
         public ActionResult Index()
         {
-            return View(db.SampleTypes.ToList());
+            return View(db.Invoices.ToList());
         }
 
-        // GET: SampleTypeModels/Details/5
+        // GET: InvoiceModels/Details/5
         public ActionResult Details(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            SampleTypeModels sampleTypeModels = db.SampleTypes.Find(id);
-            if (sampleTypeModels == null)
+            InvoiceModels invoiceModels = db.Invoices.Find(id);
+            if (invoiceModels == null)
             {
                 return HttpNotFound();
             }
-            return View(sampleTypeModels);
+            return View(invoiceModels);
         }
 
-        // GET: SampleTypeModels/Create
+        // GET: InvoiceModels/Create
         public ActionResult Create()
         {
             return View();
         }
 
-        // POST: SampleTypeModels/Create
+        // POST: InvoiceModels/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "SampleTypeNumber,SampleTypeName")] SampleTypeModels sampleTypeModels)
+        public ActionResult Create([Bind(Include = "CustomerNumber,SampleTypeNumber,BatchNumber,InvoiceNumber,Address1,Address2,City,State,Zip,Country,BillToCompany,Discount,ActiveCustomer,Mailresults,MailedCopies,FaxResults,EmailResults,PostResultsToWeb,Newsletter,WardGuide,ChristmasCard")] InvoiceModels invoiceModels)
         {
             if (ModelState.IsValid)
             {
-                db.SampleTypes.Add(sampleTypeModels);
+                db.Invoices.Add(invoiceModels);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
 
-            return View(sampleTypeModels);
+            return View(invoiceModels);
         }
 
-        // GET: SampleTypeModels/Edit/5
+        // GET: InvoiceModels/Edit/5
         public ActionResult Edit(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            SampleTypeModels sampleTypeModels = db.SampleTypes.Find(id);
-            if (sampleTypeModels == null)
+            InvoiceModels invoiceModels = db.Invoices.Find(id);
+            if (invoiceModels == null)
             {
                 return HttpNotFound();
             }
-            return View(sampleTypeModels);
+            return View(invoiceModels);
         }
 
-        // POST: SampleTypeModels/Edit/5
+        // POST: InvoiceModels/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "SampleTypeNumber,SampleTypeName")] SampleTypeModels sampleTypeModels)
+        public ActionResult Edit([Bind(Include = "CustomerNumber,SampleTypeNumber,BatchNumber,InvoiceNumber,Address1,Address2,City,State,Zip,Country,BillToCompany,Discount,ActiveCustomer,Mailresults,MailedCopies,FaxResults,EmailResults,PostResultsToWeb,Newsletter,WardGuide,ChristmasCard")] InvoiceModels invoiceModels)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(sampleTypeModels).State = EntityState.Modified;
+                db.Entry(invoiceModels).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            return View(sampleTypeModels);
+            return View(invoiceModels);
         }
 
-        // GET: SampleTypeModels/Delete/5
+        // GET: InvoiceModels/Delete/5
         public ActionResult Delete(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            SampleTypeModels sampleTypeModels = db.SampleTypes.Find(id);
-            if (sampleTypeModels == null)
+            InvoiceModels invoiceModels = db.Invoices.Find(id);
+            if (invoiceModels == null)
             {
                 return HttpNotFound();
             }
-            return View(sampleTypeModels);
+            return View(invoiceModels);
         }
 
-        // POST: SampleTypeModels/Delete/5
+        // POST: InvoiceModels/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            SampleTypeModels sampleTypeModels = db.SampleTypes.Find(id);
-            db.SampleTypes.Remove(sampleTypeModels);
+            InvoiceModels invoiceModels = db.Invoices.Find(id);
+            db.Invoices.Remove(invoiceModels);
             db.SaveChanges();
             return RedirectToAction("Index");
         }

@@ -2,14 +2,21 @@
 //    'use strict';
 
 //    angular
-//        .module('sampleEntry', ["mainApp", "sample", "ui.router"])
+//        .module('mainApp')
 //        .config(function ($stateProvider, $urlRouterProvider) {
-//            $urlRouterProvider.otherwise('/sample');
+//            $urlRouterProvider.otherwise('/error');
+            
 //            $stateProvider
+//                .state('sampleEntry', {
+//                    url: '/sample/entry1',
+//                    controller: 'SampleEntryCtlr'
+//                });
                 
-//        })
-        
+//        })           
+//        .controller("SampleEntryCtlr", ["$scope", SampleEntryCtlr])
 
-    
+//    function SampleEntryCtlr() {
+//        console.log("Sample Entry");
+//    }    
 
 //})();

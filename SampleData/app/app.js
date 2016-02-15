@@ -4,42 +4,28 @@
     angular
         .module("mainApp", ["ui.router"])
         .config(function ($stateProvider, $urlRouterProvider) {
-
-           // $urlRouterProvider.otherwise('/');
+            $urlRouterProvider.otherwise('/');
 
             $stateProvider
-                .state('mainApp', {
+                .state('app', {
                     url: '/',
-                    controller: 'MainCtlr'
+                    template: '<h1> This is the index page</h1>'
+                })
+                .state('app.sample', {
+                    url: 'sample',
+                    templateUrl: '/app/modules/sample/entry/sample.html'
+                })
+                .state('app.sample.entry', {
+                    url: 'entry',
+                    views: {
+                        'sampleInfo@': {
+                            templateUrl: '/app/modules/sample/entry/info.html'
+                        },
+                        'sampleChain@': {
+                            templateUrl: '/app/modules/sample/entry/chain.html'
+                        },
+                    }
                 });
-                //.state('sample', {
-                //    url: '/sample',
-                //    controller: 'SampleCtlr'
-                //})
-                //.state('sampleEntry', {
-                //    url: '/sample/entry',
-                //    controller: 'SampleEntryCtlr'
-                //});
         })
-        .controller("MainCtlr", ["$scope", MainCtlr])
-
-        //.controller("SampleCtlr", ["$scope", SampleCtlr])
-
-        //.controller("SampleEntryCtlr", ["$scope", SampleEntryCtlr])
-    ;
-
-    function MainCtlr($scope) {
-        
-        console.log("Main controller");
-    };
-
-    function SampleEntryCtlr($scope) {
-        console.log("Sample Entry controller")
-        $scope.readonly = true;
-    };
-
-    function SampleCtlr() {
-        console.log("Sample controller");
-    };
 
 })();

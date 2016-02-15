@@ -169,12 +169,11 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
-    <Compile Include="Controllers\CustomerModelsController.cs" />
+    <Compile Include="Controllers\AccountsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\InvoiceModelsController.cs" />
+    <Compile Include="Controllers\InvoiceController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
-    <Compile Include="Controllers\SampleModelsController.cs" />
-    <Compile Include="Controllers\SampleTypeModelsController.cs" />
+    <Compile Include="Controllers\SampleController.cs" />
     <Compile Include="DAL\WardDBContext.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -348,8 +347,9 @@
   <ItemGroup>
     <Content Include="app\app.js" />
     <Content Include="app\index.html" />
-    <Content Include="app\modules\sample\entry\chain.html" />
-    <Content Include="app\modules\sample\entry\info.html" />
+    <Content Include="app\modules\sample\entry\templates\chain.html" />
+    <Content Include="app\modules\sample\entry\templates\info.html" />
+    <Content Include="app\modules\sample\entry\templates\notes.html" />
     <Content Include="app\modules\sample\entry\sampleEntry.js" />
     <Content Include="app\assets\css\bootstrap-datepicker3.css" />
     <Content Include="app\assets\css\bootstrap-datepicker3.min.css" />
@@ -364,6 +364,8 @@
     <Content Include="app\assets\css\hotkeys.min.css" />
     <Content Include="app\assets\img\clear.png" />
     <Content Include="app\assets\img\loading.gif" />
+    <Content Include="app\modules\sample\entry\test.html" />
+    <Content Include="app\modules\sample\sample.html" />
     <Content Include="app\modules\sample\sample.js" />
     <Content Include="app\modules\sample\sampleFind.js" />
     <Content Include="Content\templates\partials\discardChanges.html" />
@@ -462,10 +464,9 @@
     <Content Include="Views\Manage\VerifyPhoneNumber.cshtml" />
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
-    <Content Include="Views\SampleModels\Entry.cshtml" />
-    <Content Include="Views\CustomerModels\Index.cshtml" />
-    <Content Include="Views\InvoiceModels\Index.cshtml" />
-    <Content Include="Views\SampleTypeModels\Index.cshtml" />
+    <Content Include="Views\Sample\Entry.cshtml" />
+    <Content Include="Views\Customer\Index.cshtml" />
+    <Content Include="Views\Invoice\Index.cshtml" />
     <Content Include="WardDBContext.dbml">
       <Generator>MSLinqToSQLGenerator</Generator>
       <LastGenOutput>WardDBContext.designer.cs</LastGenOutput>
@@ -564,6 +565,7 @@
     <EmbeddedResource Include="Migrations\201601261549330_ChangedSoilRecs.resx">
       <DependentUpon>201601261549330_ChangedSoilRecs.cs</DependentUpon>
     </EmbeddedResource>
+    <Content Include="Views\Sample\Index.cshtml" />
     <None Include="WardDBContext.dbml.layout">
       <DependentUpon>WardDBContext.dbml</DependentUpon>
     </None>

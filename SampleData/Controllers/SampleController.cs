@@ -13,7 +13,7 @@ using System.Text.RegularExpressions;
 
 namespace SampleData.Controllers
 {    
-    public class SampleModelsController : Controller
+    public class SampleController : Controller
     {
         private const int MAX_RECS = 30;
         private WardDBContext db = new WardDBContext();
