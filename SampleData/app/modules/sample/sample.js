@@ -1,22 +1,20 @@
-﻿//(function () {
-//    'use strict';    
+﻿(function () {
+    'use strict';
 
-//    angular
-//        .module('mainApp')
-//        .config(function ($stateProvider, $urlRouterProvider) {
+    angular
+        .module("mainApp")
+        .config(function ($stateProvider, $urlRouterProvider) {
+            $urlRouterProvider.otherwise('/');
 
-//            $urlRouterProvider.otherwise('/');
+            $stateProvider
+                .state('app.sample', {
+                    url: 'sample',
+                    views: {
+                        '@': {
+                            templateUrl: '/app/modules/sample/sample.html'
+                        }
+                    }
+                })
+        })
 
-//            $stateProvider
-//                .state('sample', {
-//                    url: '/Sample',
-//                    controller: 'SampleCtlr'
-//                });
-
-//        })
-//        .controller("SampleCtlr", ["$scope", SampleCtlr])
-        
-//    function SampleCtlr() {
-//        console.log("Sample");
-//    }
-//})();
+})();

@@ -45,12 +45,12 @@ namespace SampleData
                       "~/app/app.js",
                       "~/app/modules/Directives/sampleDirectives.js",
                       "~/app/modules/Filters/sampleFilters.js",
-                      "~/app/modules/Services/sampleServices.js"));
+                      "~/app/modules/sample/services/SampleServices.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/sample").Include(
                         "~/Scripts/sample-*",
                         "~/app/modules/sample/sample.js",
-                        "~/app/modules/sample/entry/sampleEntry.js"));
+                        "~/app/modules/sample/entry/entry.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/app/assets/css/bootstrap.min.css",

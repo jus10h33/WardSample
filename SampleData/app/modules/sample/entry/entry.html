@@ -1,0 +1,340 @@
+﻿<!--<script src="controllers/AddController.js"></script>
+<script src="controllers/UpdateController.js"></script>
+<script src="controllers/DeleteController.js"></script>
+<script src="controllers/FindController.js"></script>
+<script src="controllers/NextController.js"></script>
+<script src="controllers/PreviousController.js"></script>-->
+<div>
+    <div class="main-content">
+        <section id="left" class="m-l-20 col-sm-12 col-md-12 col-lg-6">
+            <div class="col-lg-12">
+                <div class="panel panel-default m-b-20">
+                    <span class="panel-heading">Sample Entry</span>
+                    <div id="sampleInfo" class="panel-body-padding clearfix">
+                        <div class="cols col-lg-12">
+                            <form id="entryForm" name="entryForm" class="clearfix" novalidate>
+                                <div class="col-sm-12 col-md-12 col-lg-6 p-r-15">
+                                    <div class="form-group">
+                                        <label class="control-label">Sample Type:</label>
+                                        <select id="cboSampleType" name="cboSampleType" class="form-control" ng-required="required" ng-model="Sample.SampleTypeNumber" ng-change="Change()" ng-disabled="disabledUpdate" tabindex="0">
+                                            <option ng-repeat="st in SampleTypes" value="{{st.SampleTypeNumber}}">{{st.SampleTypeName}}</option>
+                                        </select> 
+                                    </div>
+                                    <div class="form-group">
+                                        <label id="lblAccountNumber" class="control-label">Account #:</label>
+                                        <input type="text" id="txtAccountNumber" name="txtAccountNumber" class="form-control" ng-required="required" ng-pattern="regNumeric" ng-model="Sample.AccountNumber" ng-disabled="disabled" ng-readonly="readonly" ng-blur="FindAccount()" tabindex="1" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label">Grower:</label>
+                                        <input type="text" id="acoGrower" name="acoGrower" class="form-control text-uppercase" ng-required="required" ng-model="Sample.Grower" ng-blur="Validate(entryForm.acoGrower, 'acoGrower', 'Required field')" ng-disabled="disabled" ng-readonly="readonly" tabindex="2" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label">Batch Number:</label>
+                                        <input type="text" id="txtBatchNumber" name="txtBatchNumber" class="form-control" ng-required="required" ng-readonly="readonly" ng-pattern="regBatch" ng-minlength="8" ng-maxlength="8" ng-model="Sample.BatchNumber" ng-blur="SetDateReported()" tabindex="3" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label">Lab Number:</label>
+                                        <input type="text" id="txtLabNumber" name="txtLabNumber" class="form-control" ng-required="required" ng-readonly="readonly" ng-pattern="regNumeric" ng-model="Sample.LabNumber" ng-blur="Validate(entryForm.txtLabNumber, 'txtLabNumber', 'Must be numeric')" tabindex="4" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label">Report Type #:</label>
+                                        <input type="text" id="txtReportTypeNumber" name="txtReportTypeNumber" class="form-control" ng-required="required" ng-disabled="disabled" ng-readonly="readonly" ng-pattern="regNumeric" ng-model="Sample.ReportTypeNumber" ng-blur="GetReportName()" tabindex="5" />
+                                        <!-- Button trigger modal -->
+                                        <i id="reportModalIcon" class="fa fa-white fa-2x fa-search" ng-disabled="disabled" ng-readonly="readonly" data-toggle="modal" data-target="#reportItemsModal" ng-click="GetReportItems()"></i>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label">Report Name:</label>
+                                        <label id="lblReportName">{{Sample.ReportName}}</label>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label">Date Received:</label>
+                                        <div class="input-group date dateReceived" data-provide="datepicker" data-date-format="dd-mm-yyyy" data-date-today-highlight="true" data-date-autoclose="true" data-date-orientation="bottom">
+                                            <input type="text" id="dpkDateReceived" name="dpkDateReceived" class="form-control" ng-required="required" ng-pattern="regDate" ng-model="Sample.DateReceived" ng-blur="ValidateSampleDates()" ng-disabled="disabled" ng-readonly="readonly" tabindex="6" />
+                                            <div class="input-group-addon">
+                                                <span class="glyphicon glyphicon-th"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label">Date Reported:</label>
+                                        <div class="input-group date" data-provide="datepicker" data-date-format="dd-mm-yyyy" data-date-today-highlight="true" data-date-autoclose="true" data-date-orientation="bottom">
+                                            <input type="text" id="dpkDateReported" name="dpkDateReported" class="form-control" ng-required="required" ng-pattern="regDate" ng-model="Sample.DateReported" ng-blur="ValidateSampleDates()" ng-disabled="disabledUpdate || disabled" ng-readonly="readonly" tabindex="7" />
+                                            <div class="input-group-addon">
+                                                <span class="glyphicon glyphicon-th"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label">Cost Type:</label>
+                                        <select id="cboCostTypeNumber" name="cboCostTypeNumber" class="form-control" ng-required="required" ng-model="Sample.CostTypeNumber" ng-blur="Validate(entryForm.cboCostTypeNumber, 'cboCostType', 'Required field')" ng-disabled="disabled" ng-readonly="readonly" tabindex="8">
+                                            <option value="0">No Cost</option>
+                                            <option value="1">Standard</option>
+                                            <option value="2">Volume/Grid</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-12 col-lg-6 p-r-15">
+                                    <!--Start of Dynamic labels-->
+                                    <div class="form-group">
+                                        <label class="control-label">{{SampleColumns[0].Label}}:</label>
+                                        <input type="text" id="{{SampleColumns[0].ID}}" name="{{SampleColumns[0].ID}}" class="form-control text-uppercase" ng-required="required" ng-disabled="disabled" ng-readonly="readonly" ng-model="Sample.SampleID1" ng-blur="Validate(entryForm.txtSampleID1, 'txtSampleID1', 'Required field')" tabindex="9" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label">{{SampleColumns[1].Label}}:</label>
+                                        <input type="text" id="{{SampleColumns[1].ID}}" name="{{SampleColumns[1].ID}}" class="form-control text-uppercase" ng-required="required" ng-disabled="disabled" ng-readonly="readonly" ng-blur="Validate(entryForm.txtSampleID2, 'txtSampleID2', 'Required field')" ng-model="Sample.SampleID2" tabindex="10" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label">{{SampleColumns[2].Label}}:</label>
+                                        <input type="text" id="{{SampleColumns[2].ID}}" name="{{SampleColumns[2].ID}}" class="form-control text-uppercase" ng-model="Sample.SampleID3" ng-disabled="disabled" ng-readonly="readonly" tabindex="11" />
+                                    </div>
+                                    <div ng-hide="{{SampleColumns[0].SampleTypeNumber == 12}}">
+                                        <div class="form-group">
+                                            <label class="control-label">{{SampleColumns[3].Label}}:</label>
+                                            <input type="text" id="{{SampleColumns[3].ID}}" name="{{SampleColumns[3].ID}}" class="form-control text-uppercase" ng-model="Sample.SampleID4" ng-disabled="disabled" ng-readonly="readonly" tabindex="12" />
+                                        </div>
+                                        <div class="form-group" ng-hide="{{SampleColumns[0].SampleTypeNumber == 12}}">
+                                            <label class="control-label">{{SampleColumns[4].Label}}:</label>
+                                            <input type="text" id="{{SampleColumns[4].ID}}" name="{{SampleColumns[4].ID}}" class="form-control text-uppercase" ng-model="Sample.SampleID5" ng-disabled="disabled" ng-readonly="readonly" tabindex="13" />
+                                        </div>
+                                    </div><!-- Date in and Date out appear when sample type Resin is selected -->
+                                    <div ng-show="{{SampleColumns[0].SampleTypeNumber == 12}}">
+                                        <div class="form-group">
+                                            <label class="control-label">{{SampleColumns[3].Label}}:</label>
+                                            <div class="input-group date" data-provide="datepicker" data-date-format="yyyy-mm-dd" data-date-today-highlight="true" data-date-autoclose="true" data-date-orientation="bottom">
+                                                <input type="text" id="{{SampleColumns[3].ID}}" name="{{SampleColumns[3].ID}}" class="form-control" @*ng-required="required" ng-pattern="regDate" *@ ng-model="Sample.SampleID4" ng-blur="ValidateSampleDates()" ng-disabled="disabled" ng-readonly="readonly" tabindex="14" />
+                                                <div class="input-group-addon">
+                                                    <span class="glyphicon glyphicon-th"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label">{{SampleColumns[4].Label}}:</label>
+                                            <div class="input-group date" data-provide="datepicker" data-date-format="yyyy-mm-dd" data-date-today-highlight="true" data-date-autoclose="true" data-date-orientation="bottom">
+                                                <input type="text" id="{{SampleColumns[4].ID}}" name="{{SampleColumns[4].ID}}" class="form-control" @* ng-required="required" ng-pattern="regDate" *@ ng-model="Sample.SampleID5" ng-blur="ValidateSampleDates()" ng-disabled="disabled" ng-readonly="readonly" tabindex="15" />
+                                                <div class="input-group-addon">
+                                                    <span class="glyphicon glyphicon-th"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label">Invoice Number</label>
+                                        <label id="lblInvoiceNumber" name="lblInvoiceNumber" class="" ng-model="Sample.InvoiceNumber">{{Sample.InvoiceNumber}}</label>
+                                    </div>
+                                    <!-- End of Dynamic labels and inputs-->
+                                    <div class="form-group">
+                                        <label>Account Information:</label>
+                                        <div id="customerInfo" class="well col-sm-6 col-md-7 col-lg-7 p-15 m-r-5 pull-right">
+                                            <i><label id="lblAccountName" ng-show="Account.Name">{{Account.Name}}</label></i>
+                                            <i><label id="lblAccountCompany" ng-show="Account.Company">{{Account.Company}}</label></i>
+                                            <i><label id="lblAccountAddress" ng-show="Account.Address1">{{Account.Address1}}</label></i>
+                                            <i><label id="lblAccountCityStZip" ng-show="Account.CityStZip">{{Account.CityStZip}}</label></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                            <div id="btn-container" class="m-t-15 clearfix">
+                                <input id="txtAction" class="hidden-lg hidden-md hidden-sm hidden-xs" ng-model="action" />
+                                <div id="btn-group-primary" class="col-xs-12 col-sm-12 col-md-12 col-lg-12" ng-show="readonly">
+                                    <a id="btnPrevSample" class="btn btn-warning btn-md" ui-sref="^.previous" ng-disabled="disablePrev">Prev</a>
+                                    <a id="btnNextSample" class="btn btn-warning btn-md m-l-30" ui-sref="sampleEntry.next" ng-disabled="disableNext">Next</a>
+                                    <a id="btnFindSample" class="btn btn-info btn-md m-l-30" ui-sref="sampleEntry.find">Find</a>
+                                    <a id="btnAddSample" class="btn btn-success btn-md m-l-30" ui-sref="sampleEntry.add">Add</a>
+                                    <a id="btnUpdateSample" class="btn btn-primary m-l-30" ui-sref="sampleEntry.update">Update</a>
+                                    <a id="btnDeleteSample" class="btn btn-danger btn-md m-l-30" ui-sref="sampleEntry.delete">Delete</a>
+                                </div>
+                                <div id="btn-group-secondary" class="col-xs-12 col-sm-12 col-md-12 col-md-offset-0 col-lg-12 col-lg-offset-1 m-t-10" ng-hide="readonly">
+                                    <a id="btnBlank" class="btn btn-default btn-md vis-hidden"></a>
+                                    <a id="btnCommit" class="btn btn-success btn-md" ui-sref="sampleEntry.commit" tabindex="50">Commit</a>
+                                    <a id="btnCancel" class="btn btn-warning m-l-30" ui-sref="sampleEntry.commit" tabindex="50">Cancel</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="reportItemsModal" class="modal fade" tabindex="-1" role="dialog">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h5 class="modal-title">Search By Test Content</h5>
+                            </div>
+                            <div class="modal-body">
+                                <h4>Report Items</h4>
+                                <div class="clearfix">
+                                    <div class="d-block" ng-repeat="ri in ReportItems">
+                                        <div class="cols-5 pull-left">
+                                            <input type="checkbox" id="ri.ReportItemNumber" name="ri.ReportItemNumber" value="ri.ReportItemNumber" ng-click="AddItemToList(ri.ReportItemNumber)" />
+                                            <label>{{ri.ReportItemName}}</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div ng-show="reportShown">
+                                    <h4>Reports:</h4>
+                                    <table>
+                                        <thead>
+                                            <tr><th>Report #</th><th>Report Name</th></tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr ng-repeat="r in Reports">
+                                                <td><input type="radio" id="r.ReportName" name="reports" value="r.ReportTypeNumber" />{{r.ReportName}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-success" ng-show="reportShown" ng-click="SelectReport()">Select</button>
+                                <button type="button" class="btn btn-info" ng-click="GetReportList('exact')">Exact Search</button>
+                                <button type="button" class="btn btn-info" ng-click="GetReportList('includes')">Includes Search</button>
+                                <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="DiscardChanges('no')">Cancel</button>
+                            </div>
+                        </div><!-- /.modal-content -->
+                    </div><!-- /.modal-dialog -->
+                </div><!-- /.modal -->
+                <div class="panel panel-default">
+                    <span class="panel-heading">Notes</span>
+                    <div id="sampleNotes" class="panel-body-padding clearfix">
+                        <p>{{Account.SampleEntryInformation}}</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section id="right" class="m-l-20 col-sm-12 col-md-12 col-lg-4" ng-show="rightSide">
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <span class="panel-heading">Sample Information</span>
+                    <div id="sampleRecs" class="panel-body-padding clearfix">
+                        <div id="soil" ng-show="soilView">
+                            <div id="sampleRecsTop" class="col-lg-12">
+                                <form id="frmSampleInfo" name="frmSampleInfo">
+                                    <div class="col-lg-8">
+                                        <div class="form-group m-b-5">
+                                            <label>Top Soil</label>
+                                            <input type="checkbox" id="chkTopSoil" name="chkTopSoil" ng-readonly="readonly" ng-checked="{{chkTopSoil}}" ng-click="SetDepth()" ng-model="chkTopSoil" tabindex="16" />
+                                            <span id="linkToSoil" ng-show="linkToSoil">
+                                                <label>Link Soil</label>
+                                                <input type="checkbox" id="chkLinkToSoil" ng-readonly="readonly" ng-checked="{{SampleChain.LinkedSampleBatch}}" ng-model="chkLinkToSoil" tabindex="17" />
+                                            </span>
+                                        </div>
+
+                                        <div id="depthCol" class="col-lg-10">
+                                            <label class="control-label"></label><span class="color-white m-l-30">Begin</span><span class="color-white m-l-55">End</span>
+                                            <div class="form-group">
+                                                <label class="control-label">Depth</label>
+                                                <input type="text" id="txtBeginDepth" name="txtBeginDepth" class="form-control" ng-disabled="disabled" ng-readonly="readonly" ng-model="SampleChain.BeginningDepth" ng-required="required" ng-pattern="regNumeric" ng-blur="Validate(frmSampleInfo.txtBeginDepth, 'txtBeginDepth', 'Must be numeric')" tabindex="18" />
+                                                <input type="text" id="txtEndDepth" name="txtEndDepth" class="form-control" ng-disabled="disabled" ng-readonly="readonly" ng-model="SampleChain.EndingDepth" ng-required="required" ng-pattern="regNumeric" ng-blur="Validate(frmSampleInfo.txtEndDepth, 'txtEndDepth', 'Must be numeric')" tabindex="19" />
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label col-lg-10">Past Crop</label>
+                                                <select id="cboPastCropNumber" class="form-control" ng-disabled="disabled" ng-readonly="readonly" ng-required="required" ng-model="SampleChain.PastCropNumber" tabindex="20">
+                                                    <option ng-repeat="pc in PastCrops" value="{{pc.PastCropNumber}}">{{pc.PastCropName}}</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                                <div id="sampleChain" class="col-lg-3" ng-show="SampleChains.length > 1">
+                                    <div class="form-group">
+                                        <label class="control-label">Sample Chain</label><br />
+                                        <table id="tblSampleChain" class="table table-condensed table-bordered table-responsive col-lg-11">
+                                            <thead>
+                                                <tr><th>Lab</th><th>Depth</th></tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="ss in SampleChains"><td class="edit text-right">{{ss.LabNumber}}</td><td class="edit">{{ss.BeginningDepth}}:{{ss.EndingDepth}}</td></tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="#sampleRecsMiddle">
+                                <form id="frmSampleLinks" name="frmSampleLinks">
+                                    <div id="linkToSample" ng-hide="chkTopSoil" class="well well-sm well-sm col-sm-5 col-md-5 col-lg-6 p-l-10">
+                                        <span>Link to Sample</span>
+                                        <div class="form-group">
+                                            <label class="control-label">Batch</label>
+                                            <input type="text" id="txtLinkSoilBatch" name="txtLinkSoilBatch" class="form-control m-l-30" ng-disabled="disabled" ng-readonly="readonly" ng-model="SampleChain.LinkedSampleBatch" ng-required="required" ng-pattern="regNumeric" ng-blur="Validate(frmSampleLinks.txtLinkSoilBatch, 'txtLinkSoilBatch', 'Must be numeric')" tabindex="21" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label">Lab</label>
+                                            <input type="text" id="txtLinkSoilLab" name="txtLinkSoilBatch" class="form-control m-l-30" ng-disabled="disabled" ng-readonly="readonly" ng-model="SampleChain.LinkedSampleLab" ng-required="required" ng-pattern="regNumeric" ng-blur="Validate(frmSampleLinks.txtLinkSoilLab, 'txtLinkSoilLab', 'Must be numeric')" tabindex="22" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label">Available</label>
+                                            <select id="cboLinkSoilAvailable" name="cboLinkSoilAvailable" class="form-control m-l-30" ng-disabled="disabled" ng-readonly="readonly" ng-model="SampleChain.Available" tabindex="23">
+                                                <option ng-repeat="ts in TopSoils" value="{{ts}}">{{ts}}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <!--<div id="SampleChainLink" class="well well-sm col-sm-5 col-md-5 col-lg-5 m-l-15 p-l-10" ng-show="true">
+                                    <span>Soil Sample Link</span>
+                                    <div class="form-group">
+                                        <label class="control-label">Test #</label>
+                                        <select id="cboTestNumber" class="form-control" ng-readonly="readonly"></select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label">Batch</label>
+                                        <input type="text" id="txtSampleChainLinkBatch" class="form-control m-l-30" ng-readonly="readonly" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label">Lab</label>
+                                        <input type="text" id="txtSampleChainLinkLab" class="form-control m-l-30" ng-readonly="readonly" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label">Invoice</label>
+                                        <input type="text" id="txtSampleChainLinkInvoice" class="form-control m-l-30" ng-readonly="readonly" />
+                                    </div>
+                                </div>-->
+                                </form>
+                            </div>
+                            <div id="sampleRecsBottom" class="pull-left clear-left" ng-show="Recommendations.length > 0  || action == 'add' || action == 'update'">
+                                <h3>Soil Recommendations</h3>
+                                <form id="frmSampleRecs" name="frmSampleRecs" class="col-lg-12" novalidate>
+                                    <span>Rec Type</span><span style="margin-left: 160px;">Crop Type</span><span style="margin-left: 115px;">Yield Goal</span>
+                                    <div id="recommendations" ng-repeat="rec in Recommendations">
+
+                                        <input id="acoRecTypes{{$index}}" name="acoRecTypes" class="form-control text-uppercase" auto-complete="RecTypes" ng-readonly="readonly" ng-disabled="disabled" ng-required="required" ng-model="Recommendations[$index].RecTypeName" ng-blur="ValidateTypes($index, 'Rec')" tabindex="{{23 + $index}}" />
+
+                                        <input id="acoCropTypes{{$index}}" name="acoCropTypes" class="form-control text-uppercase" auto-complete="CropTypes" ng-readonly="readonly" ng-disabled="disabled" ng-required="required" ng-model="Recommendations[$index].CropTypeName" ng-blur="ValidateTypes($index, 'Crop')" tabindex="{{23 + $index}}" />
+
+                                        <input type="text" id="txtYieldGoal{{$index}}" name="txtYieldGoal" class="form-control text-right" ng-readonly="readonly" ng-required="required" ng-model="Recommendations[$index].YieldGoal" ng-pattern="regNumeric" ng-blur="ValidateYieldGoal($index)" tabindex="{{23 + $index}}" />
+
+                                        <button class="btn btn-sm btn-danger" ng-click="RemoveRec($index)" ng-show="action == 'update' || action == 'add'" tabindex="-1">
+                                            <span class="glyphicon glyphicon-remove"></span>
+                                        </button>
+
+                                    </div>
+                                    <button class="btn btn-sm btn-success" ng-click="AddRec()" ng-show="action == 'update' || action == 'add'" tabindex="{{23 + ($index + 1)}}"><span class="glyphicon glyphicon-plus"></span></button>
+                                </form>
+                            </div>
+                        </div>
+                        <div id="other" class="m-10" ng-show="otherView">
+                            <div class="form-group">
+                                <label class="control-label">Type</label>
+                                <select id="cboType" class="form-control" ng-readonly="readonly" ng-disabled="disabled" ng-model="SubSampleInfo.SubSampleTypeNumber">
+                                    <option ng-repeat="sst in SubSampleTypes" value="{{sst.SubSampleTypeNumber}}">{{sst.SubSampleTypeName}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div id="plant" class="m-10" ng-show="plantView">
+                            <div class="form-group">
+                                <label class="control-label">Type</label>
+                                <select id="cboPlantType" class="form-control" ng-blur="GetSubSubSampleTypes()" ng-readonly="readonly" ng-disabled="disabled" ng-model="SubSampleInfo.SubSampleTypeNumber">
+                                    <option ng-repeat="sst in SubSampleTypes" value="{{sst.SubSampleTypeNumber}}">{{sst.SubSampleTypeName}}</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">Plant</label>
+                                <select id="cboPlant" class="form-control" ng-readonly="readonly" ng-disabled="disabled" ng-model="SubSampleInfo.SubSubSampleTypeNumber">
+                                    <option ng-repeat="ssst in SubSubSampleTypes" value="{{ssst.SubSubSampleTypeNumber}}">{{ssst.SubSubSampleTypeName}}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <ng-include src="Content/templates/partials/discardChanges.html"></ng-include>
+</div>

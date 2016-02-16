@@ -1,16 +1,9 @@
-﻿<h1> Sample Main Page </h1>
-
-<div class="m-t-20 m-b-20">
+﻿<div class="m-t-20 m-b-20">
     <h2 class="page-title inline-block m-t-0 m-b-0 p-l-10">Samples</h2>
     <div class="alert alert-danger inline-block m-l-5 m-b-0" style="width:84%;" role="alert" ng-show="MessagesData.length > 0" ng-cloak>
         <span ng-repeat="m in MessagesData">{{m}}</span>
         <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
     </div>
 </div>
-<div>
-    <div class="main-content">
-        <div ui-view="sampleInfo"></div>
-        <div ui-view="sampleChain"></div>
-    </div>
-    <ng-include src="Content/templates/partials/discardChanges.html"></ng-include>
-</div>
+
+<div ui-view></div>
