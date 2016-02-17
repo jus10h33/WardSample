@@ -348,6 +348,8 @@
     <Content Include="app\app.js" />
     <Content Include="app\index.html" />
     <Content Include="app\modules\sample\entry\controllers\AddController.js" />
+    <Content Include="app\modules\sample\entry\controllers\CancelController.js" />
+    <Content Include="app\modules\sample\entry\controllers\CommitController.js" />
     <Content Include="app\modules\sample\entry\controllers\DeleteController.js" />
     <Content Include="app\modules\sample\entry\controllers\FindController.js" />
     <Content Include="app\modules\sample\entry\controllers\NextController.js" />
@@ -410,9 +412,8 @@
     <Content Include="app\modules\Constants\sampleConstants.js" />
     <Content Include="app\modules\Controllers\sampleControllers.js" />
     <Content Include="app\modules\Directives\sampleDirectives.js" />
-    <Content Include="app\modules\Filters\sampleFilters.js" />
     <Content Include="app\components\jquery\jquery.hotkeys.js" />
-    <Content Include="app\modules\sample\services\sampleServices.js" />
+    <Content Include="app\modules\sample\entry\services\SampleServices.js" />
     <Content Include="app\components\jquery\jquery-1.11.3.js" />
     <Content Include="app\components\jquery\jquery-1.11.3.min.js" />
     <Content Include="app\components\jquery\jquery-1.11.3.min.map" />
@@ -580,6 +581,7 @@
     <Folder Include="app\modules\account\" />
     <Folder Include="app\modules\invoice\" />
     <Folder Include="app\modules\report\" />
+    <Folder Include="app\modules\sample\filters\" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />

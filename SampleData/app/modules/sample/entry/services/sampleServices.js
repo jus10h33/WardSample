@@ -1,5 +1,5 @@
 ﻿angular.module("mainApp")
-    .factory("Sample", function ($http) {
+    .factory("SampleService", function ($http) {
         return {
             load: function (stn) {
                 return $http.get("/Sample/Load?sampleTypeNumber=" + stn);
@@ -44,32 +44,40 @@
             }
         }
     })
-    .factory("SetSample", function ($scope, data) {
-        var stn = data.Sample[0].SampleTypeNumber;
-        $scope = {};
-        SetRecLayout(stn);
-        SetFormValues(data);
+    .factory("SetSampleService", function () {        
+        return {
+            setAllValues: function (data) {
+                var stn = data.GenericInfo.Samples[0].SampleTypeNumber;
+                $scope = {};
+                SetFormValues(data);
+                SetRecLayout(stn);
+                
+                return $scope;
+            },
+            setSoilValues: function () {
 
+            },
+            setSubValues: function () {
+
+            }
+        }
         function SetGenericMasters(samples, accounts, sampleTypes, sampleColumns) {
             $scope.Samples = samples;
             $scope.Accounts = accounts;
             $scope.SampleTypes = sampleTypes;
             $scope.SampleColumns = sampleColumns;
         };
-
         function SetSoilMasters(cropTypes, recTypes, pastCrops) {
             $scope.CropTypes = cropTypes;
             $scope.PastCrops = pastCrops;
             $scope.RecTypes = recTypes;
         };
-
         function SetSubMasters(subSampleTypes, subSubSampleTypes) {
             $scope.SubSampleTypes = subSampleTypes;
             if (subSubSampleTypes != null) {
                 $scope.SubSubSampleTypes = subsubSampleTypes
             }
         };
-
         function SetGenericValues(sample, account, messages) {
             $scope.readonly = true;
             $scope.Sample = sample;
@@ -81,13 +89,11 @@
             angular.element("#acoGrower").autocomplete({ source: account.Growers, minLength: 0 }).focus(function () { $(this).autocomplete("search"); });
             $scope.Messages = messages;
         };
-
         function SetTopSoils(index) {
             if ($scope.TopSoilsList != null) {
                 $scope.TopSoils = $scope.TopSoilsList[index];
             }
         };
-
         function SetSampleChains(index) {
             $scope.SampleChains = $scope.SampleChainsList[index];
             if ($scope.SampleChains.length == 1) {
@@ -112,7 +118,6 @@
                 $scope.chkTopSoil = false;
             }
         };
-
         function SetSampleChainValues() {
             $scope.SampleChain.BatchNumber = $scope.Sample.BatchNumber;
             $scope.SampleChain.LabNumber = $scope.Sample.LabNumber;
@@ -126,7 +131,6 @@
                 $scope.SampleChain.LinkedSampleLab = $scope.SampleChain.LinkedSampleLab;
             }
         };
-
         function SetRecommendations(index) {
             $scope.SampleRecs = [];
             if ($scope.RecommendationsList != null) {
@@ -141,7 +145,6 @@
                 }
             }
         };
-
         function SetSubValues(subSampleInfo, subSampleInfos) { // if stn is Feed, NIR, Water, Manure, Slurry, Fertilizer, Resin, Plant  
             $scope.SubSampleInfo = subSampleInfo;
             $scope.SubSampleInfos = subSampleInfos;
@@ -150,7 +153,6 @@
                 $scope.SubSampleInfo.SubSubSampleTypeNumber = $scope.SubSampleInfo.SubSubSampleTypeNumber.toString();
             }
         };
-
         function SetFormValues(data) {
             SetGenericMasters(data.GenericInfo.Samples, data.GenericInfo.Accounts, data.GenericMasters.SampleTypes, data.GenericMasters.SampleColumns);
             SetGenericValues(data.GenericInfo.Samples[0], data.GenericInfo.Accounts[0], data.GenericInfo.Messages);
@@ -173,7 +175,6 @@
                 SetSubValues(data.SubSampleInfos[0], data.SubSampleInfos);
             }
         }
-
         function SetHoldValues() {
             $scope.holdSample = {};
             angular.copy($scope.Sample, $scope.holdSample);
@@ -190,7 +191,6 @@
                 angular.copy($scope.SubSampleInfo, $scope.holdSubSampleInfo);
             }
         };
-
         function SetRecLayout() {
             switch ($scope.Sample.SampleTypeNumber) {
                 //Soil
@@ -241,19 +241,18 @@
                     $scope.plantView = false;
                     $scope.otherView = false;
                     break;
-    
+
             };
         }
-        return $scope;
     })
-    .factory("Account", function ($http) {
+    .factory("AccountService", function ($http) {
         return {
             find: function (an, stn) {
                 return $http.get("/Sample/Load?an=" + an + "&stn=" + stn);
             }
         }
     })
-    .factory("Report", function ($http) {
+    .factory("ReportService", function ($http) {
         return {
             reportName: function (stn, rtn) {
                 return $http.get('/Sample/GetReportName?sampleTypeNumber=' + stn + '&reportTypeNumber=' + rtn);
@@ -265,4 +264,21 @@
                 return $http.get('/Sample/GetReportList?stn=' + stn + '&rins=' + rins);
             }
         }
+    })
+    .service('ScopeService', function () {
+        var scope = {};
+
+        var setScope = function (scopeReceived) {
+            scope = scopeReceived;
+        };
+
+        var getScope = function () {
+            return scope;
+        };
+
+        return {
+            setScope: setScope,
+            getScope: getScope
+        };
+
     });

@@ -6,14 +6,14 @@
         .config(function ($stateProvider, $urlRouterProvider) {
             $urlRouterProvider.otherwise('/sample');
             $stateProvider
-                .state('app.sample.entry', {
+                .state('app.sample.commit', {
                     url: '/find',
-                    controller: 'FindController'
+                    controller: 'CommitController'
                 });
         })
-        .controller("FindController", ["$scope", FindController])
+        .controller("CommitController", ["$scope", CommitController])
 
-    function FindController($scope) {
+    function CommitController($scope) {
         $scope.SubmitForm = function (action) {
             console.log("Action: " + action);
             if (action == 'find') {

@@ -8,22 +8,42 @@
             $stateProvider
                 .state('app.sample.previous', {
                     url: '/previous/:stn/:bn/:ln',
-                    views: {
-                        '@app.sample': {
-                            templateUrl: '/app/modules/sample/entry/entry.html',
-                            controller: 'PreviousController'
-                        }
-                    }
+                    controller: 'PreviousController'
                 });
         })
-        .controller("PreviousController", ["$scope", "Sample", "$stateParams", PreviousController])
+        .controller("PreviousController", 
+            ["ScopeService", "$scope", "SampleService", "SetSampleService", "$stateParams", 
+             function(ScopeService, $scope, SampleService, SetSampleService, $stateParams) {
 
-    function PreviousController($scope, Sample, $stateParams) {
-        $scope.Prev = function (ln) {
+            var stn = $stateParams.stn;
+            var bn = $stateParams.bn;
+            var ln = $stateParams.ln;
+            var x = ScopeService.getScope();
+            console.log(x);
+            $scope.Samples = x.Samples;
+            $scope.Sample = x.Sample;
+            $scope.Accounts = x.Accounts;
+            $scope.Account = x.Account;
+            $scope.CropTypes = x.CropTypes;
+            $scope.Messages = x.Messages;
+            $scope.PastCrops = x.PastCrops;
+            $scope.RecTypes = x.RecTypes;
+            $scope.Recommendations = x.Recommendations;
+            $scope.RecommendationsList = x.RecommendationsList;
+            $scope.SampleChainsList = x.SampleChainsList;
+            $scope.SampleChains = x.SampleChains;
+            $scope.SampleChain = x.SampleChain;
+            $scope.SampleColumns = x.SampleColumns;
+            $scope.SampleRecs = x.SampleRecs;
+            $scope.TopSoilsList = x.TopSoilsList;
+            $scope.TopSoils = x.TopSoils;
+            $scope.SampleTypes = x.SampleTypes;
+
             if (!$scope.disablePrev) {
                 console.log(ln);
                 $scope.disableNext = false;
                 var found = false;
+                var y = 0;
                 while (!found && y >= 0 && y < $scope.Samples.length) {
                     if ($scope.Samples[y].LabNumber == ln) {
                         found = true;
@@ -32,7 +52,7 @@
                 }
                 if (found && y < $scope.Samples.length) {
                     $scope.SetGenericValues($scope.Samples[y], $scope.Accounts[y], $scope.Messages);
-                    var stn = $scope.Samples[y].SampleTypeNumber;
+                    stn = $scope.Samples[y].SampleTypeNumber;
                     if (stn == 1 || stn == 14) {
                         $scope.SetTopSoils(y);
                         $scope.SetSampleChains(y);
@@ -41,7 +61,7 @@
                         $scope.SetSubValues($scope.SubSampleInfos[y], $scope.SubSampleInfos);
                     }
                 } else {
-                    Sample.prev($scope.Sample.SampleTypeNumber, $scope.Sample.BatchNumber, $scope.Sample.LabNumber).then(function (result) {
+                    SampleService.prev(stn, bn, ln).then(function (result) {
                         if (angular.isDefined(result.data) && result.data != null && result.data != "") {
                             y = 0
                             $scope.SetGenericMasters(result.data.GenericInfo.Samples, result.data.GenericInfo.Accounts, $scope.SampleTypes, $scope.SampleColumns);
@@ -64,6 +84,5 @@
                     });
                 }
             }
-        };
-    }
+        }])    
 })();

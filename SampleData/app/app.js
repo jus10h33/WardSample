@@ -1,6 +1,6 @@
 ﻿(function () {
     'use strict';
-    console.log("inside app.js");
+
     angular
         .module("mainApp", ["ui.router"])
         .config(function ($stateProvider, $urlRouterProvider) {

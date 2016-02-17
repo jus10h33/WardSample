@@ -9,8 +9,9 @@ namespace SampleData
         public static void RegisterBundles(BundleCollection bundles)
         {
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
-                        "~/app/components/jquery/jquery-{version}.js",
-                        "~/app/components/jquery/jquery.hotkeys.js"));
+                        "~/app/components/jquery/jquery-{version}.js"
+                        //"~/app/components/jquery/jquery.hotkeys.js"
+                        ));
 
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
                         "~/app/components/jquery/jquery.validate*"));
@@ -30,22 +31,22 @@ namespace SampleData
 
             bundles.Add(new ScriptBundle("~/bundles/angular").Include(
                       "~/app/components/angular/angular.min.js",
-                      "~/app/components/angular/angular-touch.min.js",
-                      "~/app/components/angular/angular-route.min.js",
-                      "~/app/components/angular/angular-ui-router.min.js",
-                      "~/app/components/angular/angular-sanitize.min.js",
-                      "~/app/components/angular/angular-resource.min.js",
-                      "~/app/components/angular/angular-mocks.js",
-                      "~/app/components/angular/angular-animate.min.js",
-                      "~/app/components/angular/hotkeys.min.js",
-                      "~/app/components/angular/ngMask.min.js",
-                      "~/app/components/angular/autofill-event.js"));
+                      //"~/app/components/angular/angular-touch.min.js",
+                      //"~/app/components/angular/angular-route.min.js",
+                      "~/app/components/angular/angular-ui-router.min.js"
+                      //"~/app/components/angular/angular-sanitize.min.js",
+                      //"~/app/components/angular/angular-resource.min.js",
+                      //"~/app/components/angular/angular-mocks.js",
+                      //"~/app/components/angular/angular-animate.min.js",
+                      //"~/app/components/angular/hotkeys.min.js",
+                      //"~/app/components/angular/ngMask.min.js",
+                      //"~/app/components/angular/autofill-event.js"
+                      ));
 
             bundles.Add(new ScriptBundle("~/bundles/customAngular").Include(
                       "~/app/app.js",
                       "~/app/modules/Directives/sampleDirectives.js",
-                      "~/app/modules/Filters/sampleFilters.js",
-                      "~/app/modules/sample/services/SampleServices.js"));
+                      "~/app/modules/sample/entry/services/SampleServices.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/sample").Include(
                         "~/Scripts/sample-*",
@@ -57,7 +58,6 @@ namespace SampleData
                       "~/app/assets/css/font-awesome.min.css",
                       "~/app/assets/css/generics.css",
                       "~/app/assets/css/bootstrap-datepicker3.min.css",
-                      "~/app/assets/css/bootstrap-editable.css",
                       "~/app/assets/css/select2.min.css",
                       "~/app/assets/css/hotkeys.min.css",
                       "~/app/assets/css/site.css"));

@@ -6,14 +6,9 @@
         .config(function ($stateProvider, $urlRouterProvider) {
             $urlRouterProvider.otherwise('/sample');
             $stateProvider
-                .state('app.sample.entry', {
+                .state('app.sample.delete', {
                     url: '/delete',
-                    views: {
-                        '@app.sample': {
-                            templateUrl: '/app/modules/sample/entry/entry.html',
-                            controller: 'DeleteController'
-                        }
-                    }
+                    controller: 'DeleteController'
                 });
         })
         .controller("DeleteController", ["$scope", DeleteController])

@@ -6,7 +6,7 @@
         .config(function ($stateProvider, $urlRouterProvider) {
             $urlRouterProvider.otherwise('/sample');
             $stateProvider
-                .state('app.sample.entry', {
+                .state('app.sample.cancel', {
                     url: '/Cancel',
                     controller: 'CancelController'
                 });

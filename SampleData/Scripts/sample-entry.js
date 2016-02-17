@@ -141,68 +141,8 @@
             angular.element(id).removeClass('has-error');
         }
     };
-    $scope.DisplayPopover = function (id, message) {
-        id = "#" + id;
-        angular.element(id).attr("data-container", "body");
-        angular.element(id).attr("data-toggle", "popover");
-        angular.element(id).attr("data-placement", "right");
-        angular.element(id).attr("data-content", message);
-        angular.element(id).popover('show');
-        return;
-    };
-    $scope.RemovePopover = function (id) {
-        id = "#" + id;
-        angular.element(id).popover('hide');
-        angular.element(id).removeAttr("data-container");
-        angular.element(id).removeAttr("data-toggle");
-        angular.element(id).removeAttr("data-placement");
-        angular.element(id).removeAttr("data-content");
-        angular.element(id).removeAttr("data-original-title");
-        angular.element(id).removeAttr("title");
-        return;
-    };
-    $scope.RemoveValidation = function () {
-        $scope.RemovePopover('cboSampleType');
-        angular.element('#cboSampleType').removeClass('has-error');
-        $scope.RemovePopover('txtAccountNumber');
-        angular.element('#txtAccountNumber').removeClass('has-error');
-        $scope.RemovePopover('txtBatchNumber');
-        angular.element('#txtBatchNumber').removeClass('has-error');
-        $scope.RemovePopover('txtLabNumber');
-        angular.element('#txtLabNumber').removeClass('has-error');
-        $scope.RemovePopover('txtReportTypeNumber');
-        angular.element('#txtReportTypeNumber').removeClass('has-error');
-        $scope.RemovePopover('acoGrower');
-        angular.element('#acoGrower').removeClass('has-error');
-        $scope.RemovePopover('txtLocation');
-        angular.element('#txtLocation').removeClass('has-error');
-        $scope.RemovePopover('txtSampleID1');
-        angular.element('#txtSampleID1').removeClass('has-error');
-        $scope.RemovePopover('dpkDateReceived');
-        angular.element('#dpkDateReceived').removeClass('has-error');
-        $scope.RemovePopover('dpkDateReported');
-        angular.element('#dpkDateReported').removeClass('has-error');
-        $scope.RemovePopover('cboCostTypeNumber');
-        angular.element('#cboCostTypeNumber').removeClass('has-error');
-        $scope.RemovePopover("txtLinkSoilBatch");
-        angular.element('#txtLinkSoilBatch').removeClass('has-error');
-        $scope.RemovePopover("txtLinkSoilLab");
-        angular.element('#txtLinkSoilLab').removeClass('has-error');
-        for (var i = 0; i < $scope.SampleRecs.length; i++) {
-            var recID = '#acoRecTypes' + i;
-            var cropID = '#acoCropTypes' + i;
-            var yieldID = '#txtYieldGoal' + i;
-            angular.element(recID).removeClass('has-error');
-            recID = 'acoRecTypes' + i;
-            $scope.RemovePopover(recID);
-            angular.element(cropID).removeClass('has-error');
-            cropID = 'acoCropTypes' + i;
-            $scope.RemovePopover(cropID);
-            angular.element(yieldID).removeClass('has-error');
-            yieldID = 'txtYieldGoal' + i;
-            $scope.RemovePopover(yieldID);
-        }
-    };
+    
+   
     $scope.ValidateSampleDates = function () {
         if ($scope.entryForm.dpkDateReceived.$invalid || $scope.entryForm.dpkDateReported.$invalid || ($scope.Sample.DateReceived > $scope.Sample.DateReported)) {
             if ($scope.entryForm.dpkDateReceived.$invalid) {
@@ -324,58 +264,7 @@
 
     /*---------------- Ajax calls for Account, Grower, ReportName, SubSubSampleTypes -------------*/
 
-    $scope.FindAccount = function () {
-        if ($scope.entryForm.txtAccountNumber.$valid) {
-            Account.find($scope.Sample.AccountNumber, $scope.Sample.SampleTypeNumber).then(function (result) {
-                if (result.data != null) {
-                    $scope.Account.Name = result.data.Name;
-                    $scope.Account.Company = result.data.Company;
-                    $scope.Account.Address1 = result.data.Address1;
-                    $scope.Account.CityStZip = result.data.CityStZip;
-                    $scope.Account.SampleEntryInformation = result.data.SampleEntryInformation;
-                    $scope.Account.Growers = result.data.Growers;
-                    angular.element("#acoGrower").autocomplete({ source: $scope.Account.Growers, minLength: 0, delay: 0 }).focus(function () { $(this).autocomplete("search"); });
-                    $scope.RemovePopover('txtAccountNumber');
-                } else {
-                    $scope.Account = {};
-                    $scope.Sample.Grower = "";
-                    angular.element("#acoGrower").autocomplete({ source: [] });
-                    $scope.Account.Name = "Account Not Found";
-                    $scope.RemovePopover('txtAccountNumber');
-                    $scope.DisplayPopover('txtAccountNumber', 'Account does NOT exist');
-                    angular.element('#txtAccountNumber').focus();
-                }
-            });
-        } else {
-            $scope.Validate($scope.entryForm.txtAccountNumber, 'txtAccountNumber', 'Must be numeric');
-        }
-    };
-    $scope.GetReportName = function () {
-        if ($scope.entryForm.txtReportTypeNumber.$valid) {
-            Report.reportName($scope.Sample.SampleTypeNumber, $scope.Sample.ReportTypeNumber).then(function (result) {
-                console.log(data);
-                if (data != "") {
-                    $scope.entryForm.txtReportTypeNumber.$valid = true;
-                    $scope.entryForm.txtReportTypeNumber.$invalid = false;
-                    angular.element('#txtReportTypeNumber').removeClass('has-error');
-                    $scope.RemovePopover('txtReportTypeNumber');
-                    $scope.Sample.ReportName = data;
-                } else {
-                    $scope.entryForm.txtReportTypeNumber.$valid = false;
-                    $scope.entryForm.txtReportTypeNumber.$invalid = true;
-                    $scope.DisplayPopover('txtReportTypeNumber', 'No Results');
-                    angular.element('#txtReportTypeNumber').focus();
-                    $scope.Sample.ReportTypeNumber = "";
-                    $scope.Sample.ReportName = "";
-                }
-            });
-        } else {
-            $scope.DisplayPopover('txtReportTypeNumber', 'Must be numeric');
-            angular.element('#txtReportTypeNumber').addClass('has-error');
-            angular.element('#txtReportTypeNumber').focus();
-            $scope.Sample.ReportName = "";
-        }
-    };
+    
     $scope.GetReportItems = function () {
         if ($scope.entryForm.cboSampleType.$valid) {
             Report.reportItems($scope.Sample.SampleTypeNumber).then(function (result) {
@@ -486,14 +375,6 @@
    
     /*------------------- Misc dynamic form actions -----------------*/
 
-    $scope.Change = function () {
-        console.log("action=" + $scope.action);
-        if ($scope.action != 'find') {
-            var stn = parseInt(angular.element('#cboSampleType').val());
-            $scope.ClearForm();
-            $scope.Load(stn);
-        }
-    };
     $scope.ResetForm = function () {
         $scope.RemoveValidation();
         $scope.action = "";
@@ -518,90 +399,8 @@
             $scope.ItemsSelected = [];
         }
     };
-    $scope.ClearForm = function () {
-        var stn = $scope.Sample.SampleTypeNumber;
-        $scope.Sample = {};
-        $scope.Sample.SampleTypeNumber = stn;
-        $scope.Account = {};
-        $scope.SampleChain = {};
-        $scope.SampleChains = {};
-        $scope.Recommendations = [];
-        angular.element("#acoGrower").autocomplete({ source: [] });
-        $scope.RemoveValidation();
-    };
-    //$scope.BeginFind = function () {
-    //    $scope.readonly = false;
-    //    $scope.ClearForm();
-    //    $scope.disabled = true;
-    //    $scope.action = 'find';
-    //    $scope.rightSide = false; // hide sample info and recommendations
-    //    angular.element('#txtBatchNumber').focus();
-    //};
-    //$scope.BeginAdd = function () {        
-    //    $scope.readonly = false;
-    //    $scope.disabled = false;
-    //    $scope.disabledUpdate = false;
-    //    $scope.action = 'add';
-    //    var standard = 1;  // use to set cost type to 'Standard' by default
-    //    $scope.Sample.CostTypeNumber = standard.toString();
-    //    angular.element('#txtSampleID1').focus();
-    //    $scope.Sample.LabNumber++;
-    //    $scope.Sample.SampleID1 = "";
-    //    $scope.Sample.SampleID2 = "";
-    //    $scope.Sample.SampleID3 = "";
-    //    $scope.Sample.SampleID4 = "";
-    //    $scope.Sample.SampleID5 = "";
-    //    $scope.chkTopSoil = true;
-    //    $scope.SampleChain = {};
-    //    $scope.SampleChains = {};
-    //    $scope.SampleChain.BeginningDepth = 0;
-    //    $scope.Recommendations = [];
-    //    $scope.SetHoldValues();
-    //    $scope.RemoveValidation();
-    //};
-    //$scope.BeginUpdate = function () {
-    //    $scope.SetHoldValues();
-    //    $scope.readonly = false;
-    //    $scope.disabled = false;
-    //    $scope.disabledUpdate = true;
-    //    $scope.action = 'update';
-    //    angular.element('#txtSampleID1').focus();
-    //    $scope.RemoveValidation();
-    //};
-    //$scope.BeginDelete = function () {
-    //    $scope.readonly = false;
-    //    console.log('inside Delete');
-    //    $scope.disabled = true;
-    //    $scope.action = 'delete';
-    //    angular.element('#btnCommit').focus();
-    //    $scope.RemoveValidation();
-    //};
-    //$scope.BeginNext = function () {
-    //    $scope.readonly = false;
-    //    $scope.ClearForm();
-    //    $scope.readonly = true;
-    //};
-    //$scope.BeginPrev = function () {
-    //    $scope.readonly = false;
-    //    $scope.ClearForm();
-    //    $scope.readonly = true;
-    //};
-    //$scope.ToggleButtons = function (action) {
-    //    $scope.readonly = false;
-    //    if (action == 'prev') {
-    //        $scope.BeginPrev();
-    //    } else if (action == 'find') {            
-    //        $scope.BeginFind();
-    //    } else if (action == 'add') {
-    //        $scope.BeginAdd();
-    //    } else if (action == 'update') {
-    //        $scope.BeginUpdate();
-    //    } else if (action == 'delete') {
-    //        $scope.BeginDelete();
-    //    } else if (action == 'next') {
-    //        $scope.BeginNext();
-    //    }
-    //};
+
+
     $scope.SetDateReported = function () {
         if ($scope.action != 'find' || ($scope.action == 'find' && angular.element('#txtBatchNumber').val() != "")) {
             console.log("true");

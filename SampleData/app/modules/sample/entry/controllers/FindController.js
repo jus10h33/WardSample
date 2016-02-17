@@ -6,7 +6,7 @@
         .config(function ($stateProvider, $urlRouterProvider) {
             $urlRouterProvider.otherwise('/sample');
             $stateProvider
-                .state('app.sample.entry', {
+                .state('app.sample.find', {
                     url: '/find',
                     controller: 'FindController'
                 });

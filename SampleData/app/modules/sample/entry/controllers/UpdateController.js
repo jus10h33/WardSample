@@ -6,14 +6,9 @@
         .config(function ($stateProvider, $urlRouterProvider) {
             $urlRouterProvider.otherwise('/sample');
             $stateProvider
-                .state('app.sample.entry', {
+                .state('app.sample.update', {
                     url: '/update',
-                    views: {
-                        '@app.sample': {
-                            templateUrl: '/app/modules/sample/entry/entry.html',
-                            controller: 'UpdateController'
-                        }
-                    }
+                    controller: 'UpdateController'
                 });
         })
         .controller("UpdateController", ["$scope", UpdateController])

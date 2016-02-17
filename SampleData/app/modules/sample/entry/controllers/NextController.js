@@ -11,10 +11,10 @@
                     controller: 'NextController'
                 });
         })
-        .controller("NextController", ["$scope", "Sample", "$stateParams", NextController])
-
-    function NextController($scope, Sample, $stateParams) {
-        $scope.Next = function (ln) {
+        .controller("NextController", ["$scope", "SampleService", "SetSampleService", "$stateParams", function ($scope, SampleService, SetSampleService, $stateParams) {
+            var stn = $stateParams.stn;
+            var bn = $stateParams.bn;
+            var ln = $stateParams.ln;
             if (!$scope.disableNext) {
                 console.log(ln);
                 $scope.disablePrev = false;
@@ -36,7 +36,7 @@
                         $scope.SetSubValues($scope.SubSampleInfos[y], $scope.SubSampleInfos);
                     }
                 } else {
-                    Sample.next($scope.Sample.SampleTypeNumber, $scope.Sample.BatchNumber, $scope.Sample.LabNumber).then(function (result) {
+                    SampleService.next($scope.Sample.SampleTypeNumber, $scope.Sample.BatchNumber, $scope.Sample.LabNumber).then(function (result) {
                         if (angular.isDefined(result.data) && result.data != null && result.data != "") {
                             y = result.data.GenericInfo.Samples.length - 1;
                             $scope.SetGenericMasters(result.data.GenericInfo.Samples, result.data.GenericInfo.Accounts, $scope.SampleTypes, $scope.SampleColumns);
@@ -59,6 +59,5 @@
                     });
                 }
             }
-        };
-    }
+        }])
 })();

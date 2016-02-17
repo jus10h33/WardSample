@@ -1,9 +1,4 @@
-﻿<!--<script src="controllers/AddController.js"></script>
-<script src="controllers/UpdateController.js"></script>
-<script src="controllers/DeleteController.js"></script>
-<script src="controllers/FindController.js"></script>
-<script src="controllers/NextController.js"></script>
-<script src="controllers/PreviousController.js"></script>-->
+﻿
 <div>
     <div class="main-content">
         <section id="left" class="m-l-20 col-sm-12 col-md-12 col-lg-6">
@@ -136,17 +131,17 @@
                             <div id="btn-container" class="m-t-15 clearfix">
                                 <input id="txtAction" class="hidden-lg hidden-md hidden-sm hidden-xs" ng-model="action" />
                                 <div id="btn-group-primary" class="col-xs-12 col-sm-12 col-md-12 col-lg-12" ng-show="readonly">
-                                    <a id="btnPrevSample" class="btn btn-warning btn-md" ui-sref="^.previous" ng-disabled="disablePrev">Prev</a>
-                                    <a id="btnNextSample" class="btn btn-warning btn-md m-l-30" ui-sref="sampleEntry.next" ng-disabled="disableNext">Next</a>
-                                    <a id="btnFindSample" class="btn btn-info btn-md m-l-30" ui-sref="sampleEntry.find">Find</a>
-                                    <a id="btnAddSample" class="btn btn-success btn-md m-l-30" ui-sref="sampleEntry.add">Add</a>
-                                    <a id="btnUpdateSample" class="btn btn-primary m-l-30" ui-sref="sampleEntry.update">Update</a>
-                                    <a id="btnDeleteSample" class="btn btn-danger btn-md m-l-30" ui-sref="sampleEntry.delete">Delete</a>
+                                    <a id="btnPrevSample" class="btn btn-warning btn-md" ng-click="Previous()" ng-disabled="disablePrev">Prev</a>
+                                    <a id="btnNextSample" class="btn btn-warning btn-md m-l-30" ng-click="Next()" ng-disabled="disableNext">Next</a>
+                                    <a id="btnFindSample" class="btn btn-info btn-md m-l-30" ng-click="Find()">Find</a>
+                                    <a id="btnAddSample" class="btn btn-success btn-md m-l-30" ng-click="Add()">Add</a>
+                                    <a id="btnUpdateSample" class="btn btn-primary m-l-30" ng-click="Update()">Update</a>
+                                    <a id="btnDeleteSample" class="btn btn-danger btn-md m-l-30" ng-click="Delete()">Delete</a>
                                 </div>
                                 <div id="btn-group-secondary" class="col-xs-12 col-sm-12 col-md-12 col-md-offset-0 col-lg-12 col-lg-offset-1 m-t-10" ng-hide="readonly">
                                     <a id="btnBlank" class="btn btn-default btn-md vis-hidden"></a>
-                                    <a id="btnCommit" class="btn btn-success btn-md" ui-sref="sampleEntry.commit" tabindex="50">Commit</a>
-                                    <a id="btnCancel" class="btn btn-warning m-l-30" ui-sref="sampleEntry.commit" tabindex="50">Cancel</a>
+                                    <a id="btnCommit" class="btn btn-success btn-md" ng-click="Commit()" tabindex="50">Commit</a>
+                                    <a id="btnCancel" class="btn btn-warning m-l-30" ng-click="Cancel()" tabindex="50">Cancel</a>
                                 </div>
                             </div>
                         </div>
