@@ -43,15 +43,12 @@ namespace SampleData
                       //"~/app/components/angular/autofill-event.js"
                       ));
 
-            bundles.Add(new ScriptBundle("~/bundles/customAngular").Include(
-                      "~/app/app.js",
-                      "~/app/modules/Directives/sampleDirectives.js",
-                      "~/app/modules/sample/entry/services/SampleServices.js"));
-
             bundles.Add(new ScriptBundle("~/bundles/sample").Include(
-                        "~/Scripts/sample-*",
+                        "~/app/app.js",
+                        "~/app/modules/Directives/sampleDirectives.js",
                         "~/app/modules/sample/sample.js",
-                        "~/app/modules/sample/entry/entry.js"));
+                        "~/app/modules/sample/entry/entry.js",
+                        "~/app/modules/sample/entry/services/SampleServices.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/app/assets/css/bootstrap.min.css",
