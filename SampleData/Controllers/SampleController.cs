@@ -41,7 +41,8 @@ namespace SampleData.Controllers
             GenericInfo gInfo = new GenericInfo();
             if (sample != null)
             {
-                gInfo = GetGenericInfo(stn, sample);
+                Debug.Print("1.sample ! null");
+                gInfo = GetGenericInfo(stn, sample);                
             } 
             else
             {
@@ -137,11 +138,18 @@ namespace SampleData.Controllers
                 }
                 else
                 {
+                    Debug.Print("3.sample ! null");
                     samples = (from s in db.Samples
                                where s.SampleTypeNumber == stn && s.BatchNumber >= sample.BatchNumber && s.LabNumber >= sample.LabNumber
                                orderby s.LabNumber, s.BatchNumber descending
                                select s).Take(MAX_RECS).ToList();
                 }
+                Debug.Print("Printing 30 samples");
+                foreach (SampleModels s in samples)
+                {
+                    Debug.Print("labnumber: " + s.LabNumber);
+                }
+                Debug.Print("End Printing Samples");
                 return ConvertSamples(samples);
             }
             catch (Exception e)
@@ -257,6 +265,7 @@ namespace SampleData.Controllers
             }
             else
             {
+                Debug.Print("2.sample ! null");
                 gInfo.Samples = GetSamples(stn, sample);
             }
             
@@ -401,7 +410,7 @@ namespace SampleData.Controllers
                 int i = 0;
                 foreach (List<SampleChainModels> sChains in sChainsList)
                 {
-                    Debug.Print(samples[i].LabNumber.ToString());
+                    //Debug.Print(samples[i].LabNumber.ToString());
                     List<int> topSoils = new List<int>();
                     var xyz = (from xx in sChains
                                where xx.BatchNumber == samples[i].BatchNumber && xx.LabNumber == samples[i].LabNumber
@@ -1275,6 +1284,7 @@ namespace SampleData.Controllers
         #region "Prev"
         public JsonResult GetPrev(int stn, int bn, int ln)
         {
+            Debug.Print("GetPrev called");
             IEnumerable<SampleModels> x = (from s in db.Samples
                      where s.SampleTypeNumber == stn && (s.BatchNumber <= bn && s.LabNumber < ln) || (s.BatchNumber < bn)
                      orderby s.BatchNumber descending, s.LabNumber descending

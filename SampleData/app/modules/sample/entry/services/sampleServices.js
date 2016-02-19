@@ -51,18 +51,20 @@
                 var stn = data.GenericInfo.Samples[0].SampleTypeNumber;
                 SetFormValues(data);
                 SetRecLayout(stn);
-                ScopeService.setScope(data);
+                ScopeService.setScope(entry);
                 return entry;
             },
-            setSoilValues: function (sample, account, messages) {
+            setGenericValues: function (sample, account, messages) {
                 SetGenericValues(sample, account, messages);
+                ScopeService.setSample(sample);
+                ScopeService.setAccount(account);
+            },
+            setSoilValues: function (index) {
                 SetTopSoils(index);
-                SetSampleChains(index);
-                SetSampleChainValues();
+                SetSampleChains(index);                
                 SetRecommendations(index)
             },
             setSubValues: function (subSampleInfo, subSampleInfos) {
-                SetGenericValues(sample, account, messages);
                 SetSubValues(subSampleInfo, subSampleInfos)
             }
         }
@@ -97,6 +99,7 @@
         function SetTopSoils(index) {
             if (entry.TopSoilsList != null) {
                 entry.TopSoils = entry.TopSoilsList[index];
+                ScopeService.setTopSoils = entry.TopSoils;
             }
         };
         function SetSampleChains(index) {
@@ -122,20 +125,10 @@
                 entry.chkLinkToSoil = true;
                 entry.chkTopSoil = false;
             }
+            ScopeService.setSampleChains(entry.SampleChains);
+            ScopeService.setSampleChain(entry.SampleChain);
+            ScopeService.setSampleChainVars(entry.chkTopSoil, entry.sampleChainLink, entry.chkLinkToSoil)
         };
-        //function SetSampleChainValues() {
-        //    entry.SampleChain.BatchNumber = entry.Sample.BatchNumber;
-        //    entry.SampleChain.LabNumber = entry.Sample.LabNumber;
-        //    if (data.SampleChain.TopSoil == 1) {
-        //        entry.SampleChain.TopSoil = 1;
-        //        entry.SampleChain.LinkedSampleBatch = 0;
-        //        entry.SampleChain.LinkedSampleLab = 0;
-        //    } else {
-        //        entry.SampleChain.TopSoil = 0;
-        //        entry.SampleChain.LinkedSampleBatch = data.SampleChain.LinkedSampleBatch;
-        //        entry.SampleChain.LinkedSampleLab = data.SampleChain.LinkedSampleLab;
-        //    }
-        //};
         function SetRecommendations(index) {
             if (entry.RecommendationsList != null) {
                 entry.Recommendations = entry.RecommendationsList[index];
@@ -147,6 +140,7 @@
                         angular.element(id).attr('disabled', true);
                     }
                 }
+                ScopeService.setRecommendations(entry.Recommendations);
             }
         };
         function SetSubValues(subSampleInfo, subSampleInfos) { // if stn is Feed, NIR, Water, Manure, Slurry, Fertilizer, Resin, Plant  
@@ -276,22 +270,31 @@
             },
             getScope: function () {
                 return scope;
+            },
+            setSample: function (sample, account, messages) {
+                scope.Sample = sample;
+            },
+            setAccount: function (account) {
+                scope.Account = account;
+            },
+            setTopSoils: function (topsoils) {
+                scope.TopSoils = topSoils;
+            },
+            setSampleChains: function (sampleChains) {
+                scope.SampleChains = sampleChains;
+            },
+            setSampleChain: function (sampleChain) {
+                scope.SampleChain = sampleChain;
+                scope.rightSide = true;
+                scope.soilView = true;
+            },
+            setSampleChainVars: function (chkTopSoil, sampleChainLink, chkLinkToSoil) {
+                scope.chkTopSoil = chkTopSoil;
+                scope.sampleChainLink = sampleChainLink;
+                scope.chkLinkToSoil = chkLinkToSoil;
+            },
+            setRecommendations: function (recommendations) {
+                scope.Recommendations = recommendations;
             }
-        }
+        }        
     });
-    //.service('ScopeService', function () {
-    //    var scope = {};
-
-    //    var setScope = function (scopeReceived) {
-    //        scope = scopeReceived;
-    //    };
-
-    //    var getScope = function () {
-    //        return scope;
-    //    };
-
-    //    return {
-    //        setScope: setScope,
-    //        getScope: getScope
-    //    };
-    //});

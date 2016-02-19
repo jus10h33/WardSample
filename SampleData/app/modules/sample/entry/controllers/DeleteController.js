@@ -17,16 +17,18 @@
 
                 var x = ScopeService.getScope();
                 console.log(x);
-                console.log("SampleTypeNumber:  " + x.Sample.SampleTypeNumber.toString());
                 $scope.Sample = x.Sample;
+                $scope.SampleTypes = x.SampleTypes;
+                $scope.Sample.SampleTypeNumber = x.Sample.SampleTypeNumber.toString();
                 $scope.Account = x.Account;
-
                 $scope.readonly = false;
                 $scope.disabled = true;
+                $scope.disabledFind = true;
+                $scope.disabledUpdate = true;
                 $scope.action = 'delete';
                 angular.element('#btnCommit').focus();
 
-                $scope.commit = function () {
+                $scope.Commit = function () {
                     SampleService.remove($scope.Sample.SampleTypeNumber, $scope.Sample.BatchNumber, $scope.Sample.LabNumber).then(function (result) {
                         if (result.data != null) {
                             ScopeService.setScope(result.data);

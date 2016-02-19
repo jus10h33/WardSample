@@ -24,11 +24,11 @@
                                     </div>
                                     <div class="form-group">
                                         <label class="control-label">Batch Number:</label>
-                                        <input type="text" id="txtBatchNumber" name="txtBatchNumber" class="form-control" ng-required="required" ng-readonly="readonly" ng-disabled="disabled" ng-pattern="regBatch" ng-minlength="8" ng-maxlength="8" ng-model="Sample.BatchNumber" ng-blur="SetDateReported()" tabindex="3" />
+                                        <input type="text" id="txtBatchNumber" name="txtBatchNumber" class="form-control" ng-required="required" ng-readonly="readonly" ng-disabled="disabled && disabledFind" ng-pattern="regBatch" ng-minlength="8" ng-maxlength="8" ng-model="Sample.BatchNumber" ng-blur="SetDateReported()" tabindex="3" />
                                     </div>
                                     <div class="form-group">
                                         <label class="control-label">Lab Number:</label>
-                                        <input type="text" id="txtLabNumber" name="txtLabNumber" class="form-control" ng-required="required" ng-disabled="disabled" ng-readonly="readonly" ng-pattern="regNumeric" ng-model="Sample.LabNumber" ng-blur="Validate(entryForm.txtLabNumber, 'txtLabNumber', 'Must be numeric')" tabindex="4" />
+                                        <input type="text" id="txtLabNumber" name="txtLabNumber" class="form-control" ng-required="required" ng-disabled="disabled && disabledFind" ng-readonly="readonly" ng-pattern="regNumeric" ng-model="Sample.LabNumber" ng-blur="Validate(entryForm.txtLabNumber, 'txtLabNumber', 'Must be numeric')" tabindex="4" />
                                     </div>
                                     <div class="form-group">
                                         <label class="control-label">Report Type #:</label>
@@ -130,9 +130,9 @@
                             <div id="btn-container" class="m-t-15 clearfix">
                                 <input id="txtAction" class="hidden-lg hidden-md hidden-sm hidden-xs" ng-model="action" />
                                 <div id="btn-group-primary" class="col-xs-12 col-sm-12 col-md-12 col-lg-12" ng-show="readonly">
-                                    <a id="btnPrevSample" class="btn btn-warning btn-md" ng-click="Previous()" ng-disabled="disablePrev">Prev</a>
-                                    <a id="btnNextSample" class="btn btn-warning btn-md m-l-30" ng-click="Next()" ng-disabled="disableNext">Next</a>
-                                    <a id="btnFindSample" class="btn btn-info btn-md m-l-30" ui-sref="app.sample.find">Find</a>
+                                    <a id="btnPrevSample" class="btn btn-warning btn-md" ui-sref="app.sample.previous" ng-disabled="disablePrev">Prev</a>
+                                    <a id="btnNextSample" class="btn btn-warning btn-md m-l-30" ui-sref="app.sample.next" ng-disabled="disableNext">Next</a>
+                                    <a id="btnFindSample" class="btn btn-info btn-md m-l-30" ui-sref="app.sample.find1">Find</a>
                                     <a id="btnAddSample" class="btn btn-success btn-md m-l-30" ui-sref="app.sample.add">Add</a>
                                     <a id="btnUpdateSample" class="btn btn-primary m-l-30" ui-sref="app.sample.update">Update</a>
                                     <a id="btnDeleteSample" class="btn btn-danger btn-md m-l-30" ui-sref="app.sample.delete">Delete</a>
@@ -140,7 +140,8 @@
                                 <div id="btn-group-secondary" class="col-xs-12 col-sm-12 col-md-12 col-md-offset-0 col-lg-12 col-lg-offset-1 m-t-10" ng-hide="readonly">
                                     <a id="btnBlank" class="btn btn-default btn-md vis-hidden"></a>
                                     <a id="btnCommit" class="btn btn-success btn-md" ng-click="Commit()" tabindex="50">Commit</a>
-                                    <a id="btnCancel" class="btn btn-warning m-l-30" ng-click="Cancel()" tabindex="50">Cancel</a>
+                                    <a id="btnCancel" class="btn btn-warning m-l-30" ui-sref="app.sample.entry" tabindex="50">Cancel</a>
+                                    <a id="btnSelect" class="btn btn-default m-l-30" ui-sref="app.sample.entry" tabindex="50" ng-show="selectBtn">Select</a>
                                 </div>
                             </div>
                         </div>
@@ -252,7 +253,7 @@
                                         </div>
                                         <div class="form-group">
                                             <label class="control-label">Lab</label>
-                                            <input type="text" id="txtLinkSoilLab" name="txtLinkSoilBatch" class="form-control m-l-30" ng-disabled="disabled" ng-readonly="readonly" ng-model="SampleChain.LinkedSampleLab" ng-required="required" ng-pattern="regNumeric" ng-blur="Validate(frmSampleLinks.txtLinkSoilLab, 'txtLinkSoilLab', 'Must be numeric')" tabindex="22" />
+                                            <input type="text" id="txtLinkSoilLab" name="txtLinkSoilLab" class="form-control m-l-30" ng-disabled="disabled" ng-readonly="readonly" ng-model="SampleChain.LinkedSampleLab" ng-required="required" ng-pattern="regNumeric" ng-blur="Validate(frmSampleLinks.txtLinkSoilLab, 'txtLinkSoilLab', 'Must be numeric')" tabindex="22" />
                                         </div>
                                         <div class="form-group">
                                             <label class="control-label">Available</label>

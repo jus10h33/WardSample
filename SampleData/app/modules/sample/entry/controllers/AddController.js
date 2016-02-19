@@ -68,7 +68,7 @@
                 SetHoldValues();
 
                 $scope.Commit = function () {
-                    //SetSampleService.setSampleChainValues();
+                    SetSampleChainValues();
                     SampleService.add($scope.Sample, $scope.SampleChain, $scope.SampleRecs, $scope.SubSampleInfo).then(function (result) {
                         if (result.data != null) {
                             //SetSampleService.setAllValues(result.data);
@@ -85,14 +85,14 @@
                 function SetSampleChainValues() {
                     $scope.SampleChain.BatchNumber = $scope.Sample.BatchNumber;
                     $scope.SampleChain.LabNumber = $scope.Sample.LabNumber;
-                    if (x.SampleChain.TopSoil == 1) {
+                    if (angular.element('input[id=chkTopSoil]:checked')) {
                         $scope.SampleChain.TopSoil = 1;
                         $scope.SampleChain.LinkedSampleBatch = 0;
                         $scope.SampleChain.LinkedSampleLab = 0;
                     } else {
                         $scope.SampleChain.TopSoil = 0;
-                        $scope.SampleChain.LinkedSampleBatch = x.SampleChain.LinkedSampleBatch;
-                        $scope.SampleChain.LinkedSampleLab = x.SampleChain.LinkedSampleLab;
+                        $scope.SampleChain.LinkedSampleBatch = angular.element('#txtLinkSoilBatch').val();
+                        $scope.SampleChain.LinkedSampleLab = angular.element('#txtLinkSoillab').val();
                     }
                 };
 

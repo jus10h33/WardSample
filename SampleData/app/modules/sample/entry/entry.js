@@ -20,70 +20,77 @@
             ["ScopeService", "$scope", "$state", "$stateParams", "SampleService", "SetSampleService", "AccountService", "ReportService",
                 function (ScopeService, $scope, $state, $stateParams, SampleService, SetSampleService, AccountService, ReportService) {
 
-                var stn = 1;            
-                Load(1);
+                var stn = 1;
+                var x = ScopeService.getScope();
+                console.log(x.Sample);
+                if (angular.isDefined(x.Sample)) {
+                    SetScopeValues(x);
+                    console.log(x);
+                } else {
+                    console.log("loaded sample");
+                    Load(1);
+                }
 
                 $scope.Previous = function () {
-                    var stn = angular.element('#cboSampleType').val();
-                    var bn = angular.element('#txtBatchNumber').val();
-                    var ln = angular.element('#txtLabNumber').val();
+                    //var stn = angular.element('#cboSampleType').val();
+                    //var bn = angular.element('#txtBatchNumber').val();
+                    //var ln = angular.element('#txtLabNumber').val();
 
-                    $state.go("app.sample.previous", { stn: stn, bn: bn, ln: ln });
+                    //$state.go("app.sample.previous", { stn: stn, bn: bn, ln: ln });
                 };
                 $scope.Next = function () {
-                    console.log("Next hit");
-                    var stn = angular.element('#cboSampleType').val();
-                    var bn = angular.element('#txtBatchNumber').val();
-                    var ln = angular.element('#txtLabNumber').val();
+                    //console.log("Next hit");
+                    //var stn = angular.element('#cboSampleType').val();
+                    //var bn = angular.element('#txtBatchNumber').val();
+                    //var ln = angular.element('#txtLabNumber').val();
 
-                    $scope.readonly = false;
-                    $scope.ClearForm();
-                    $scope.readonly = true;
-
-                    $state.go("app.sample.next", { stn: stn, bn: bn, ln: ln });
+                    //$state.go("app.sample.next", { stn: stn, bn: bn, ln: ln });
                 };
 
                 function Load(stn) {
                     SampleService.load(stn).then(function (result) {
                         if (result.data != null) {
                             var x = SetSampleService.setAllValues(result.data);                          
-                            $scope.action = "";
-                            $scope.required = true;
-                            $scope.readonly = true;
-                            $scope.disabled = true;
-                            $scope.disabledUpdate = false;
-                            $scope.disableNext = true;
-                            $scope.disablePrev = false;
-                            $scope.Samples = x.Samples;
-                            $scope.Sample = x.Sample;
-                            $scope.Accounts = x.Accounts;
-                            $scope.Account = x.Account;
-                            $scope.CropTypes = x.CropTypes;
-                            $scope.Messages = x.Messages;
-                            $scope.PastCrops = x.PastCrops;
-                            $scope.RecTypes = x.RecTypes;
-                            $scope.Recommendations = x.Recommendations;
-                            $scope.RecommendationsList = x.RecommendationsList;
-                            $scope.SampleChainsList = x.SampleChainsList;
-                            $scope.SampleChains = x.SampleChains;
-                            $scope.SampleChain = x.SampleChain;
-                            $scope.SampleColumns = x.SampleColumns;
-                            $scope.SampleRecs = x.SampleRecs;
-                            $scope.TopSoilsList = x.TopSoilsList;
-                            $scope.TopSoils = x.TopSoils;
-                            $scope.SampleChainLink = x.SampleChainLink;                                
-                            $scope.chkLinkToSoil = x.chkLinkToSoil;
-                            $scope.chkTopSoil = x.chkTopSoil;
-                            $scope.otherView = x.otherView;
-                            $scope.plantView = x.plantView;
-                            $scope.rightSide = x.rightSide;
-                            $scope.soilView = x.soilView;
-                            $scope.linkToSoil = x.linkToSoil;
-                            $scope.SampleTypes = x.SampleTypes;
+                            SetScopeValues(x);
                             ScopeService.setScope(x);
                         }
                     })                
-                };                
+                };
+                function SetScopeValues(x) {
+                    $scope.action = "";
+                    $scope.required = true;
+                    $scope.readonly = true;
+                    $scope.disabled = true;
+                    $scope.disabledUpdate = false;
+                    $scope.disableNext = true;
+                    $scope.disablePrev = false;
+                    $scope.Samples = x.Samples;
+                    $scope.Sample = x.Sample;
+                    $scope.Accounts = x.Accounts;
+                    $scope.Account = x.Account;
+                    $scope.CropTypes = x.CropTypes;
+                    $scope.Messages = x.Messages;
+                    $scope.PastCrops = x.PastCrops;
+                    $scope.RecTypes = x.RecTypes;
+                    $scope.Recommendations = x.Recommendations;
+                    $scope.RecommendationsList = x.RecommendationsList;
+                    $scope.SampleChainsList = x.SampleChainsList;
+                    $scope.SampleChains = x.SampleChains;
+                    $scope.SampleChain = x.SampleChain;
+                    $scope.SampleColumns = x.SampleColumns;
+                    $scope.SampleRecs = x.SampleRecs;
+                    $scope.TopSoilsList = x.TopSoilsList;
+                    $scope.TopSoils = x.TopSoils;
+                    $scope.SampleChainLink = x.SampleChainLink;
+                    $scope.chkLinkToSoil = x.chkLinkToSoil;
+                    $scope.chkTopSoil = x.chkTopSoil;
+                    $scope.otherView = x.otherView;
+                    $scope.plantView = x.plantView;
+                    $scope.rightSide = x.rightSide;
+                    $scope.soilView = x.soilView;
+                    $scope.linkToSoil = x.linkToSoil;
+                    $scope.SampleTypes = x.SampleTypes;
+                }
                 function RemoveValidation() {
                     RemovePopover('cboSampleType');
                     angular.element('#cboSampleType').removeClass('has-error');
