@@ -30,17 +30,17 @@ namespace SampleData
 
 
             bundles.Add(new ScriptBundle("~/bundles/angular").Include(
-                      "~/app/components/angular/angular.min.js",
-                      //"~/app/components/angular/angular-touch.min.js",
-                      //"~/app/components/angular/angular-route.min.js",
-                      "~/app/components/angular/angular-ui-router.min.js"
-                      //"~/app/components/angular/angular-sanitize.min.js",
-                      //"~/app/components/angular/angular-resource.min.js",
-                      //"~/app/components/angular/angular-mocks.js",
-                      //"~/app/components/angular/angular-animate.min.js",
-                      //"~/app/components/angular/hotkeys.min.js",
-                      //"~/app/components/angular/ngMask.min.js",
-                      //"~/app/components/angular/autofill-event.js"
+                      "~/app/components/angular/angular.min.js"
+                      //,"~/app/components/angular/angular-touch.min.js"
+                      //,"~/app/components/angular/angular-route.min.js"
+                      ,"~/app/components/angular/angular-ui-router.min.js"
+                      //,"~/app/components/angular/angular-sanitize.min.js"
+                      //,"~/app/components/angular/angular-resource.min.js"
+                      //,"~/app/components/angular/angular-mocks.js"
+                      //,"~/app/components/angular/angular-animate.min.js"
+                      ,"~/app/components/angular/hotkeys.min.js"
+                      //,"~/app/components/angular/ngMask.min.js"
+                      //,"~/app/components/angular/autofill-event.js"
                       ));
 
             bundles.Add(new ScriptBundle("~/bundles/sample").Include(

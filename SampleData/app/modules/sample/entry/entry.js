@@ -14,38 +14,25 @@
                             controller: 'SampleEntryController'
                         }
                     }
-                });
+                })
+                .state('app.sample.entry1', {
+                    url: '/entry/:stn/:bn/:ln',
+                    templateUrl: '/app/modules/sample/entry/entry.html',
+                    controller: 'SampleEntryController'
+                })
         })
         .controller("SampleEntryController",
-            ["ScopeService", "$scope", "$state", "$stateParams", "SampleService", "SetSampleService", "AccountService", "ReportService",
-                function (ScopeService, $scope, $state, $stateParams, SampleService, SetSampleService, AccountService, ReportService) {
+            ["ScopeService", "$scope", "$state", "$stateParams", "SampleService", "SetSampleService", "AccountService", "ReportService", "hotkeys",
+                function (ScopeService, $scope, $state, $stateParams, SampleService, SetSampleService, AccountService, ReportService, hotkeys) {
 
                 var stn = 1;
                 var x = ScopeService.getScope();
-                console.log(x.Sample);
+                    //if scope already exists then use it, otherwise, load data from server
                 if (angular.isDefined(x.Sample)) {
                     SetScopeValues(x);
-                    console.log(x);
                 } else {
-                    console.log("loaded sample");
                     Load(1);
                 }
-
-                $scope.Previous = function () {
-                    //var stn = angular.element('#cboSampleType').val();
-                    //var bn = angular.element('#txtBatchNumber').val();
-                    //var ln = angular.element('#txtLabNumber').val();
-
-                    //$state.go("app.sample.previous", { stn: stn, bn: bn, ln: ln });
-                };
-                $scope.Next = function () {
-                    //console.log("Next hit");
-                    //var stn = angular.element('#cboSampleType').val();
-                    //var bn = angular.element('#txtBatchNumber').val();
-                    //var ln = angular.element('#txtLabNumber').val();
-
-                    //$state.go("app.sample.next", { stn: stn, bn: bn, ln: ln });
-                };
 
                 function Load(stn) {
                     SampleService.load(stn).then(function (result) {
@@ -159,5 +146,37 @@
                         angular.copy($scope.SubSampleInfo, $scope.holdSubSampleInfo);
                     }
                 }
+
+                hotkeys.bindTo($scope)
+                .add({
+                    combo: 'p',
+                    description: 'Previous',
+                    callback: function () { $state.go("app.sample.previous1"); }
+                })
+                .add({
+                    combo: 'n',
+                    description: 'Next',
+                    callback: function () { $state.go("app.sample.next1"); }
+                })
+                .add({
+                    combo: 'f',
+                    description: 'Find',
+                    callback: function () { $state.go("app.sample.find1"); }
+                })
+                .add({
+                    combo: 'a',
+                    description: 'Add',
+                    callback: function () { $state.go("app.sample.add"); }
+                })
+                .add({
+                    combo: 'u',
+                    description: 'Update',
+                    callback: function () { $state.go("app.sample.update"); }
+                })
+                .add({
+                    combo: 'd',
+                    description: 'Delete',
+                    callback: function () { $state.go("app.sample.delete"); }
+                })
         }]);
 })();

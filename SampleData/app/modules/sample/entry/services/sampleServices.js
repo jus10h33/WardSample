@@ -41,6 +41,12 @@
                     url: '/Sample/GetPrev',
                     data: { 'stn': stn, 'bn': bn, 'ln': ln }
                 });
+            },
+            loadSampleTypes: function () {
+                return $http.get('/Sample/LoadSampleTypes');
+            },
+            loadSampleColumns: function () {
+                return $http.get('/Sample/LoadSampleColumns');
             }
         }
     })
@@ -54,10 +60,12 @@
                 ScopeService.setScope(entry);
                 return entry;
             },
-            setGenericValues: function (sample, account, messages) {
-                SetGenericValues(sample, account, messages);
-                ScopeService.setSample(sample);
-                ScopeService.setAccount(account);
+            setGenericValues: function (index, samples, accounts, messages) {
+                SetGenericValues(samples[index], accounts[index], messages)
+                ScopeService.setSamples(samples);
+                ScopeService.setAccounts(accounts);
+                ScopeService.setSample(samples[index]);
+                ScopeService.setAccount(accounts[index]);
             },
             setSoilValues: function (index) {
                 SetTopSoils(index);
@@ -152,6 +160,8 @@
             }
         };
         function SetFormValues(data) {
+            console.log('SetFormValues');
+            console.log(data);
             SetGenericMasters(data.GenericInfo.Samples, data.GenericInfo.Accounts, data.GenericMasters.SampleTypes, data.GenericMasters.SampleColumns);
             SetGenericValues(data.GenericInfo.Samples[0], data.GenericInfo.Accounts[0], data.GenericInfo.Messages);
             var stn = entry.Samples[0].SampleTypeNumber;
@@ -264,6 +274,7 @@
     })
     .factory("ScopeService", function () {
         var scope = {};
+        scope.Counter = 0;
         return {
             setScope: function (scopeReceived) {
                 scope = scopeReceived;
@@ -271,8 +282,14 @@
             getScope: function () {
                 return scope;
             },
+            setSamples: function (samples) {
+                scope.Samples = samples
+            },
             setSample: function (sample, account, messages) {
                 scope.Sample = sample;
+            },
+            setAccounts: function (accounts) {
+                scope.Accounts = accounts;
             },
             setAccount: function (account) {
                 scope.Account = account;
@@ -295,6 +312,9 @@
             },
             setRecommendations: function (recommendations) {
                 scope.Recommendations = recommendations;
+            },
+            setCounter: function (counter) {
+                scope.Counter = counter;
             }
         }        
     });

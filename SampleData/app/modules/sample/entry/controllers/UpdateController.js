@@ -9,10 +9,28 @@
                 .state('app.sample.update', {
                     url: '/update',
                     templateUrl: '/app/modules/sample/entry/entry.html',
+                    resolve: {
+                        PreviousState: [
+                            "$state",
+                            function ($state) {
+                                var currentStateData = {
+                                    Name: $state.current.name,
+                                    Params: $state.params,
+                                    URL: $state.href($state.current.name, $state.params)
+                                };
+                                return currentStateData;
+                            }
+                        ]
+                    },
                     controller: 'UpdateController'
                 });
         })
-        .controller("UpdateController", ["$scope", "ScopeService", "$state", "SampleService", "SetSampleService", function ($scope, ScopeService, $state, SampleService, SetSampleService) {
+        .controller("UpdateController", ["$scope", "ScopeService", "$state", "SampleService", "SetSampleService", "PreviousState", "hotkeys",
+            function ($scope, ScopeService, $state, SampleService, SetSampleService, PreviousState, hotkeys) {
+
+            if (PreviousState.Name != "app.sample.entry") {
+                $state.go("app.sample.entry");
+            }
 
             var x = ScopeService.getScope();
             //if (x == {}) {
@@ -170,5 +188,17 @@
                 angular.element(id).removeAttr("title");
                 return;
             };
+
+            hotkeys.bindTo($scope)
+                .add({
+                    combo: 'enter',
+                    description: 'Commit',
+                    callback: function () { $scope.Commit(); }
+                })
+                .add({
+                    combo: 'esc',
+                    description: 'Cancel',
+                    callback: function () { $scope.Cancel(); }
+                });
         }])    
 })();

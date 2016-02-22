@@ -1,5 +1,6 @@
 ﻿angular.module("mainApp")
-.directive('autoComplete', 'autoComplete');
+.directive('autoComplete', 'autoComplete')
+.directive('validateInput', 'validateInput');
 
 function autoComplete() {
     return {
@@ -31,6 +32,15 @@ function autoComplete() {
             }).focus(function () {
                 angular.element(this).autocomplete("search");
             });
+        }
+    }
+};
+
+function validateInput() {
+    return {
+        restrict: 'A',
+        link: function (scope, element, attrs) {
+
         }
     }
 };

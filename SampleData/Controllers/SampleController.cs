@@ -556,6 +556,19 @@ namespace SampleData.Controllers
                 return null;
             }            
         }
+        public JsonResult LoadSampleTypes()
+        {
+            try
+            {
+                return Json(db.SampleTypes.ToList(), JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                sr.Message.Add(e.Source);
+                Debug.Print(e.StackTrace);
+                return null;
+            }
+        }
         public JsonResult GetReportItems(int sampleTypeNumber)
         {
             try
@@ -643,6 +656,22 @@ namespace SampleData.Controllers
                 Debug.Print(e.StackTrace);
                 return null;
             }            
+        }
+        public JsonResult LoadSampleColumns()
+        {
+            try
+            {
+                var x = (from sc in db.SampleColumns
+                        orderby sc.ColumnOrder
+                        select sc).ToList();
+                return Json(x, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                sr.Message.Add(e.Source);
+                Debug.Print(e.StackTrace);
+                return null;
+            }
         }
         private ReportModels GetReport(int stn, int rtn)
         {
@@ -1319,7 +1348,7 @@ namespace SampleData.Controllers
                 SoilReturn soilReturn = new SoilReturn();
                 soilReturn.GenericInfo = gInfo;
                 soilReturn.SampleChains = GetSampleChainsList(soilReturn.GenericInfo.Samples);
-                //soilReturn.Recommendations = GetSampleRecommendations(soilReturn.GenericInfo.Samples);
+                soilReturn.Recommendations = GetSampleRecommendations(soilReturn.GenericInfo.Samples);
                 soilReturn.TopSoils = GetTopSoils(soilReturn.SampleChains, soilReturn.GenericInfo.Samples);
                 return soilReturn;
             }

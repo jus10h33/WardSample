@@ -9,11 +9,28 @@
                 .state('app.sample.delete', {
                     url: '/delete',
                     templateUrl: '/app/modules/sample/entry/entry.html',
+                    resolve: {
+                        PreviousState: [
+                            "$state",
+                            function ($state) {
+                                var currentStateData = {
+                                    Name: $state.current.name,
+                                    Params: $state.params,
+                                    URL: $state.href($state.current.name, $state.params)
+                                };
+                                return currentStateData;
+                            }
+                        ]
+                    },
                     controller: 'DeleteController'
                 });
         })
-        .controller("DeleteController", ["$scope", "ScopeService", "$state", "SampleService", "SetSampleService", 
-            function ($scope, ScopeService, $state, SampleService, SetSampleService) {
+        .controller("DeleteController", ["$scope", "ScopeService", "$state", "SampleService", "SetSampleService", "PreviousState", "hotkeys", 
+            function ($scope, ScopeService, $state, SampleService, SetSampleService, PreviousState, hotkeys) {
+
+                if (PreviousState.Name != "app.sample.entry") {
+                    $state.go("app.sample.entry");
+                }
 
                 var x = ScopeService.getScope();
                 console.log(x);
@@ -39,5 +56,16 @@
                 $scope.Cancel = function () {
                     $state.go("app.sample.entry");
                 };
+                hotkeys.bindTo($scope)
+                .add({
+                    combo: 'enter',
+                    description: 'Commit',
+                    callback: function () { $scope.Commit(); }
+                })
+                .add({
+                    combo: 'esc',
+                    description: 'Cancel',
+                    callback: function () { $scope.Cancel(); }
+                });
             }])
 })();

@@ -9,11 +9,28 @@
                 .state('app.sample.add', {
                     url: '/add',
                     templateUrl: '/app/modules/sample/entry/entry.html',
+                    resolve: {
+                        PreviousState: [
+                            "$state",
+                            function ($state) {
+                                var currentStateData = {
+                                    Name: $state.current.name,
+                                    Params: $state.params,
+                                    URL: $state.href($state.current.name, $state.params)
+                                };
+                                return currentStateData;
+                            }
+                        ]
+                    },
                     controller: 'AddController'
                 });
         })
-        .controller("AddController", ["$scope", "ScopeService", "$state", "SampleService", "SetSampleService", 
-            function ($scope, ScopeService, $state, SampleService, SetSampleService) {
+        .controller("AddController", ["$scope", "ScopeService", "$state", "SampleService", "SetSampleService", "PreviousState", "hotkeys", 
+            function ($scope, ScopeService, $state, SampleService, SetSampleService, PreviousState, hotkeys) {
+
+                if (PreviousState.Name != "app.sample.entry") {
+                    $state.go("app.sample.entry");
+                }
                 var x = ScopeService.getScope();
                 //if (x == {}) {
                 //    $state.go("app.sample.entry")
@@ -71,7 +88,7 @@
                     SetSampleChainValues();
                     SampleService.add($scope.Sample, $scope.SampleChain, $scope.SampleRecs, $scope.SubSampleInfo).then(function (result) {
                         if (result.data != null) {
-                            //SetSampleService.setAllValues(result.data);
+                            SetSampleService.setAllValues(result.data);
                             $state.go('app.sample.entry');
                         }
                         //$scope.ResetForm();                   
@@ -79,7 +96,64 @@
                 };
 
                 $scope.Cancel = function () {
-                    $state.go("app.sample.entry");
+                    if (angular.equals($scope.Sample, $scope.holdSample)) {
+                        $state.go("app.sample.entry");
+                    } else {
+                        alert("data has changed");
+                    }
+                };
+
+                $scope.FindAccount = function () {
+                    if ($scope.entryForm.txtAccountNumber.$valid) {
+                        AccountService.find($scope.Sample.AccountNumber, $scope.Sample.SampleTypeNumber).then(function (result) {
+                            if (result.data != null) {
+                                $scope.Account.Name = result.data.Name;
+                                $scope.Account.Company = result.data.Company;
+                                $scope.Account.Address1 = result.data.Address1;
+                                $scope.Account.CityStZip = result.data.CityStZip;
+                                $scope.Account.SampleEntryInformation = result.data.SampleEntryInformation;
+                                $scope.Account.Growers = result.data.Growers;
+                                angular.element("#acoGrower").autocomplete({ source: $scope.Account.Growers, minLength: 0, delay: 0 }).focus(function () { $(this).autocomplete("search"); });
+                                RemovePopover('txtAccountNumber');
+                            } else {
+                                $scope.Account = {};
+                                $scope.Sample.Grower = "";
+                                angular.element("#acoGrower").autocomplete({ source: [] });
+                                $scope.Account.Name = "Account Not Found";
+                                RemovePopover('txtAccountNumber');
+                                $scope.DisplayPopover('txtAccountNumber', 'Account does NOT exist');
+                                angular.element('#txtAccountNumber').focus();
+                            }
+                        });
+                    } else {
+                        $scope.Validate($scope.entryForm.txtAccountNumber, 'txtAccountNumber', 'Must be numeric');
+                    }
+                };
+                $scope.GetReportName = function () {
+                    if ($scope.entryForm.txtReportTypeNumber.$valid) {
+                        ReportService.reportName($scope.Sample.SampleTypeNumber, $scope.Sample.ReportTypeNumber).then(function (result) {
+                            console.log(data);
+                            if (data != "") {
+                                $scope.entryForm.txtReportTypeNumber.$valid = true;
+                                $scope.entryForm.txtReportTypeNumber.$invalid = false;
+                                angular.element('#txtReportTypeNumber').removeClass('has-error');
+                                RemovePopover('txtReportTypeNumber');
+                                $scope.Sample.ReportName = data;
+                            } else {
+                                $scope.entryForm.txtReportTypeNumber.$valid = false;
+                                $scope.entryForm.txtReportTypeNumber.$invalid = true;
+                                DisplayPopover('txtReportTypeNumber', 'No Results');
+                                angular.element('#txtReportTypeNumber').focus();
+                                $scope.Sample.ReportTypeNumber = "";
+                                $scope.Sample.ReportName = "";
+                            }
+                        });
+                    } else {
+                        $scope.DisplayPopover('txtReportTypeNumber', 'Must be numeric');
+                        angular.element('#txtReportTypeNumber').addClass('has-error');
+                        angular.element('#txtReportTypeNumber').focus();
+                        $scope.Sample.ReportName = "";
+                    }
                 };
                 
                 function SetSampleChainValues() {
@@ -112,61 +186,19 @@
                         angular.copy($scope.SubSampleInfo, $scope.holdSubSampleInfo);
                     }
                 };
+                hotkeys.bindTo($scope)
+                .add({
+                    combo: 'enter',
+                    description: 'Commit',
+                    callback: function () { $scope.Commit(); }
+                })
+                .add({
+                    combo: 'esc',
+                    description: 'Cancel',
+                    callback: function () { $scope.Cancel(); }
+                });
             }])
 })();
-
-//$scope.FindAccount = function () {
-//    if ($scope.entryForm.txtAccountNumber.$valid) {
-//        AccountService.find($scope.Sample.AccountNumber, $scope.Sample.SampleTypeNumber).then(function (result) {
-//            if (result.data != null) {
-//                $scope.Account.Name = result.data.Name;
-//                $scope.Account.Company = result.data.Company;
-//                $scope.Account.Address1 = result.data.Address1;
-//                $scope.Account.CityStZip = result.data.CityStZip;
-//                $scope.Account.SampleEntryInformation = result.data.SampleEntryInformation;
-//                $scope.Account.Growers = result.data.Growers;
-//                angular.element("#acoGrower").autocomplete({ source: $scope.Account.Growers, minLength: 0, delay: 0 }).focus(function () { $(this).autocomplete("search"); });
-//                RemovePopover('txtAccountNumber');
-//            } else {
-//                $scope.Account = {};
-//                $scope.Sample.Grower = "";
-//                angular.element("#acoGrower").autocomplete({ source: [] });
-//                $scope.Account.Name = "Account Not Found";
-//                RemovePopover('txtAccountNumber');
-//                $scope.DisplayPopover('txtAccountNumber', 'Account does NOT exist');
-//                angular.element('#txtAccountNumber').focus();
-//            }
-//        });
-//    } else {
-//        $scope.Validate($scope.entryForm.txtAccountNumber, 'txtAccountNumber', 'Must be numeric');
-//    }
-//};
-//$scope.GetReportName = function () {
-//    if ($scope.entryForm.txtReportTypeNumber.$valid) {
-//        ReportService.reportName($scope.Sample.SampleTypeNumber, $scope.Sample.ReportTypeNumber).then(function (result) {
-//            console.log(data);
-//            if (data != "") {
-//                $scope.entryForm.txtReportTypeNumber.$valid = true;
-//                $scope.entryForm.txtReportTypeNumber.$invalid = false;
-//                angular.element('#txtReportTypeNumber').removeClass('has-error');
-//                RemovePopover('txtReportTypeNumber');
-//                $scope.Sample.ReportName = data;
-//            } else {
-//                $scope.entryForm.txtReportTypeNumber.$valid = false;
-//                $scope.entryForm.txtReportTypeNumber.$invalid = true;
-//                DisplayPopover('txtReportTypeNumber', 'No Results');
-//                angular.element('#txtReportTypeNumber').focus();
-//                $scope.Sample.ReportTypeNumber = "";
-//                $scope.Sample.ReportName = "";
-//            }
-//        });
-//    } else {
-//        $scope.DisplayPopover('txtReportTypeNumber', 'Must be numeric');
-//        angular.element('#txtReportTypeNumber').addClass('has-error');
-//        angular.element('#txtReportTypeNumber').focus();
-//        $scope.Sample.ReportName = "";
-//    }
-//};
 
 //function DisplayPopover(id, message) {
 //    id = "#" + id;
