@@ -28,7 +28,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label class="control-label">Lab Number:</label>
-                                        <input type="text" id="txtLabNumber" name="txtLabNumber" class="form-control" ng-required="required" ng-disabled="disabled && disabledFind" ng-readonly="readonly" ng-pattern="regNumeric" ng-model="Sample.LabNumber" ng-blur="Validate(entryForm.txtLabNumber, 'txtLabNumber', 'Must be numeric')" tabindex="4" />
+                                        <input type="text" id="txtLabNumber" name="txtLabNumber" class="form-control" ng-required="required" ng-disabled="disabled && disabledFind" ng-readonly="readonly" ng-pattern="regNumeric" ng-model="Sample.LabNumber" validate-input="Must be numeric" tabindex="4" />
                                     </div>
                                     <div class="form-group">
                                         <label class="control-label">Report Type #:</label>
@@ -140,7 +140,7 @@
                                 <div id="btn-group-secondary" class="col-xs-12 col-sm-12 col-md-12 col-md-offset-0 col-lg-12 col-lg-offset-1 m-t-10" ng-hide="readonly">
                                     <a id="btnBlank" class="btn btn-default btn-md vis-hidden"></a>
                                     <a id="btnCommit" class="btn btn-success btn-md" ng-click="Commit()" tabindex="50">Commit</a>
-                                    <a id="btnCancel" class="btn btn-warning m-l-30" ui-sref="app.sample.entry" tabindex="50">Cancel</a>
+                                    <a id="btnCancel" class="btn btn-warning m-l-30" ng-click="Cancel()" tabindex="50">Cancel</a>
                                 </div>
                             </div>
                         </div>
@@ -330,5 +330,5 @@
             </div>
         </section>
     </div>
-    <ng-include src="Content/templates/partials/discardChanges.html"></ng-include>
+    <ng-include src="app/templates/discardChanges.html"></ng-include>
 </div>

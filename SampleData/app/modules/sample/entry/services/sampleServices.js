@@ -54,6 +54,7 @@
         var entry = {};
         return {
             setAllValues: function (data) {
+                console.log(data.GenericInfo);
                 var stn = data.GenericInfo.Samples[0].SampleTypeNumber;
                 SetFormValues(data);
                 SetRecLayout(stn);
@@ -160,8 +161,6 @@
             }
         };
         function SetFormValues(data) {
-            console.log('SetFormValues');
-            console.log(data);
             SetGenericMasters(data.GenericInfo.Samples, data.GenericInfo.Accounts, data.GenericMasters.SampleTypes, data.GenericMasters.SampleColumns);
             SetGenericValues(data.GenericInfo.Samples[0], data.GenericInfo.Accounts[0], data.GenericInfo.Messages);
             var stn = entry.Samples[0].SampleTypeNumber;
@@ -255,7 +254,7 @@
     .factory("AccountService", function ($http) {
         return {
             find: function (an, stn) {
-                return $http.get("/Sample/Load?an=" + an + "&stn=" + stn);
+                return $http.get("/Sample/FindAccount?an=" + an + "&stn=" + stn);
             }
         }
     })

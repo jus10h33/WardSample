@@ -376,7 +376,7 @@
     <Content Include="app\modules\sample\sample.html" />
     <Content Include="app\modules\sample\sample.js" />
     <Content Include="app\modules\sample\sampleFind.js" />
-    <Content Include="Content\templates\partials\discardChanges.html" />
+    <Content Include="app\templates\discardChanges.html" />
     <Content Include="app\assets\css\select2.css" />
     <Content Include="app\assets\css\select2.min.css" />
     <Content Include="favicon.ico" />
@@ -411,7 +411,7 @@
     <Content Include="app\components\bootstrap\bootstrap.min.js" />
     <Content Include="app\modules\Constants\sampleConstants.js" />
     <Content Include="app\modules\Controllers\sampleControllers.js" />
-    <Content Include="app\modules\Directives\sampleDirectives.js" />
+    <Content Include="app\modules\Directives\SampleDirectives.js" />
     <Content Include="app\components\jquery\jquery.hotkeys.js" />
     <Content Include="app\modules\sample\entry\services\SampleServices.js" />
     <Content Include="app\components\jquery\jquery-1.11.3.js" />

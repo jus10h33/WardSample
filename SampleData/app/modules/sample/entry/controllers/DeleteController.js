@@ -54,7 +54,13 @@
                     });
                 };
                 $scope.Cancel = function () {
-                    $state.go("app.sample.entry");
+                    console.log($scope.Sample);
+                    console.log($scope.holdSample);
+                    if (angular.equals($scope.Sample, $scope.holdSample)) {
+                        $state.go("app.sample.entry");
+                    } else {
+                        alert("data has changed");
+                    }
                 };
                 hotkeys.bindTo($scope)
                 .add({

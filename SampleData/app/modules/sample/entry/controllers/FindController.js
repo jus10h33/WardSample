@@ -42,6 +42,11 @@
                 var x = 1;
                 $scope.Sample.SampleTypeNumber = x.toString();
             }
+
+            $scope.Cancel = function () {
+                $state.go("app.sample.entry");
+            };
+
             $scope.readonly = false;
             $scope.disabled = true;
             $scope.disabledFind = false;
