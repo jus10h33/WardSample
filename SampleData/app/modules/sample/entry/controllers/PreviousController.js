@@ -17,15 +17,8 @@
                 controller: 'PreviousController2'
             });
         })
-        .controller("PreviousController1", ["ScopeService", "$state", function (ScopeService, $state) {
-
-            var x = ScopeService.getScope().Sample;
-            $state.go("app.sample.previous2", { stn: x.SampleTypeNumber, bn: x.BatchNumber, ln: x.LabNumber });
-
-        }])
-        .controller("PreviousController2", 
-            ["ScopeService", "$scope", "SampleService", "SetSampleService", "$stateParams", "hotkeys", 
-             function(ScopeService, $scope, SampleService, SetSampleService, $stateParams, hotkeys) {
+        .controller("PreviousController1", ["ScopeService", "$scope", "SampleService", "SetSampleService", "$state", "hotkeys",
+            function (ScopeService, $scope, SampleService, SetSampleService, $state, hotkeys) {
 
             var x = ScopeService.getScope();
             $scope.SampleTypes = x.SampleTypes;
@@ -35,13 +28,12 @@
             var Sample = x.Sample;
             var Account = x.Account;
             var Messages = x.Messages;
-            var SubSampleInfos = x.SubSampleInfos;
-            $scope.readonly = true;
+            var SubSampleInfos = x.SubSampleInfos;  
 
-            var stn = $stateParams.stn;
-            var bn = $stateParams.bn;
-            var ln = $stateParams.ln;
-                           
+            var stn = Sample.SampleTypeNumber;
+            var bn = Sample.BatchNumber;
+            var ln = Sample.LabNumber;
+
             if (!$scope.disablePrev) {
                 $scope.disableNext = false;
                 var found = false;
@@ -64,12 +56,17 @@
                     } else if (stn == 2 || stn == 3 || stn == 4 || stn == 5 || stn == 6 || stn == 7 || stn == 9 || stn == 12) {
                         SetSampleService.SetSubValues(SubSampleInfos[y], SubSampleInfos);
                     }
+                    bn = Samples[y].BatchNumber;
+                    ln = Samples[y].LabNumber;
+
                     ScopeService.setCounter(y);
                 } else {
                     SampleService.prev(stn, bn, ln).then(function (result) {
                         if (angular.isDefined(result.data) && result.data != null && result.data != "") {
                             y = 0;
                             SetSampleService.setGenericValues(y, result.data.GenericInfo.Samples, result.data.GenericInfo.Accounts, result.data.GenericInfo.Messages);
+                            bn = result.data.GenericInfo.Samples[y].BatchNumber;
+                            ln = result.data.GenericInfo.Samples[y].LabNumber;
                             ScopeService.setCounter(y);
                         } else {
                             $scope.disablePrev = true;
@@ -77,14 +74,18 @@
                         }
                     });
                 }
-                
+                $state.go("app.sample.previous2", { stn: stn, bn: bn, ln: ln });
+            }
+        }])
+        .controller("PreviousController2", 
+            ["ScopeService", "$scope", "hotkeys", 
+             function(ScopeService, $scope, hotkeys) {
 
-                x = ScopeService.getScope();
+                var x = ScopeService.getScope();
 
                 $scope.SampleTypes = x.SampleTypes;
                 $scope.SampleColumns = x.SampleColumns;
-                $scope.Messages = x.Messages;   
-                
+                $scope.Messages = x.Messages;                   
 
                 $scope.Samples = x.Samples;
                 $scope.Accounts = x.Accounts;
@@ -114,17 +115,18 @@
                 $scope.rightSide = x.rightSide;
                 $scope.soilView = x.soilView;
                 $scope.linkToSoil = x.linkToSoil;
-            }
+                $scope.readonly = x.readonly;
+            
             hotkeys.bindTo($scope)
-           .add({
-               combo: 'p',
-               description: 'Previous',
-               callback: function () { $scope.Prev($scope.Sample.LabNumber); }
-           })
-           .add({
-               combo: 'n',
-               description: 'Next',
-               callback: function () { $scope.Next($scope.Sample.LabNumber); }
-           })
+               .add({
+                   combo: 'p',
+                   description: 'Previous',
+                   callback: function () { $state.go("app.sample.previous1"); }
+               })
+               .add({
+                   combo: 'n',
+                   description: 'Next',
+                   callback: function () { $state.go("app.sample.next1"); }
+               })
         }])        
 })();

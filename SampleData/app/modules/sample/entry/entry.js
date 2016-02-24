@@ -146,6 +146,65 @@
                         angular.copy($scope.SubSampleInfo, $scope.holdSubSampleInfo);
                     }
                 }
+                function SetRecLayout(stn) {
+                    switch ($scope.Sample.SampleTypeNumber) {
+                        //Soil
+                        case "1":
+                            $scope.rightSide = true;
+                            $scope.SoilSampleLink = false;
+                            $scope.linkToSoil = false;
+                            $scope.soilView = true;
+                            $scope.plantView = false;
+                            $scope.otherView = false;
+                            break;
+                            //Biological
+                        case "14":
+                            $scope.rightSide = true;
+                            $scope.SoilSampleLink = true;
+                            $scope.linkToSoil = true;
+                            $scope.soilView = true;
+                            $scope.plantView = false;
+                            $scope.otherView = false;
+                            break;
+                            //Plant
+                        case "5":
+                            $scope.rightSide = true;
+                            $scope.soilView = false;
+                            $scope.plantView = true;
+                            $scope.otherView = false;
+                            break;
+                            //Feed, NIR, Water, Manure, Slurry, Fertilizer, Resin 
+                        case "2":
+                        case "3":
+                        case "4":
+                        case "6":
+                        case "7":
+                        case "9":
+                        case "12":
+                            $scope.rightSide = true;
+                            $scope.soilView = false;
+                            $scope.plantView = false;
+                            $scope.otherView = true;
+                            break;
+                            //Potato, Herbicide, Wasterwater, Other
+                        case "10":
+                        case "11":
+                        case "8":
+                        case "13":
+                            $scope.rightSide = false;
+                            $scope.soilView = false;
+                            $scope.plantView = false;
+                            $scope.otherView = false;
+                            break;
+                    }
+                };
+
+                $scope.Change = function () {
+                    var stn = parseInt(angular.element('#cboSampleType').val());
+                    ClearForm();
+                    Load(stn);
+                    SetRecLayout(stn);
+                };
 
                 hotkeys.bindTo($scope)
                 .add({

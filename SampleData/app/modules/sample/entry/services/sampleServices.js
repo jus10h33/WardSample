@@ -71,10 +71,10 @@
             setSoilValues: function (index) {
                 SetTopSoils(index);
                 SetSampleChains(index);                
-                SetRecommendations(index)
+                SetRecommendations(index);
             },
             setSubValues: function (subSampleInfo, subSampleInfos) {
-                SetSubValues(subSampleInfo, subSampleInfos)
+                SetSubValues(subSampleInfo, subSampleInfos);
             }
         }
         function SetGenericMasters(samples, accounts, sampleTypes, sampleColumns) {

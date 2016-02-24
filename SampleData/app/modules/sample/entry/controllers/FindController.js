@@ -36,7 +36,7 @@
             $scope.Commit = function () {
                 $state.go("app.sample.find2", {stn:$scope.Sample.SampleTypeNumber, bn:$scope.Sample.BatchNumber, ln:$scope.Sample.LabNumber})
             }
-            if (angular.isDefined($scope.Sample.SampleTypeNumber)) {
+            if (angular.isDefined(x.Sample.SampleTypeNumber)) {
                 $scope.Sample.SampleTypeNumber = x.Sample.SampleTypeNumber;
             } else {
                 var x = 1;

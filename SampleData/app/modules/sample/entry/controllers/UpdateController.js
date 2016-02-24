@@ -287,7 +287,7 @@
                 }
                 return valid;
             };
-
+            
             $scope.FindAccount = function () {
                 if ($scope.entryForm.txtAccountNumber.$valid) {
                     AccountService.find($scope.Sample.AccountNumber, $scope.Sample.SampleTypeNumber).then(function (result) {
@@ -353,12 +353,16 @@
                 }
             };
             $scope.Cancel = function () {
-                console.log($scope.Sample);
-                console.log($scope.holdSample);
                 if (angular.equals($scope.Sample, $scope.holdSample)) {
                     $state.go("app.sample.entry");
                 } else {
-                    alert("data has changed");
+                    $('#discardChangesModal').modal('show');
+                }
+            };
+            $scope.DiscardChanges = function (response) {
+                $('#discardChangesModal').modal('hide');
+                if (response == 'yes') {
+                    $state.go("app.sample.entry");
                 }
             };
             

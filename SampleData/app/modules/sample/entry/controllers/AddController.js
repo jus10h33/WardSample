@@ -312,10 +312,9 @@
                 };
                 
                 $scope.DiscardChanges = function (response) {
-                    if (response == 'yes') {
+                    $('#discardChangesModal').modal('hide');
+                    if (response == 'yes') {                        
                         $state.go("app.sample.entry");
-                    } else {
-                        $('#discardChangesModal').modal('hide');
                     }
                 };
                 $scope.FindAccount = function () {

@@ -13,68 +13,79 @@
                 })
                 .state('app.sample.next2', {
                     url: '/next/:stn/:bn/:ln',
+                    params: {
+                        stn: { value: null, squash: true },
+                        bn: { value: null, squash: true },
+                        ln: { value: null, squash: true }
+                    },
                     templateUrl: '/app/modules/sample/entry/entry.html',
                     controller: 'NextController2'
                 });
         })
-        .controller("NextController1", ["ScopeService", "$state", function (ScopeService, $state) {
-            var x = ScopeService.getScope().Sample;
-            $state.go("app.sample.next2", { stn: x.SampleTypeNumber, bn: x.BatchNumber, ln: x.LabNumber });
+        .controller("NextController1", ["ScopeService", "$scope", "SampleService", "SetSampleService", "$state", "hotkeys",
+            function (ScopeService, $scope, SampleService, SetSampleService, $state, hotkeys) {
+                var x = ScopeService.getScope().Sample;
+            
+                var x = ScopeService.getScope();
+                $scope.SampleTypes = x.SampleTypes;
+                $scope.SampleColumns = x.SampleColumns;
+                var Samples = x.Samples;
+                var Accounts = x.Accounts;
+                var Sample = x.Sample;
+                var Account = x.Account;
+                var Messages = x.Messages;
+                var SubSampleInfos = x.SubSampleInfos;            
 
-        }])
-        .controller("NextController2", ["$scope", "ScopeService", "SampleService", "SetSampleService", "$stateParams", "hotkeys",
-            function ($scope, ScopeService, SampleService, SetSampleService, $stateParams, hotkeys) {
-            var x = ScopeService.getScope();
-            $scope.SampleTypes = x.SampleTypes;
-            $scope.SampleColumns = x.SampleColumns;
-            var Samples = x.Samples;
-            var Accounts = x.Accounts;
-            var Sample = x.Sample;
-            var Account = x.Account;
-            var Messages = x.Messages;
-            var SubSampleInfos = x.SubSampleInfos;
-            $scope.readonly = true;
+                var stn = Sample.SampleTypeNumber;
+                var bn = Sample.BatchNumber;
+                var ln = Sample.LabNumber;
 
-            var stn = $stateParams.stn;
-            var bn = $stateParams.bn;
-            var ln = $stateParams.ln;
-
-            if (!$scope.disableNext) {
-                $scope.disablePrev = false;
-                var found = false;
-                var y = 0;
-                if (angular.isDefined(x.Counter)) {
-                    y = x.Counter;
-                } else {
-                    y = 0;
-                }
-                while (!found && y >= 0) {
-                    if (Samples[y].LabNumber == ln) {
-                        found = true;
+                if (!$scope.disableNext) {
+                    $scope.disablePrev = false;
+                    var found = false;
+                    var y = 0;
+                    if (angular.isDefined(x.Counter)) {
+                        y = x.Counter;
+                    } else {
+                        y = 0;
                     }
-                    y--;
-                }
-                if (found && y >= 0) {
-                    SetSampleService.setGenericValues(y, Samples, Accounts, Messages);
-                    if (stn == 1 || stn == 14) {
-                        SetSampleService.setSoilValues(y)
-                    } else if (stn == 2 || stn == 3 || stn == 4 || stn == 5 || stn == 6 || stn == 7 || stn == 9 || stn == 12) {
-                        SetSampleService.setSubValues(SubSampleInfos[y], SubSampleInfos);
-                    }
-                    ScopeService.setCounter(y);
-                } else {
-                    SampleService.next(stn, bn, ln).then(function (result) {
-                        if (angular.isDefined(result.data) && result.data != null && result.data != "") {
-                            y = result.data.GenericInfo.Samples.length - 1;
-                            SetSampleService.setGenericValues(y, result.data.GenericInfo.Samples, result.data.GenericInfo.Accounts, result.data.GenericInfo.Messages);
-                            ScopeService.setCounter(y);
-                        } else {
-                            $scope.disableNext = true;
-                            y = 0;
+                    while (!found && y >= 0) {
+                        if (Samples[y].LabNumber == ln) {
+                            found = true;
                         }
-                    });
+                        y--;
+                    }
+                    if (found && y >= 0) {
+                        SetSampleService.setGenericValues(y, Samples, Accounts, Messages);
+                        if (stn == 1 || stn == 14) {
+                            SetSampleService.setSoilValues(y)
+                        } else if (stn == 2 || stn == 3 || stn == 4 || stn == 5 || stn == 6 || stn == 7 || stn == 9 || stn == 12) {
+                            SetSampleService.setSubValues(SubSampleInfos[y], SubSampleInfos);
+                        }
+                        bn = Samples[y].BatchNumber;
+                        ln = Samples[y].LabNumber;
+                        ScopeService.setCounter(y);
+                    } else {
+                        SampleService.next(stn, bn, ln).then(function (result) {
+                            if (angular.isDefined(result.data) && result.data != null && result.data != "") {
+                                y = result.data.GenericInfo.Samples.length - 1;
+                                SetSampleService.setGenericValues(y, result.data.GenericInfo.Samples, result.data.GenericInfo.Accounts, result.data.GenericInfo.Messages);
+                                bn = result.data.GenericInfo.Samples[y].BatchNumber;
+                                ln = result.data.GenericInfo.Samples[y].LabNumber;
+                                ScopeService.setCounter(y);
+                            } else {
+                                $scope.disableNext = true;
+                                y = 0;
+                            }
+                        });
+                    }
                 }
-                x = ScopeService.getScope();
+                $state.go("app.sample.next2", { stn: stn, bn: bn, ln: ln });
+            }])
+        .controller("NextController2", ["$scope", "ScopeService", "hotkeys",
+            function ($scope, ScopeService, hotkeys) {
+            
+                var x = ScopeService.getScope();
 
                 $scope.SampleTypes = x.SampleTypes;
                 $scope.SampleColumns = x.SampleColumns;
@@ -108,6 +119,6 @@
                 $scope.rightSide = x.rightSide;
                 $scope.soilView = x.soilView;
                 $scope.linkToSoil = x.linkToSoil;
-            }
+                $scope.readonly = true;                   
         }])        
 })();

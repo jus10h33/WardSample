@@ -36,16 +36,18 @@
     return {
         restrict: 'A',
         link: function (scope, element, attrs) {
+            console.log(element);
             var message = element.context.attributes["validate-input"].nodeValue;
             var id = element.context.id;
-            element.bind('blur', function() {
-                if (element.$invalid && element.$dirty) {
-                    $scope.DisplayPopover(id, message);
+            element.bind('blur', function () {
+                //element.$invalid && element.$dirty
+                if (true) {
+                    DisplayPopover(id, message);
                     id = "#" + id;
                     angular.element(id).addClass('has-error');
                     angular.element(id).focus();
                 } else if (element.$valid && element.$dirty) {
-                    $scope.RemovePopover(id);
+                    RemovePopover(id);
                     id = "#" + id;
                     angular.element(id).removeClass('has-error');
                 }
