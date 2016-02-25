@@ -347,15 +347,19 @@
   <ItemGroup>
     <Content Include="app\app.js" />
     <Content Include="app\index.html" />
+    <Content Include="app\Directives\AutoCompleteDirective.js" />
     <Content Include="app\modules\sample\entry\controllers\AddController.js" />
-    <Content Include="app\modules\sample\entry\controllers\CancelController.js" />
-    <Content Include="app\modules\sample\entry\controllers\CommitController.js" />
     <Content Include="app\modules\sample\entry\controllers\DeleteController.js" />
     <Content Include="app\modules\sample\entry\controllers\FindController.js" />
     <Content Include="app\modules\sample\entry\controllers\NextController.js" />
     <Content Include="app\modules\sample\entry\controllers\PreviousController.js" />
+    <Content Include="app\modules\sample\entry\controllers\SetScopeController.js" />
     <Content Include="app\modules\sample\entry\controllers\UpdateController.js" />
     <Content Include="app\modules\sample\entry\entry.html" />
+    <Content Include="app\modules\sample\entry\services\AccountService.js" />
+    <Content Include="app\modules\sample\entry\services\ReportService.js" />
+    <Content Include="app\modules\sample\entry\services\SetSampleService.js" />
+    <Content Include="app\modules\sample\entry\services\ScopeService.js" />
     <Content Include="app\modules\sample\entry\templates\chain.html" />
     <Content Include="app\modules\sample\entry\templates\info.html" />
     <Content Include="app\modules\sample\entry\templates\notes.html" />
@@ -409,11 +413,9 @@
     <Content Include="app\components\bootstrap\bootstrap-datepicker.min.js" />
     <Content Include="app\components\bootstrap\bootstrap.js" />
     <Content Include="app\components\bootstrap\bootstrap.min.js" />
-    <Content Include="app\modules\Constants\sampleConstants.js" />
-    <Content Include="app\modules\Controllers\sampleControllers.js" />
-    <Content Include="app\modules\Directives\SampleDirectives.js" />
+    <Content Include="app\Directives\ValidateOnblurDirective.js" />
     <Content Include="app\components\jquery\jquery.hotkeys.js" />
-    <Content Include="app\modules\sample\entry\services\SampleServices.js" />
+    <Content Include="app\modules\sample\entry\services\SampleService.js" />
     <Content Include="app\components\jquery\jquery-1.11.3.js" />
     <Content Include="app\components\jquery\jquery-1.11.3.min.js" />
     <Content Include="app\components\jquery\jquery-1.11.3.min.map" />
@@ -471,9 +473,6 @@
     <Content Include="Views\Manage\VerifyPhoneNumber.cshtml" />
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
-    <Content Include="Views\Sample\Entry.cshtml" />
-    <Content Include="Views\Customer\Index.cshtml" />
-    <Content Include="Views\Invoice\Index.cshtml" />
     <Content Include="WardDBContext.dbml">
       <Generator>MSLinqToSQLGenerator</Generator>
       <LastGenOutput>WardDBContext.designer.cs</LastGenOutput>
@@ -572,16 +571,16 @@
     <EmbeddedResource Include="Migrations\201601261549330_ChangedSoilRecs.resx">
       <DependentUpon>201601261549330_ChangedSoilRecs.cs</DependentUpon>
     </EmbeddedResource>
-    <Content Include="Views\Sample\Index.cshtml" />
     <None Include="WardDBContext.dbml.layout">
       <DependentUpon>WardDBContext.dbml</DependentUpon>
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="app\Constants\" />
+    <Folder Include="app\Controllers\" />
     <Folder Include="app\modules\account\" />
     <Folder Include="app\modules\invoice\" />
     <Folder Include="app\modules\report\" />
-    <Folder Include="app\modules\sample\filters\" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />

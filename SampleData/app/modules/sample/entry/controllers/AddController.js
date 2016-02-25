@@ -10,9 +10,7 @@
                     url: '/add',
                     templateUrl: '/app/modules/sample/entry/entry.html',
                     resolve: {
-                        PreviousState: [
-                            "$state",
-                            function ($state) {
+                        PreviousState: ["$state", function ($state) {
                                 var currentStateData = {
                                     Name: $state.current.name,
                                     Params: $state.params,
@@ -84,6 +82,61 @@
 
                 SetHoldValues();
 
+                /* -------------- Methods handling rec actions -----------------*/
+                function ConvertRecs() {
+                    $('input[auto-complete]').each(function () {
+                        angular.element(this).controller('ngModel').$setViewValue($(this).val());
+                    });
+                    var idx = 0;
+                    for (var i = 0; i < $scope.Recommendations.length; i++) {
+                        var newRec = {
+                            LabNumber: $scope.Sample.LabNumber,
+                            BatchNumber: $scope.Sample.BatchNumber,
+                            Priority: $scope.Recommendations[idx].Priority,
+                            RecTypeNumber: $scope.Recommendations[idx].RecTypeName.substring(0, $scope.Recommendations[idx].RecTypeName.indexOf("-") - 1),
+                            CropTypeNumber: $scope.Recommendations[idx].CropTypeName.substring(0, $scope.Recommendations[idx].CropTypeName.indexOf("-") - 1),
+                            YieldGoal: $scope.Recommendations[idx].YieldGoal
+                        };
+                        $scope.SampleRecs.push(newRec);
+                        idx++;
+                    }
+                    if ($scope.SampleRecs.length == 1 && $scope.SampleRecs[0].RecTypeNumber == 0) {
+                        $scope.SampleRecs = [];
+                    }
+                    return $scope.SampleRecs;
+                };
+                function ResetRecPriority() {
+                    for (var i = 0; i < $scope.Recommendations.length; i++) {
+                        $scope.Recommendations[i].Priority = i;
+                    }
+                };
+                $scope.RemoveRec = function (index) {
+                    $scope.Recommendations.splice(index, 1);
+                    $scope.ResetRecPriority();
+                };
+                $scope.AddRec = function () {
+                    var recLength = $scope.Recommendations.length;
+                    var newRec = {
+                        LabNumber: $scope.Sample.LabNumber,
+                        BatchNumber: $scope.Sample.BatchNumber,
+                        Priority: recLength - 1,
+                        RecTypeNumber: 0,
+                        RecTypeName: "",
+                        CropTypeNumber: 0,
+                        CropTypeName: "",
+                        YieldGoal: ""
+                    }
+                    if (newRec.Priority == -1) {
+                        newRec.Priority = 0;
+                    }
+                    if ($scope.Sample.SampleTypeNumber == 14) {
+                        newRec.RecTypeNumber = 4;
+                        newRec.RecTypeName = "4 - Haney";
+                    }
+                    $scope.Recommendations.push(newRec);
+                };                
+                /*-------------------------------------------------------------*/
+
                 function SetSampleChainValues() {
                     $scope.SampleChain.BatchNumber = $scope.Sample.BatchNumber;
                     $scope.SampleChain.LabNumber = $scope.Sample.LabNumber;
@@ -95,6 +148,19 @@
                         $scope.SampleChain.TopSoil = 0;
                         $scope.SampleChain.LinkedSampleBatch = angular.element('#txtLinkSoilBatch').val();
                         $scope.SampleChain.LinkedSampleLab = angular.element('#txtLinkSoillab').val();
+                    }
+                };
+                function SetSubSampleInfo() {
+                    $scope.SubSampleInfo.SampleTypeNumber = $scope.Sample.SampleTypeNumber;
+                    $scope.SubSampleInfo.BatchNumber = $scope.Sample.BatchNumber;
+                    $scope.SubSampleInfo.LabNumber = $scope.Sample.LabNumber;
+                    if ($scope.Sample.SampleTypeNumber != 5) {
+                        $scope.SubSampleInfo.SubSampleTypeNumber = angular.element('#cboType').val();
+                        console.log("SubSampleTypeNumber1: " + $scope.SubSampleInfo.SubSampleTypeNumber);
+                        $scope.SubSampleInfo.SubSubSampleTypeNumber == 0;
+                    } else {
+                        $scope.SubSampleInfo.SubSampleTypeNumber = angular.element('#cboPlantType').val();
+                        $scope.SubSampleInfo.SubSampleTypeNumber = angular.element('#cboPlant').val();
                     }
                 };
                 function SetHoldValues() {
@@ -183,6 +249,124 @@
                     } else {
                         return false;
                     }
+                };
+                $scope.ValidateSampleDates = function () {
+                    if ($scope.entryForm.dpkDateReceived.$invalid || $scope.entryForm.dpkDateReported.$invalid || ($scope.Sample.DateReceived > $scope.Sample.DateReported)) {
+                        if ($scope.entryForm.dpkDateReceived.$invalid) {
+                            DisplayPopover('dpkDateRecieved', 'Required form [yyyy-mm-dd]');
+                        } else if ($scope.entryForm.dpkDateReported.$invalid) {
+                            DisplayPopover('dpkDateReported', 'Required form [yyyy-mm-dd]');
+                            angular.element('#dpkDateReported').addClass('has-error');
+                        } else {
+                            DisplayPopover('dpkDateReported', 'Must be greater than Date Received');
+                            angular.element('#dpkDateReported').addClass('has-error');
+                        }
+                    } else {
+                        RemovePopover('dpkDateReceived');
+                        angular.element('#dpkDateReceived').removeClass('has-error');
+                        RemovePopover('dpkDateReported');
+                        angular.element('#dpkDateReported').removeClass('has-error');
+                    }
+                };
+                function ValidateSampleChain() {
+                    var valid = true;
+                    if (IsPresent($scope.SampleChain.BeginningDepth) && IsPresent($scope.SampleChain.EndingDepth) && IsPresent($scope.SampleChain.PastCropNumber)) {
+                        if ($scope.SampleChain.TopSoil = 1) {
+                            if (!IsPresent($scope.SampleChain.LinkedSampleBatch) || !IsPresent($scope.SampleChain.LinkedSampleBatch)) {
+                                valid = false;
+                            }
+                        }
+                    } else {
+                        valid = false;
+                    }
+                    return valid;
+                };
+                $scope.ValidateTypes = function(index, type) {
+                    var types = [];
+                    var recID = "";
+                    if (type == 'Crop') {
+                        types = $scope.CropTypes;
+                        recID = '#acoCropTypes' + index;
+                    } else {
+                        types = $scope.RecTypes;
+                        recID = '#acoRecTypes' + index;
+                    }
+                    var value = angular.element(recID).val().trim().toUpperCase();
+                    var recValue = "";
+                    var isValid = false;
+                    var i = 0;
+                    if (value != "") {
+                        if (!isNaN(value)) {
+                            while (i < types.length && !isValid) {
+                                if (types[i].substring(0, (types[i].indexOf("-") - 1)) == value) {
+                                    recValue = types[i];
+                                    isValid = true;
+                                }
+                                i++;
+                            }
+                        } else {
+                            while (i < types.length && !isValid) {
+                                if (types[i].substring((types[i].indexOf("-") + 2)) == value || types[i].toUpperCase() == value) {
+                                    recValue = types[i];
+                                    isValid = true;
+                                }
+                                i++;
+                            }
+                        }
+                    } else {
+                        isValid = false;
+                    }
+                    if (isValid) {
+                        angular.element(recID).val(recValue);
+                        return true;
+                    } else {
+                        angular.element(recID).focus();
+                        return false;
+                    }
+                };
+                function ValidateYieldGoal(i) {
+                    var id = '#txtYieldGoal' + i;
+                    var id2 = 'txtYieldGoal' + i;
+                    var valid = true;
+                    if (isNaN(angular.element(id).val())) {
+                        //DisplayPopover(id2, 'Must be numeric');
+                        //angular.element(id).addClass('has-error');
+                        valid = false;
+                    }
+                    return valid;
+                };
+                function ValidateRecs() {
+                    ValidateSampleChain();
+                    var recLength = $scope.Recommendations.length;
+                    var valid = true;
+                    console.log(recLength);
+                    while (i < recLength && valid) {
+                        valid = $scope.ValidateTypes(i, 'Rec');
+                        valid = $scope.ValidateTypes(i, 'Crop');
+                        valid = $scope.ValidateYieldGoal(i);
+                        i++;
+                    }
+
+                    if (valid && recLength > 1) { // check for duplicates
+                        var index = recLength - 1;
+                        var recs = $scope.Recommendations;
+                        var recID = '#acoRecTypes' + index;
+                        var lastRecType = angular.element(recID).val();
+                        var cropID = '#acoCropTypes' + index;
+                        var lastCropType = angular.element(cropID).val();
+                        var yieldID = '#txtYieldGoal' + index;
+                        var lastYieldGoal = angular.element(yieldID).val();
+                        var valid = true;
+                        for (var i = 0; i < recLength; i++) {
+                            if (recs[i].RecType == lastRecType && recs[i].CropType == lastCropType && recs[i].YieldGoal == lastYieldGoal) {
+                                valid = false;
+                            }
+                        }
+                        if (!valid) {
+                            alert('Can not have duplicate sample recommendations');
+                        }
+                    }
+                    return valid;
                 };
                 function ValidateForm() {
                     // Validate sample entry
@@ -372,18 +556,27 @@
                 $scope.Commit = function () {
                     SetSampleChainValues();
                     if (ValidateForm()) {
-                        SampleService.add($scope.Sample, $scope.SampleChain, $scope.SampleRecs, $scope.SubSampleInfo).then(function (result) {
-                            if (result.data != null) {
-                                console.log(result.data);
-                                SetSampleService.setAllValues(result.data);
-                                $state.go('app.sample.entry');
+                        if ($scope.Sample.SampleTypeNumber == 1 || $scope.Sample.SampleTypeNumber == 14) {
+                            if (ValidateSampleChain()) {
+                                if (angular.isDefined($scope.sampleRecs)) {
+                                    $scope.sampleRecs = ConvertRecs();
+                                }
+                                SampleService.add($scope.Sample, $scope.SampleChain, $scope.SampleRecs, $scope.SubSampleInfo).then(function (result) {
+                                    if (result.data != null) {
+                                        console.log(result.data);
+                                        SetSampleService.setAllValues(result.data);
+                                        $state.go('app.sample.entry');
+                                    }
+                                    //$scope.ResetForm();                   
+                                });
                             }
-                            //$scope.ResetForm();                   
-                        });
+                        } else if ($scope.Sample.SampleTypeNumber == 2 || $scope.Sample.SampleTypeNumber == 3 || $scope.Sample.SampleTypeNumber == 4 || $scope.Sample.SampleTypeNumber == 6 || $scope.Sample.SampleTypeNumber == 7 || $scope.Sample.SampleTypeNumber == 9 || $scope.Sample.SampleTypeNumber == 12 || $scope.Sample.SampleTypeNumber == 5) {
+                            SetSubSampleInfo();
+                        }                        
                     }
                 };
                 $scope.Cancel = function () {
-                    if (angular.equals($scope.Sample, $scope.holdSample)) {
+                    if (!angular.equals($scope.Sample, $scope.holdSample) || (angular.isDefined($scope.holdSampleChain) && !angular.equals($scope.SampleChain, $scope.holdSampleChain)) || (angular.isDefined($scope.Recommendtations) && !angular.equals($scope.Recommendations, $scope.holdRecommendations)) || (angular.isDefined($scope.holdSubSampleInfo) && !angular.equals($scope.SubSampleInfo, $scope.holdSubSampleInfo))) {
                         $state.go("app.sample.entry");
                     } else {
                         $('#discardChangesModal').modal('show');

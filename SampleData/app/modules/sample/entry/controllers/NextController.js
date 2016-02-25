@@ -13,13 +13,13 @@
                 })
                 .state('app.sample.next2', {
                     url: '/next/:stn/:bn/:ln',
-                    params: {
-                        stn: { value: null, squash: true },
-                        bn: { value: null, squash: true },
-                        ln: { value: null, squash: true }
-                    },
+                    //params: {
+                    //    stn: { value: null, squash: true },
+                    //    bn: { value: null, squash: true },
+                    //    ln: { value: null, squash: true }
+                    //},
                     templateUrl: '/app/modules/sample/entry/entry.html',
-                    controller: 'NextController2'
+                    controller: 'SetScopeController'
                 });
         })
         .controller("NextController1", ["ScopeService", "$scope", "SampleService", "SetSampleService", "$state", "hotkeys",
@@ -81,44 +81,5 @@
                     }
                 }
                 $state.go("app.sample.next2", { stn: stn, bn: bn, ln: ln });
-            }])
-        .controller("NextController2", ["$scope", "ScopeService", "hotkeys",
-            function ($scope, ScopeService, hotkeys) {
-            
-                var x = ScopeService.getScope();
-
-                $scope.SampleTypes = x.SampleTypes;
-                $scope.SampleColumns = x.SampleColumns;
-                $scope.Messages = x.Messages;
-
-                $scope.Samples = x.Samples;
-                $scope.Accounts = x.Accounts;
-
-                $scope.Sample = x.Sample;
-                $scope.Account = x.Account;
-                $scope.Counter = x.Counter;
-
-                $scope.RecTypes = x.RecTypes;
-                $scope.CropTypes = x.CropTypes;
-                $scope.PastCrops = x.PastCrops;
-
-                $scope.Recommendations = x.Recommendations;
-                $scope.RecommendationsList = x.RecommendationsList;
-                $scope.SampleChainsList = x.SampleChainsList;
-                $scope.SampleChains = x.SampleChains;
-                $scope.SampleChain = x.SampleChain;
-                $scope.SampleRecs = x.SampleRecs;
-                $scope.TopSoilsList = x.TopSoilsList;
-                $scope.TopSoils = x.TopSoils;
-
-                $scope.SampleChainLink = x.SampleChainLink;
-                $scope.chkLinkToSoil = x.chkLinkToSoil;
-                $scope.chkTopSoil = x.chkTopSoil;
-                $scope.otherView = x.otherView;
-                $scope.plantView = x.plantView;
-                $scope.rightSide = x.rightSide;
-                $scope.soilView = x.soilView;
-                $scope.linkToSoil = x.linkToSoil;
-                $scope.readonly = true;                   
-        }])        
+            }])       
 })();

@@ -22,8 +22,8 @@
                 })
         })
         .controller("SampleEntryController",
-            ["ScopeService", "$scope", "$state", "$stateParams", "SampleService", "SetSampleService", "AccountService", "ReportService", "hotkeys",
-                function (ScopeService, $scope, $state, $stateParams, SampleService, SetSampleService, AccountService, ReportService, hotkeys) {
+            ["$state", "ScopeService", "$scope", "SampleService", "SetSampleService", "AccountService", "ReportService", "hotkeys",
+                function ($state, ScopeService, $scope, SampleService, SetSampleService, AccountService, ReportService, hotkeys) {
 
                 var stn = 1;
                 var x = ScopeService.getScope();

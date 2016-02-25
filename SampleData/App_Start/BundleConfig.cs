@@ -34,13 +34,13 @@ namespace SampleData
 
             bundles.Add(new ScriptBundle("~/bundles/angular").Include(
                       "~/app/components/angular/angular.min.js"
-                      //,"~/app/components/angular/angular-touch.min.js"
-                      //,"~/app/components/angular/angular-route.min.js"
+                      ,"~/app/components/angular/angular-touch.min.js"
+                      ,"~/app/components/angular/angular-route.min.js"
                       ,"~/app/components/angular/angular-ui-router.min.js"
-                      //,"~/app/components/angular/angular-sanitize.min.js"
-                      //,"~/app/components/angular/angular-resource.min.js"
-                      //,"~/app/components/angular/angular-mocks.js"
-                      //,"~/app/components/angular/angular-animate.min.js"
+                      ,"~/app/components/angular/angular-sanitize.min.js"
+                      ,"~/app/components/angular/angular-resource.min.js"
+                      ,"~/app/components/angular/angular-mocks.js"
+                      ,"~/app/components/angular/angular-animate.min.js"
                       ,"~/app/components/angular/hotkeys.min.js"
                       //,"~/app/components/angular/ngMask.min.js"
                       //,"~/app/components/angular/autofill-event.js"
@@ -48,10 +48,15 @@ namespace SampleData
 
             bundles.Add(new ScriptBundle("~/bundles/sample").Include(
                         "~/app/app.js"
-                        ,"~/app/modules/Directives/SampleDirectives.js"
+                        ,"~/app/Directives/AutoCompleteDirective.js"
+                        ,"~/app/Directives/ValidateOnblurDirective.js"
                         ,"~/app/modules/sample/sample.js"
                         ,"~/app/modules/sample/entry/entry.js"
-                        ,"~/app/modules/sample/entry/services/SampleServices.js"
+                        ,"~/app/modules/sample/entry/services/SampleService.js"
+                        ,"~/app/modules/sample/entry/services/SetSampleService.js"
+                        ,"~/app/modules/sample/entry/services/ScopeService.js"
+                        ,"~/app/modules/sample/entry/services/AccountService.js"
+                        ,"~/app/modules/sample/entry/services/ReportService.js"
             ));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(

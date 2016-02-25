@@ -10,9 +10,7 @@
                     url: '/update',
                     templateUrl: '/app/modules/sample/entry/entry.html',
                     resolve: {
-                        PreviousState: [
-                            "$state",
-                            function ($state) {
+                        PreviousState: ["$state", function ($state) {
                                 var currentStateData = {
                                     Name: $state.current.name,
                                     Params: $state.params,
@@ -25,7 +23,8 @@
                     controller: 'UpdateController'
                 });
         })
-        .controller("UpdateController", ["$scope", "ScopeService", "$state", "SampleService", "ReportService", "AccountService", "SetSampleService", "PreviousState", "hotkeys",
+        .controller("UpdateController",
+            ["$scope", "ScopeService", "$state", "SampleService", "ReportService", "AccountService", "SetSampleService", "PreviousState", "hotkeys",
             function ($scope, ScopeService, $state, SampleService, ReportService, AccountService, SetSampleService, PreviousState, hotkeys) {
 
             if (PreviousState.Name != "app.sample.entry") {
@@ -69,7 +68,62 @@
             $scope.disabled = false;
             $scope.disabledUpdate = true;
             $scope.action = 'update';
-            angular.element('#txtSampleID1').focus();            
+            angular.element('#txtSampleID1').focus();
+
+            /* -------------- Methods handling rec actions -----------------*/
+            function ConvertRecs() {
+                $('input[auto-complete]').each(function () {
+                    angular.element(this).controller('ngModel').$setViewValue($(this).val());
+                });
+                var idx = 0;
+                for (var i = 0; i < $scope.Recommendations.length; i++) {
+                    var newRec = {
+                        LabNumber: $scope.Sample.LabNumber,
+                        BatchNumber: $scope.Sample.BatchNumber,
+                        Priority: $scope.Recommendations[idx].Priority,
+                        RecTypeNumber: $scope.Recommendations[idx].RecTypeName.substring(0, $scope.Recommendations[idx].RecTypeName.indexOf("-") - 1),
+                        CropTypeNumber: $scope.Recommendations[idx].CropTypeName.substring(0, $scope.Recommendations[idx].CropTypeName.indexOf("-") - 1),
+                        YieldGoal: $scope.Recommendations[idx].YieldGoal
+                    };
+                    $scope.SampleRecs.push(newRec);
+                    idx++;
+                }
+                if ($scope.SampleRecs.length == 1 && $scope.SampleRecs[0].RecTypeNumber == 0) {
+                    $scope.SampleRecs = [];
+                }
+                return $scope.SampleRecs;
+            };
+            function ResetRecPriority() {
+                for (var i = 0; i < $scope.Recommendations.length; i++) {
+                    $scope.Recommendations[i].Priority = i;
+                }
+            };
+            $scope.RemoveRec = function (index) {
+                $scope.Recommendations.splice(index, 1);
+                ResetRecPriority();
+            };
+            $scope.AddRec = function () {
+                var recLength = $scope.Recommendations.length;
+                var newRec = {
+                    LabNumber: $scope.Sample.LabNumber,
+                    BatchNumber: $scope.Sample.BatchNumber,
+                    Priority: recLength - 1,
+                    RecTypeNumber: 0,
+                    RecTypeName: "",
+                    CropTypeNumber: 0,
+                    CropTypeName: "",
+                    YieldGoal: ""
+                }
+                if (newRec.Priority == -1) {
+                    newRec.Priority = 0;
+                }
+                if ($scope.Sample.SampleTypeNumber == 14) {
+                    newRec.RecTypeNumber = 4;
+                    newRec.RecTypeName = "4 - Haney";
+                }
+                $scope.Recommendations.push(newRec);
+            };
+            /*-------------------------------------------------------------*/
 
             function SetSampleChainValues() {
                 $scope.SampleChain.BatchNumber = $scope.Sample.BatchNumber;
@@ -82,6 +136,19 @@
                     $scope.SampleChain.TopSoil = 0;
                     $scope.SampleChain.LinkedSampleBatch = x.SampleChain.LinkedSampleBatch;
                     $scope.SampleChain.LinkedSampleLab = x.SampleChain.LinkedSampleLab;
+                }
+            };
+            function SetSubSampleInfo() {
+                $scope.SubSampleInfo.SampleTypeNumber = $scope.Sample.SampleTypeNumber;
+                $scope.SubSampleInfo.BatchNumber = $scope.Sample.BatchNumber;
+                $scope.SubSampleInfo.LabNumber = $scope.Sample.LabNumber;
+                if ($scope.Sample.SampleTypeNumber != 5) {
+                    $scope.SubSampleInfo.SubSampleTypeNumber = angular.element('#cboType').val();
+                    console.log("SubSampleTypeNumber1: " + $scope.SubSampleInfo.SubSampleTypeNumber);
+                    $scope.SubSampleInfo.SubSubSampleTypeNumber == 0;
+                } else {
+                    $scope.SubSampleInfo.SubSampleTypeNumber = angular.element('#cboPlantType').val();
+                    $scope.SubSampleInfo.SubSampleTypeNumber = angular.element('#cboPlant').val();
                 }
             };
             function SetHoldValues() {
@@ -100,6 +167,8 @@
                     angular.copy($scope.SubSampleInfo, $scope.holdSubSampleInfo);
                 }
             };
+
+            /*---------------- Methods handling validation --------------------*/
             function DisplayPopover(id, message) {
                 id = "#" + id;
                 angular.element(id).attr("data-container", "body");
@@ -147,71 +216,217 @@
                 angular.element('#txtLinkSoilBatch').removeClass('has-error');
                 RemovePopover("txtLinkSoilLab");
                 angular.element('#txtLinkSoilLab').removeClass('has-error');
-                for (var i = 0; i < $scope.SampleRecs.length; i++) {
-                    var recID = '#acoRecTypes' + i;
-                    var cropID = '#acoCropTypes' + i;
-                    var yieldID = '#txtYieldGoal' + i;
-                    angular.element(recID).removeClass('has-error');
-                    recID = 'acoRecTypes' + i;
-                    RemovePopover(recID);
-                    angular.element(cropID).removeClass('has-error');
-                    cropID = 'acoCropTypes' + i;
-                    RemovePopover(cropID);
-                    angular.element(yieldID).removeClass('has-error');
-                    yieldID = 'txtYieldGoal' + i;
-                    RemovePopover(yieldID);
+                if (angular.isDefined($scope.SampleRecs)) {
+                    for (var i = 0; i < $scope.SampleRecs.length; i++) {
+                        var recID = '#acoRecTypes' + i;
+                        var cropID = '#acoCropTypes' + i;
+                        var yieldID = '#txtYieldGoal' + i;
+                        angular.element(recID).removeClass('has-error');
+                        recID = 'acoRecTypes' + i;
+                        RemovePopover(recID);
+                        angular.element(cropID).removeClass('has-error');
+                        cropID = 'acoCropTypes' + i;
+                        RemovePopover(cropID);
+                        angular.element(yieldID).removeClass('has-error');
+                        yieldID = 'txtYieldGoal' + i;
+                        RemovePopover(yieldID);
+                    }
                 }
-            }
+            };
+            function IsPresent(value) {
+                if (value != null && value != "") {
+                    return true;
+                } else {
+                    return false;
+                }
+            };
+            $scope.ValidateSampleDates = function () {
+                if ($scope.entryForm.dpkDateReceived.$invalid || $scope.entryForm.dpkDateReported.$invalid || ($scope.Sample.DateReceived > $scope.Sample.DateReported)) {
+                    if ($scope.entryForm.dpkDateReceived.$invalid) {
+                        DisplayPopover('dpkDateRecieved', 'Required form [yyyy-mm-dd]');
+                    } else if ($scope.entryForm.dpkDateReported.$invalid) {
+                        DisplayPopover('dpkDateReported', 'Required form [yyyy-mm-dd]');
+                        angular.element('#dpkDateReported').addClass('has-error');
+                    } else {
+                        DisplayPopover('dpkDateReported', 'Must be greater than Date Received');
+                        angular.element('#dpkDateReported').addClass('has-error');
+                    }
+                } else {
+                    RemovePopover('dpkDateReceived');
+                    angular.element('#dpkDateReceived').removeClass('has-error');
+                    RemovePopover('dpkDateReported');
+                    angular.element('#dpkDateReported').removeClass('has-error');
+                }
+            };
+            function ValidateSampleChain() {
+                if (angular.element('input[id=chkTopSoil]:checked')) {
+                    $scope.SampleChain.TopSoil = 1;
+                }
+
+                console.log("bDepth: " + angular.element('#txtBeginningDepth').val());
+                
+                console.log("BDepth: " + $scope.SampleChain.BeginningDepth + ", EDepth: " + $scope.SampleChain.EndingDepth + ", PastCropNumber: " + $scope.SampleChain.PastCropNumber);
+                var valid = true;
+                if (IsPresent($scope.SampleChain.BeginningDepth) && IsPresent($scope.SampleChain.EndingDepth) && IsPresent($scope.SampleChain.PastCropNumber)) {
+                    console.log("line 264");
+                    if ($scope.SampleChain.TopSoil == 0) {
+                        console.log("line 266");
+                        if (IsPresent($scope.SampleChain.LinkedSampleBatch)) {
+                            if (isNaN($scope.SampleChain.LinkedSampleBatch)) {
+                                valid = false;
+                                console.log("line 271");
+                            }
+                        }
+                        if (!IsPresent($scope.SampleChain.LinkedSampleLab)) {
+                            if (isNaN($scope.SampleChain.LinkedSampleBatch)) {
+                                valid = false;
+                                console.log("line 277");
+                            }
+                        }
+                    }
+                } else {
+                    valid = false;
+                }
+                return valid;
+            };
+            $scope.ValidateTypes = function (index, type) {
+                var types = [];
+                var recID = "";
+                if (type == 'Crop') {
+                    types = $scope.CropTypes;
+                    recID = '#acoCropTypes' + index;
+                } else {
+                    types = $scope.RecTypes;
+                    recID = '#acoRecTypes' + index;
+                }
+                var value = angular.element(recID).val().trim().toUpperCase();
+                var recValue = "";
+                var isValid = false;
+                var i = 0;
+                if (value != "") {
+                    if (!isNaN(value)) {
+                        while (i < types.length && !isValid) {
+                            if (types[i].substring(0, (types[i].indexOf("-") - 1)) == value) {
+                                recValue = types[i];
+                                isValid = true;
+                            }
+                            i++;
+                        }
+                    } else {
+                        while (i < types.length && !isValid) {
+                            if (types[i].substring((types[i].indexOf("-") + 2)) == value || types[i].toUpperCase() == value) {
+                                recValue = types[i];
+                                isValid = true;
+                            }
+                            i++;
+                        }
+                    }
+                } else {
+                    isValid = false;
+                }
+                if (isValid) {
+                    angular.element(recID).val(recValue);
+                    return true;
+                } else {
+                    angular.element(recID).focus();
+                    return false;
+                }
+            };
+            function ValidateYieldGoal(i) {
+                var id = '#txtYieldGoal' + i;
+                var id2 = 'txtYieldGoal' + i;
+                var valid = true;
+                if (isNaN(angular.element(id).val())) {
+                    //DisplayPopover(id2, 'Must be numeric');
+                    //angular.element(id).addClass('has-error');
+                    valid = false;
+                }
+                return valid;
+            };
+            function ValidateRecs() {
+                ValidateSampleChain();
+                var recLength = $scope.Recommendations.length;
+                var valid = true;
+                console.log(recLength);
+                while (i < recLength && valid) {
+                    valid = $scope.ValidateTypes(i, 'Rec');
+                    valid = $scope.ValidateTypes(i, 'Crop');
+                    valid = $scope.ValidateYieldGoal(i);
+                    i++;
+                }
+
+                if (valid && recLength > 1) { // check for duplicates
+                    var index = recLength - 1;
+                    var recs = $scope.Recommendations;
+                    var recID = '#acoRecTypes' + index;
+                    var lastRecType = angular.element(recID).val();
+                    var cropID = '#acoCropTypes' + index;
+                    var lastCropType = angular.element(cropID).val();
+                    var yieldID = '#txtYieldGoal' + index;
+                    var lastYieldGoal = angular.element(yieldID).val();
+                    var valid = true;
+                    for (var i = 0; i < recLength; i++) {
+                        if (recs[i].RecType == lastRecType && recs[i].CropType == lastCropType && recs[i].YieldGoal == lastYieldGoal) {
+                            valid = false;
+                        }
+                    }
+                    if (!valid) {
+                        alert('Can not have duplicate sample recommendations');
+                    }
+                }
+                return valid;
+            };
             function ValidateForm() {
                 // Validate sample entry
+                var valid = true;
                 if ($scope.entryForm.$invalid) {
                     if ($scope.entryForm.cboCostTypeNumber.$invalid) {
-                        $scope.DisplayPopover("cboSampleTypeNumber", "Required field");
+                        DisplayPopover("cboSampleTypeNumber", "Required field");
                         angular.element('#cboSampleTypeNumber').addClass('has-error');
                     }
                     if ($scope.entryForm.txtAccountNumber.$invalid) {
-                        $scope.DisplayPopover("txtAccountNumber", "Must be numeric");
+                        DisplayPopover("txtAccountNumber", "Must be numeric");
                         angular.element('#txtAccountNumber').addClass('has-error');
                     }
                     if ($scope.entryForm.txtBatchNumber.$invalid) {
-                        $scope.DisplayPopover("txtBatchNumber", "Must be correct format [yyyymmdd]");
+                        DisplayPopover("txtBatchNumber", "Must be correct format [yyyymmdd]");
                         angular.element('#txtBatchNumber').addClass('has-error');
                     }
                     if ($scope.entryForm.txtLabNumber.$invalid) {
-                        $scope.DisplayPopover("txtLabNumber", "Must be numeric");
+                        DisplayPopover("txtLabNumber", "Must be numeric");
                         angular.element('#txtLabNumber').addClass('has-error');
                     }
                     if ($scope.entryForm.txtReportTypeNumber.$invalid) {
-                        $scope.DisplayPopover("txtReportTypeNumber", "Must be numeric");
+                        DisplayPopover("txtReportTypeNumber", "Must be numeric");
                         angular.element('#txtReportTypeNumber').addClass('has-error');
                     }
                     if ($scope.entryForm.acoGrower.$invalid) {
-                        $scope.DisplayPopover("acoGrower", "Required field");
+                        DisplayPopover("acoGrower", "Required field");
                         angular.element('#acoGrower').addClass('has-error');
                     }
                     if ($scope.entryForm.txtSampleID1.$invalid) {
-                        $scope.DisplayPopover("txtSampleID1", "Required field");
+                        DisplayPopover("txtSampleID1", "Required field");
                         angular.element('#txtSampleID1').addClass('has-error');
                     }
                     if ($scope.entryForm.txtSampleID2.$invalid) {
-                        $scope.DisplayPopover("txtSampleID2", "Required field");
+                        DisplayPopover("txtSampleID2", "Required field");
                         angular.element('#txtSampleID2').addClass('has-error');
                     }
                     if ($scope.entryForm.dpkDateReceived.$invalid) {
-                        $scope.DisplayPopover("dpkDateReceived", "Required field [yyyy-mm-dd]");
+                        DisplayPopover("dpkDateReceived", "Required field [yyyy-mm-dd]");
                         angular.element('#dpkDateReceived').addClass('has-error');
                     }
                     if ($scope.entryForm.dpkDateReported.$invalid) {
-                        $scope.DisplayPopover("dpkDateReported", "Required field [yyyy-mm-dd]");
+                        DisplayPopover("dpkDateReported", "Required field [yyyy-mm-dd]");
                         angular.element('#dpkDateReported').addClass('has-error');
                     }
                     if ($scope.Sample.DateReceived > $scope.Sample.DateReported) {
                         $scope.entryForm.dpkDateReported.$invalid = true;
-                        $scope.DisplayPopover("dpkDateReported", "Must be greater than Date Received");
+                        DisplayPopover("dpkDateReported", "Must be greater than Date Received");
                         angular.element('#dpkDateReported').addClass('has-error');
                     }
                     if ($scope.entryForm.cboCostTypeNumber.$invalid) {
-                        $scope.DisplayPopover("cboCostTypeNumber", "Required field");
+                        DisplayPopover("cboCostTypeNumber", "Required field");
                         angular.element('#cboCostTypeNumber').addClass('has-error');
                     }
                     valid = false;
@@ -222,15 +437,15 @@
                 $scope.frmSampleInfo = [];
                 if ($scope.frmSampleInfo.$invalid) {
                     if ($scope.entryForm.txtBeginningDepth.$invalid) {
-                        $scope.DisplayPopover("txtBeginDepth", "Must be numeric");
+                        DisplayPopover("txtBeginDepth", "Must be numeric");
                         angular.element('#txtBeginDepth').addClass('has-error');
                     }
                     if ($scope.entryForm.txtEndingDepth.$invalid) {
-                        $scope.DisplayPopover("txtEndDepth", "Must be greater than Beginning Depth");
+                        DisplayPopover("txtEndDepth", "Must be greater than Beginning Depth");
                         angular.element('#txtEndDepth').addClass('has-error');
                     }
                     if ($scope.entryForm.cboPastCropNumber.$invalid) {
-                        $scope.DisplayPopover("cboPastCropNumber", "Required field");
+                        DisplayPopover("cboPastCropNumber", "Required field");
                         angular.element('#cboPastCropNumber').addClass('has-error');
                     }
                     valid = false;
@@ -239,13 +454,13 @@
                 }
 
                 // Validate frmSampleLinks
-                if ($scope.IsPresent($scope.SampleChain.LinkedSampleLab) && $scope.SampleChain.LinkedSampleBatch != $scope.Sample.BatchNumber) {
-                    $scope.DisplayPopover("txtLinkSoilBatch", "Must match BatchNumber");
+                if (IsPresent($scope.SampleChain.LinkedSampleLab) && $scope.SampleChain.LinkedSampleBatch != $scope.Sample.BatchNumber) {
+                    DisplayPopover("txtLinkSoilBatch", "Must match BatchNumber");
                     angular.element('#txtLinkSoilBatch').addClass('has-error');
                     valid = false;
                 }
-                if ($scope.IsPresent($scope.SampleChain.LinkedSampleBatch) && isNaN($scope.SampleChain.LinkedSampleLab) && $scope.SampleChain.LinkedSampleLab != "") {
-                    $scope.DisplayPopover("txtLinkSoilLab", "Must be numeric");
+                if (IsPresent($scope.SampleChain.LinkedSampleBatch) && isNaN($scope.SampleChain.LinkedSampleLab) && $scope.SampleChain.LinkedSampleLab != "") {
+                    DisplayPopover("txtLinkSoilLab", "Must be numeric");
                     angular.element('#txtLinkSoilLab').addClass('has-error');
                     valid = false;
                 }
@@ -261,17 +476,17 @@
                         if (angular.element(recID).val() != "") {
                             angular.element(recID).addClass('has-error');
                             recID = 'acoRecTypes' + i;
-                            $scope.DisplayPopover(recID, "Required field");
+                            DisplayPopover(recID, "Required field");
                         }
                         if (angular.element(cropID).val() != "") {
                             angular.element(cropID).addClass('has-error');
                             cropID = 'acoCropTypes' + i;
-                            $scope.DisplayPopover(cropID, "Required field");
+                            DisplayPopover(cropID, "Required field");
                         }
                         if (!isNaN(angular.element(yieldID).val())) {
                             angular.element(yieldID).addClass('has-error');
                             yieldID = 'txtYieldGoal' + i;
-                            $scope.DisplayPopover(yieldID, "Must be numeric");
+                            DisplayPopover(yieldID, "Must be numeric");
                         }
                     }
                     valid = false;
@@ -279,7 +494,7 @@
                     valid = true;
                 }
                 if (valid) {
-                    $scope.RemoveValidation();
+                    RemoveValidation();
                 } else {
                     angular.element("form[id='frmSampleRecs']").find('.ng-invalid:first').focus();
                     angular.element("form[id='frmSampleInfo']").find('.ng-invalid:first').focus();
@@ -287,6 +502,7 @@
                 }
                 return valid;
             };
+            /*-----------------------------------------------------------------*/
             
             $scope.FindAccount = function () {
                 if ($scope.entryForm.txtAccountNumber.$valid) {
@@ -342,18 +558,32 @@
                 }
             };
             $scope.Commit = function () {
+                console.log($scope.entryForm.$invalid);
+                SetSampleChainValues();
                 if (ValidateForm()) {
-                    SampleService.update($scope.Sample, $scope.SampleChain, $scope.SampleRecs, $scope.SubSampleInfo).then(function (result) {
-                        console.log(result.data);
-                        if (result.data != null) {
-                            SetSampleService.setAllValues(result.data);
-                            $state.go("app.sample.entry");
+                    if ($scope.Sample.SampleTypeNumber == 1 || $scope.Sample.SampleTypeNumber == 14) {
+                        console.log("stn is 1 or 14 - Line 546");
+                        if (ValidateSampleChain()) {
+                            console.log("samplechain valid");
+                            if (angular.isDefined($scope.sampleRecs)) {
+                                console.log("recs defined");
+                                $scope.sampleRecs = ConvertRecs();
+                            }
+                            SampleService.update($scope.Sample, $scope.SampleChain, $scope.SampleRecs, $scope.SubSampleInfo).then(function (result) {
+                                console.log(result.data);
+                                if (result.data != null) {
+                                    SetSampleService.setAllValues(result.data);
+                                    $state.go("app.sample.entry");
+                                }
+                            });
                         }
-                    });
-                }
+                    } else if ($scope.Sample.SampleTypeNumber == 2 || $scope.Sample.SampleTypeNumber == 3 || $scope.Sample.SampleTypeNumber == 4 || $scope.Sample.SampleTypeNumber == 6 || $scope.Sample.SampleTypeNumber == 7 || $scope.Sample.SampleTypeNumber == 9 || $scope.Sample.SampleTypeNumber == 12 || $scope.Sample.SampleTypeNumber == 5) {
+                        SetSubSampleInfo();
+                    }
+                }                
             };
             $scope.Cancel = function () {
-                if (angular.equals($scope.Sample, $scope.holdSample)) {
+                if (!angular.equals($scope.Sample, $scope.holdSample) || (angular.isDefined($scope.holdSampleChain) && !angular.equals($scope.SampleChain, $scope.holdSampleChain)) || (angular.isDefined($scope.Recommendtations) && !angular.equals($scope.Recommendations, $scope.holdRecommendations)) || (angular.isDefined($scope.holdSubSampleInfo) && !angular.equals($scope.SubSampleInfo, $scope.holdSubSampleInfo))) {
                     $state.go("app.sample.entry");
                 } else {
                     $('#discardChangesModal').modal('show');

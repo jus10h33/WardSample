@@ -32,10 +32,6 @@
                     $scope.Samplecolumns = result.data;
                 });
             }
-
-            $scope.Commit = function () {
-                $state.go("app.sample.find2", {stn:$scope.Sample.SampleTypeNumber, bn:$scope.Sample.BatchNumber, ln:$scope.Sample.LabNumber})
-            }
             if (angular.isDefined(x.Sample.SampleTypeNumber)) {
                 $scope.Sample.SampleTypeNumber = x.Sample.SampleTypeNumber;
             } else {
@@ -43,6 +39,25 @@
                 $scope.Sample.SampleTypeNumber = x.toString();
             }
 
+            $scope.Commit = function () {
+                if ($scope.entryForm.cboSampleType.$valid && $scope.entryForm.txtLabNumber.$valid) {
+                    if (($scope.entryForm.txtBatchNumber.$invalid && angular.isUndefined($scope.Sample.BatchNumber)) || $scope.entryForm.txtBatchNumber.$valid) {
+                        $state.go("app.sample.find2", { stn: $scope.Sample.SampleTypeNumber, bn: $scope.Sample.BatchNumber, ln: $scope.Sample.LabNumber });
+                    } else {
+                        DisplayPopover("txtBatchNumber", "Must be correct format [yyyymmdd]");
+                        angular.element('#txtBatchNumber').addClass('has-error');
+                    }
+                } else {
+                    if ($scope.entryForm.cboSampleType.$invalid) {
+                        DisplayPopover("cboSampleTypeNumber", "Required field");
+                        angular.element('#cboSampleTypeNumber').addClass('has-error');
+                    }
+                    if ($scope.entryForm.txtLabNumber.$invalid) {
+                        DisplayPopover("txtLabNumber", "Must be numeric");
+                        angular.element('#txtLabNumber').addClass('has-error');
+                    }
+                }
+            };
             $scope.Cancel = function () {
                 $state.go("app.sample.entry");
             };
@@ -84,7 +99,7 @@
                     $scope.Sample = result.data.GenericInfo.Samples[0];
                     $scope.Account = result.data.GenericInfo.Accounts[0];
                     SetSampleService.setAllValues(result.data);
-                    $state.go("app.sample.entry2", { stn: $scope.Sample.SampleTypeNumber, bn: $scope.Sample.BatchNumber, ln: $scope.Sample.LabNumber })
+                    $state.go("app.sample.entry1", { stn: $scope.Sample.SampleTypeNumber, bn: $scope.Sample.BatchNumber, ln: $scope.Sample.LabNumber })
                 } else {
                     angular.element("#txtLabNumber").focus();
                 }
