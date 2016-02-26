@@ -1292,42 +1292,36 @@ namespace SampleData.Controllers
         #region "Next"
         public JsonResult GetNext(int stn, int bn, int ln)
         {
-            IEnumerable<SampleModels> x = (from s in db.Samples
-                     where s.SampleTypeNumber == stn && s.BatchNumber >= bn && s.LabNumber > ln
-                     orderby s.LabNumber, s.BatchNumber descending
-                     select s).Take(30).ToList();
-
-            if (x.Any())
+            try
             {
-                x = (from s in x
-                     orderby s.BatchNumber descending, s.LabNumber descending
-                     select s).ToList();
+                IEnumerable<SampleModels> x = (from s in db.Samples
+                                               where s.SampleTypeNumber == stn && ((s.BatchNumber >= bn && s.LabNumber > ln) || s.LabNumber > ln)
+                                               orderby s.LabNumber descending, s.BatchNumber descending
+                                               select s).Take(30).ToList();
                 return Json(GetMoreSamples(x), JsonRequestBehavior.AllowGet);
             }
-            else
+            catch (Exception e)
             {
                 return null;
-            }            
+            }         
         }
         #endregion
         #region "Prev"
         public JsonResult GetPrev(int stn, int bn, int ln)
         {
             Debug.Print("GetPrev called");
-            IEnumerable<SampleModels> x = (from s in db.Samples
-                     where s.SampleTypeNumber == stn && (s.BatchNumber <= bn && s.LabNumber < ln) || (s.BatchNumber < bn)
-                     orderby s.BatchNumber descending, s.LabNumber descending
-                     select s).Take(30).ToList();
-
-            if (x.Any())
+            try
             {
+                IEnumerable<SampleModels> x = (from s in db.Samples
+                                               where s.SampleTypeNumber == stn && (s.BatchNumber <= bn && s.LabNumber < ln) || (s.BatchNumber < bn)
+                                               orderby s.BatchNumber descending, s.LabNumber descending
+                                               select s).Take(30).ToList();
                 return Json(GetMoreSamples(x), JsonRequestBehavior.AllowGet);
             }
-            else
+            catch (Exception e)
             {
                 return null;
             }
-
         }
         #endregion
         #region "GetMoreSamples"

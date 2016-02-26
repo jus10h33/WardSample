@@ -27,7 +27,7 @@
 
                 var stn = 1;
                 var x = ScopeService.getScope();
-                    //if scope already exists then use it, otherwise, load data from server
+                //if scope already exists then use it, otherwise, load data from server
                 if (angular.isDefined(x.Sample)) {
                     SetScopeValues(x);
                 } else {

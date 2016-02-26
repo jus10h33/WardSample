@@ -3,25 +3,6 @@
 
     angular
         .module('mainApp')
-        .config(function ($stateProvider, $urlRouterProvider) {
-            $urlRouterProvider.otherwise('/sample');
-            $stateProvider
-                .state('app.sample.next1', {
-                    url: '/next',
-                    templateUrl: '/app/modules/sample/entry/entry.html',
-                    controller: 'NextController1'
-                })
-                .state('app.sample.next2', {
-                    url: '/next/:stn/:bn/:ln',
-                    //params: {
-                    //    stn: { value: null, squash: true },
-                    //    bn: { value: null, squash: true },
-                    //    ln: { value: null, squash: true }
-                    //},
-                    templateUrl: '/app/modules/sample/entry/entry.html',
-                    controller: 'SetScopeController'
-                });
-        })
         .controller("NextController1", ["ScopeService", "$scope", "SampleService", "SetSampleService", "$state", "hotkeys",
             function (ScopeService, $scope, SampleService, SetSampleService, $state, hotkeys) {
                 var x = ScopeService.getScope().Sample;

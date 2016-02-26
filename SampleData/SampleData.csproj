@@ -348,13 +348,12 @@
     <Content Include="app\app.js" />
     <Content Include="app\index.html" />
     <Content Include="app\Directives\AutoCompleteDirective.js" />
-    <Content Include="app\modules\sample\entry\controllers\AddController.js" />
-    <Content Include="app\modules\sample\entry\controllers\DeleteController.js" />
+    <Content Include="app\modules\sample\entry\controllers\CRUDController.js" />
     <Content Include="app\modules\sample\entry\controllers\FindController.js" />
     <Content Include="app\modules\sample\entry\controllers\NextController.js" />
     <Content Include="app\modules\sample\entry\controllers\PreviousController.js" />
+    <Content Include="app\modules\sample\entry\controllers\ScrollController.js" />
     <Content Include="app\modules\sample\entry\controllers\SetScopeController.js" />
-    <Content Include="app\modules\sample\entry\controllers\UpdateController.js" />
     <Content Include="app\modules\sample\entry\entry.html" />
     <Content Include="app\modules\sample\entry\services\AccountService.js" />
     <Content Include="app\modules\sample\entry\services\ReportService.js" />

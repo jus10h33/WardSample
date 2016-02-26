@@ -3,20 +3,6 @@
 
     angular
         .module('mainApp')
-        .config(function ($stateProvider, $urlRouterProvider) {
-            $urlRouterProvider.otherwise('/sample');
-            $stateProvider
-                .state('app.sample.previous1', {
-                    url: '/previous',
-                    templateUrl: '/app/modules/sample/entry/entry.html',
-                    controller: 'PreviousController1'
-                })
-            .state('app.sample.previous2', {
-                url: '/previous/:stn/:bn/:ln',
-                templateUrl: '/app/modules/sample/entry/entry.html',
-                controller: 'SetScopeController'
-            });
-        })
         .controller("PreviousController1", ["ScopeService", "$scope", "SampleService", "SetSampleService", "$state", "hotkeys",
             function (ScopeService, $scope, SampleService, SetSampleService, $state, hotkeys) {
 
